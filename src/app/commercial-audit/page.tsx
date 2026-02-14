@@ -61,8 +61,15 @@ const COMMERCIAL_CATEGORIES = [
   }
 ]
 
+const PRICING_TIERS = [
+  { id: "single", name: "Enterprise Single", price: 47, count: 1, desc: "Facility compliance snapshot." },
+  { id: "bundle", name: "Multi-Pack (3)", price: 97, count: 3, desc: "Quarterly risk management.", popular: true },
+  { id: "enterprise", name: "Industrial Pack (10)", price: 197, count: 10, desc: "Full asset monitoring fleet." }
+]
+
 export default function CommercialAuditPage() {
   const [activeStep, setActiveStep] = useState<"intro" | "payment" | "form" | "report">("intro")
+  const [selectedTier, setSelectedTier] = useState(PRICING_TIERS[1])
   const [checkedItems, setCheckedItems] = useState<Record<string, boolean>>({})
   const [isProcessing, setIsProcessing] = useState(false)
   const { toast } = useToast()
@@ -82,7 +89,7 @@ export default function CommercialAuditPage() {
     setIsProcessing(true)
     await new Promise(resolve => setTimeout(resolve, 1500))
     setIsProcessing(false)
-    toast({ title: "Payment Successful", description: "3-Pack Commercial Audit unlocked via Stripe Secure." })
+    toast({ title: "Payment Successful", description: `${selectedTier.name} unlocked via Stripe Secure.` })
     setActiveStep("form")
   }
 
@@ -102,56 +109,69 @@ export default function CommercialAuditPage() {
       </div>
 
       {activeStep === "intro" && (
-        <Card className="border-primary/20 bg-primary/5 overflow-hidden">
-          <div className="bg-primary/10 px-6 py-3 border-b border-primary/20 flex items-center justify-between">
-            <span className="text-[10px] font-black uppercase tracking-widest text-primary flex items-center gap-2">
-              <ShieldCheck className="w-3 h-3" />
-              Enterprise Facility Protocol
-            </span>
-            <Badge variant="outline" className="border-primary text-primary text-[10px]">OSHA 1910 READY</Badge>
+        <div className="flex flex-col gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {PRICING_TIERS.map((tier) => (
+              <Card 
+                key={tier.id} 
+                className={`cursor-pointer transition-all border-2 relative overflow-hidden ${selectedTier.id === tier.id ? "border-primary bg-primary/5" : "border-border hover:border-primary/50"}`}
+                onClick={() => setSelectedTier(tier)}
+              >
+                {tier.popular && (
+                  <Badge className="absolute top-0 right-1/2 translate-x-1/2 -translate-y-1/2 bg-primary text-black font-black uppercase text-[10px]">Most Chosen</Badge>
+                )}
+                <CardHeader>
+                  <CardTitle className="text-xl font-black">{tier.name}</CardTitle>
+                  <CardDescription className="text-xs">{tier.desc}</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-3xl font-black text-primary">${tier.price}</p>
+                </CardContent>
+              </Card>
+            ))}
           </div>
-          <CardHeader>
-            <Factory className="w-16 h-16 text-primary mb-4" />
-            <CardTitle className="text-3xl font-black italic tracking-tighter">3-Audit Enterprise Pack</CardTitle>
-            <CardDescription className="text-base">
-              Establish a quarterly safety baseline. Our enterprise pack includes three full facility audits to ensure continuous compliance and risk mitigation.
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-6">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="flex items-start gap-4 p-4 bg-background/50 rounded-2xl border border-white/5">
-                <HardHat className="w-6 h-6 text-primary shrink-0" />
-                <div className="text-sm">
-                  <p className="font-bold">NFPA 70E / OSHA Standards</p>
-                  <p className="text-muted-foreground">Comprehensive coverage of commercial electrical safety requirements.</p>
+
+          <Card className="border-primary/20 bg-primary/5 overflow-hidden">
+            <div className="bg-primary/10 px-6 py-3 border-b border-primary/20 flex items-center justify-between">
+              <span className="text-[10px] font-black uppercase tracking-widest text-primary flex items-center gap-2">
+                <ShieldCheck className="w-3 h-3" />
+                Enterprise Facility Protocol
+              </span>
+              <Badge variant="outline" className="border-primary text-primary text-[10px]">OSHA 1910 READY</Badge>
+            </div>
+            <CardHeader>
+              <Factory className="w-16 h-16 text-primary mb-4" />
+              <CardTitle className="text-3xl font-black italic tracking-tighter">{selectedTier.name}</CardTitle>
+              <CardDescription className="text-base">
+                Ensure continuous compliance and risk mitigation with {selectedTier.count} enterprise-grade facility {selectedTier.count > 1 ? 'audits' : 'audit'}.
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="flex items-start gap-4 p-4 bg-background/50 rounded-2xl border border-white/5">
+                  <HardHat className="w-6 h-6 text-primary shrink-0" />
+                  <div className="text-sm">
+                    <p className="font-bold">NFPA 70E / OSHA Standards</p>
+                    <p className="text-muted-foreground">Comprehensive coverage of commercial electrical safety requirements.</p>
+                  </div>
+                </div>
+                <div className="flex items-start gap-4 p-4 bg-background/50 rounded-2xl border border-white/5">
+                  <Zap className="w-6 h-6 text-primary shrink-0" />
+                  <div className="text-sm">
+                    <p className="font-bold">{selectedTier.count} Digital Reports</p>
+                    <p className="text-muted-foreground">Certified digital reports for liability insurance providers.</p>
+                  </div>
                 </div>
               </div>
-              <div className="flex items-start gap-4 p-4 bg-background/50 rounded-2xl border border-white/5">
-                <Zap className="w-6 h-6 text-primary shrink-0" />
-                <div className="text-sm">
-                  <p className="font-bold">3 Full Audits Included</p>
-                  <p className="text-muted-foreground">Certified digital reports for your liability insurance providers.</p>
-                </div>
-              </div>
-            </div>
-            <div className="p-6 bg-black text-white rounded-2xl border border-primary/40 flex items-center justify-between">
-              <div>
-                <p className="text-[10px] font-black uppercase tracking-[0.2em] text-primary">Enterprise Pack (3 Uses)</p>
-                <p className="text-4xl font-black">$197.00</p>
-              </div>
-              <div className="text-right flex flex-col items-end gap-1">
-                <Badge className="bg-primary text-black font-black uppercase">Stripe Secure</Badge>
-                <p className="text-[10px] opacity-60 italic">Tax-deductible business expense</p>
-              </div>
-            </div>
-          </CardContent>
-          <CardFooter>
-            <Button className="w-full h-16 text-xl font-black bg-primary text-black hover:bg-primary/90 rounded-2xl shadow-xl" onClick={() => setActiveStep("payment")}>
-              Unlock Enterprise Pack
-              <ArrowRight className="ml-2 w-6 h-6" />
-            </Button>
-          </CardFooter>
-        </Card>
+            </CardContent>
+            <CardFooter>
+              <Button className="w-full h-16 text-xl font-black bg-primary text-black hover:bg-primary/90 rounded-2xl shadow-xl" onClick={() => setActiveStep("payment")}>
+                Unlock {selectedTier.name}
+                <ArrowRight className="ml-2 w-6 h-6" />
+              </Button>
+            </CardFooter>
+          </Card>
+        </div>
       )}
 
       {activeStep === "payment" && (
@@ -161,30 +181,29 @@ export default function CommercialAuditPage() {
               <Lock className="w-6 h-6 text-primary" />
               Secure Payout
             </CardTitle>
-            <CardDescription>Professional AI Commercial Audit Pack ($197.00)</CardDescription>
+            <CardDescription>{selectedTier.name} (${selectedTier.price}.00)</CardDescription>
           </CardHeader>
           <CardContent className="space-y-6">
             <div className="flex items-center justify-between p-4 bg-muted/50 rounded-xl border border-white/5">
               <div className="flex items-center gap-3">
                 <Building2 className="w-5 h-5 text-primary" />
-                <span className="font-bold">3x Facility Compliance Audits</span>
+                <span className="font-bold">{selectedTier.name}</span>
               </div>
-              <span className="font-black text-lg">$197.00</span>
+              <span className="font-black text-lg">${selectedTier.price}.00</span>
             </div>
             <div className="p-4 border rounded-xl flex items-center gap-4 cursor-pointer hover:border-primary transition-all bg-primary/5 border-primary/20">
               <CreditCard className="w-8 h-8 text-primary" />
               <div className="flex-1">
                 <p className="font-bold text-sm">Stored Business Card ending in 8899</p>
-                <p className="text-xs text-muted-foreground">Next Insurance • Powered by Stripe</p>
+                <p className="text-xs text-muted-foreground">Stripe Secure Tokenized Payment</p>
               </div>
             </div>
           </CardContent>
           <CardFooter className="flex-col gap-4">
             <Button className="w-full h-14 font-black text-lg" onClick={processPayment} disabled={isProcessing}>
-              {isProcessing ? "Authorizing Stripe Transaction..." : "Pay $197.00 & Begin First Audit"}
+              {isProcessing ? "Authorizing Stripe..." : `Pay $${selectedTier.price}.00 & Begin Audit`}
             </Button>
             <Button variant="ghost" className="w-full font-bold opacity-60" onClick={() => setActiveStep("intro")}>Cancel</Button>
-            <p className="text-[9px] text-muted-foreground text-center uppercase tracking-widest font-bold">256-bit Stripe encryption active</p>
           </CardFooter>
         </Card>
       )}
@@ -199,10 +218,6 @@ export default function CommercialAuditPage() {
                     <span className="text-primary">{Math.round((Object.keys(checkedItems).length / 20) * 100)}%</span>
                   </div>
                   <Progress value={(Object.keys(checkedItems).length / 20) * 100} className="h-3" />
-               </div>
-               <div className="hidden md:block text-right">
-                  <p className="text-[10px] font-black uppercase opacity-60">Estimated Time</p>
-                  <p className="text-lg font-black tracking-tighter">~12 MINS</p>
                </div>
             </CardContent>
           </Card>
@@ -306,25 +321,21 @@ export default function CommercialAuditPage() {
                 <CardContent className="space-y-6">
                   <div className="p-4 rounded-2xl bg-black/10 border border-black/10 text-sm font-bold leading-relaxed">
                     {score < 100 
-                      ? "Facility identified with critical OSHA 1910 violations. Immediate remediation of grounding and LOTO procedures required to avoid Tier 1 fines." 
-                      : "Outstanding facility management. Maintain this level of compliance to qualify for premium insurance reductions."}
+                      ? "Facility identified with OSHA violations. Immediate remediation of grounding and LOTO procedures required." 
+                      : "Outstanding facility management. Maintain this level of compliance."}
                   </div>
                   <Button className="w-full h-14 bg-black text-white hover:bg-black/90 font-black rounded-xl">Book Corporate Pro</Button>
-                  <Button variant="outline" className="w-full h-14 border-black/20 font-black rounded-xl gap-2 hover:bg-black/5">
-                    <Download className="w-5 h-5" />
-                    Export compliance PDF
-                  </Button>
                 </CardContent>
               </Card>
 
               <Card className="border-primary/20 bg-primary/10">
                 <CardHeader className="pb-2">
                   <CardTitle className="text-sm font-black uppercase flex items-center gap-2 tracking-widest">
-                    Enterprise Credits
+                    Pack Credits
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="text-[11px] font-bold">
-                  2 Audits Remaining in Pack
+                  {selectedTier.count - 1} Audits Remaining in Pack
                 </CardContent>
               </Card>
             </div>

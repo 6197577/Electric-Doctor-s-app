@@ -71,8 +71,15 @@ const AUDIT_CATEGORIES = [
   }
 ]
 
+const PRICING_TIERS = [
+  { id: "single", name: "Single Audit", price: 47, count: 1, desc: "Perfect for a quick safety check." },
+  { id: "bundle", name: "Value 3-Pack", price: 97, count: 3, desc: "Best for seasonal monitoring.", popular: true },
+  { id: "enterprise", name: "10-Audit Pack", price: 197, count: 10, desc: "Professional asset management." }
+]
+
 export default function AuditPage() {
   const [activeStep, setActiveStep] = useState<"intro" | "payment" | "form" | "report">("intro")
+  const [selectedTier, setSelectedTier] = useState(PRICING_TIERS[1])
   const [checkedItems, setCheckedItems] = useState<Record<string, boolean>>({})
   const [isProcessing, setIsProcessing] = useState(false)
   const { toast } = useToast()
@@ -90,10 +97,9 @@ export default function AuditPage() {
 
   const processPayment = async () => {
     setIsProcessing(true)
-    // Simulate Stripe payment
     await new Promise(resolve => setTimeout(resolve, 1500))
     setIsProcessing(false)
-    toast({ title: "Payment Successful", description: "Audit pack unlocked via Stripe Secure Checkout." })
+    toast({ title: "Payment Successful", description: `${selectedTier.name} unlocked via Stripe Secure.` })
     setActiveStep("form")
   }
 
@@ -113,46 +119,62 @@ export default function AuditPage() {
       </div>
 
       {activeStep === "intro" && (
-        <Card className="border-primary/20 bg-primary/5">
-          <CardHeader>
-            <ShieldCheck className="w-12 h-12 text-primary mb-4" />
-            <CardTitle className="text-2xl">3-Audit Value Pack</CardTitle>
-            <CardDescription>
-              Get three professional-grade audits for the price of two. Perfect for multi-property owners or seasonal safety monitoring.
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="flex items-start gap-3 p-3 bg-card rounded-lg border">
-                <CheckCircle2 className="w-5 h-5 text-green-500 shrink-0 mt-0.5" />
-                <div className="text-sm">
-                  <p className="font-bold">NEC Standards</p>
-                  <p className="text-muted-foreground">Derived from modern electrical codes.</p>
+        <div className="flex flex-col gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {PRICING_TIERS.map((tier) => (
+              <Card 
+                key={tier.id} 
+                className={`cursor-pointer transition-all border-2 ${selectedTier.id === tier.id ? "border-primary bg-primary/5" : "border-border hover:border-primary/50"}`}
+                onClick={() => setSelectedTier(tier)}
+              >
+                {tier.popular && (
+                  <Badge className="absolute top-0 right-1/2 translate-x-1/2 -translate-y-1/2 bg-primary text-black font-bold">BEST VALUE</Badge>
+                )}
+                <CardHeader>
+                  <CardTitle className="text-xl">{tier.name}</CardTitle>
+                  <CardDescription>{tier.desc}</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-3xl font-black text-primary">${tier.price}</p>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+
+          <Card className="border-primary/20 bg-primary/5">
+            <CardHeader>
+              <ShieldCheck className="w-12 h-12 text-primary mb-4" />
+              <CardTitle className="text-2xl">Audit Professional Protocol</CardTitle>
+              <CardDescription>
+                Get {selectedTier.count} professional-grade {selectedTier.count > 1 ? 'audits' : 'audit'} starting at ${selectedTier.price}.
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="flex items-start gap-3 p-3 bg-card rounded-lg border">
+                  <CheckCircle2 className="w-5 h-5 text-green-500 shrink-0 mt-0.5" />
+                  <div className="text-sm">
+                    <p className="font-bold">NEC Standards</p>
+                    <p className="text-muted-foreground">Derived from modern electrical codes.</p>
+                  </div>
+                </div>
+                <div className="flex items-start gap-3 p-3 bg-card rounded-lg border">
+                  <Zap className="w-5 h-5 text-primary shrink-0 mt-0.5" />
+                  <div className="text-sm">
+                    <p className="font-bold">{selectedTier.count} Audit Access</p>
+                    <p className="text-muted-foreground">Transferable across properties.</p>
+                  </div>
                 </div>
               </div>
-              <div className="flex items-start gap-3 p-3 bg-card rounded-lg border">
-                <Zap className="w-5 h-5 text-primary shrink-0 mt-0.5" />
-                <div className="text-sm">
-                  <p className="font-bold">3 Full Audits Included</p>
-                  <p className="text-muted-foreground">Transferable across residential properties.</p>
-                </div>
-              </div>
-            </div>
-            <div className="mt-4 p-4 bg-background/50 rounded-xl border border-primary/20 flex items-center justify-between">
-              <div>
-                <p className="text-xs font-bold text-muted-foreground uppercase tracking-widest">3-Audit Multi-Pack</p>
-                <p className="text-3xl font-black text-primary">$97.00</p>
-              </div>
-              <Badge variant="outline" className="text-primary border-primary uppercase text-[10px]">Secure Stripe Checkout</Badge>
-            </div>
-          </CardContent>
-          <CardFooter>
-            <Button className="w-full font-bold" size="lg" onClick={() => setActiveStep("payment")}>
-              Unlock Audit Pack
-              <ArrowRight className="ml-2 w-4 h-4" />
-            </Button>
-          </CardFooter>
-        </Card>
+            </CardContent>
+            <CardFooter>
+              <Button className="w-full font-bold" size="lg" onClick={() => setActiveStep("payment")}>
+                Unlock {selectedTier.name}
+                <ArrowRight className="ml-2 w-4 h-4" />
+              </Button>
+            </CardFooter>
+          </Card>
+        </div>
       )}
 
       {activeStep === "payment" && (
@@ -162,33 +184,29 @@ export default function AuditPage() {
               <Lock className="w-5 h-5 text-primary" />
               Stripe Secure Checkout
             </CardTitle>
-            <CardDescription>Confirm your residential audit pack purchase ($97.00).</CardDescription>
+            <CardDescription>Confirm your {selectedTier.name} purchase (${selectedTier.price}.00).</CardDescription>
           </CardHeader>
           <CardContent className="space-y-6">
             <div className="flex items-center justify-between p-4 bg-muted rounded-lg">
               <div className="flex items-center gap-3">
                 <FileText className="w-5 h-5 text-primary" />
-                <span className="font-medium">3x Residential 100-Point Audits</span>
+                <span className="font-medium">{selectedTier.name}</span>
               </div>
-              <span className="font-bold">$97.00</span>
+              <span className="font-bold">${selectedTier.price}.00</span>
             </div>
-            <div className="space-y-4">
-              <div className="p-4 border rounded-lg flex items-center gap-4 cursor-pointer hover:border-primary transition-colors bg-primary/5">
-                <CreditCard className="w-6 h-6 text-primary" />
-                <div className="flex-1">
-                  <p className="font-bold text-sm">Stored Visa ending in 4242</p>
-                  <p className="text-xs text-muted-foreground">Expires 12/26 • Powered by Stripe</p>
-                </div>
-                <div className="w-4 h-4 rounded-full border-2 border-primary bg-primary" />
+            <div className="p-4 border rounded-lg flex items-center gap-4 bg-primary/5 border-primary/20">
+              <CreditCard className="w-6 h-6 text-primary" />
+              <div className="flex-1">
+                <p className="font-bold text-sm">Stored Visa ending in 4242</p>
+                <p className="text-xs text-muted-foreground">Expires 12/26</p>
               </div>
             </div>
           </CardContent>
           <CardFooter className="flex-col gap-3">
             <Button className="w-full h-12 font-bold" onClick={processPayment} disabled={isProcessing}>
-              {isProcessing ? "Processing Stripe Payment..." : "Pay $97.00 & Begin First Audit"}
+              {isProcessing ? "Processing Stripe Payment..." : `Pay $${selectedTier.price}.00 & Begin Audit`}
             </Button>
             <Button variant="ghost" className="w-full" onClick={() => setActiveStep("intro")}>Cancel</Button>
-            <p className="text-[10px] text-muted-foreground text-center">Your payment information is encrypted and processed securely by Stripe.</p>
           </CardFooter>
         </Card>
       )}
@@ -302,7 +320,7 @@ export default function AuditPage() {
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <div className="p-3 rounded-lg bg-card border text-xs leading-relaxed">
-                    {score < 100 ? "Your home has some non-compliant areas. We recommend prioritizing GFCI protection and Panel labeling for immediate safety gains." : "Excellent work! Your home meets all checked NEC standards."}
+                    {score < 100 ? "Your home has some non-compliant areas. We recommend prioritizing GFCI protection for immediate safety gains." : "Excellent work! Your home meets all checked NEC standards."}
                   </div>
                   <Button className="w-full font-bold">Book Fixes</Button>
                   <Button variant="outline" className="w-full gap-2 font-bold">
@@ -314,10 +332,10 @@ export default function AuditPage() {
 
               <Card className="bg-primary/10 border-primary/20">
                 <CardHeader className="pb-2">
-                  <CardTitle className="text-sm">Multi-Pack Credits</CardTitle>
+                  <CardTitle className="text-sm">Pack Credits</CardTitle>
                 </CardHeader>
                 <CardContent>
-                   <p className="text-[10px] text-muted-foreground uppercase font-black">2 Audits Remaining</p>
+                   <p className="text-[10px] text-muted-foreground uppercase font-black">{selectedTier.count - 1} Audits Remaining</p>
                 </CardContent>
               </Card>
             </div>

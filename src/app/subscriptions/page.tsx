@@ -12,32 +12,32 @@ import { useState } from "react"
 const RESIDENTIAL_PLANS = [
   {
     name: "Home Standard",
-    price: "$97",
+    price: "$47",
     description: "Essential protection for your family home.",
     features: [
-      "3x Professional Safety Audits / Year",
+      "1x Professional Safety Audit Included",
       "10 AI Diagnostic Scans / Month",
       "Generator Maintenance Log",
       "Unlimited Lighting Scans",
       "Basic AI Diagnostic Tool",
       "Standard Priority Support"
     ],
-    buttonText: "Subscribe via Stripe",
+    buttonText: "Get Started $47",
     popular: false
   },
   {
     name: "Home Pro",
-    price: "$197",
+    price: "$97",
     description: "Premium care for modern smart homes.",
     features: [
-      "5x Professional Safety Audits / Year",
+      "3x Professional Safety Audits / Year",
       "50 AI Diagnostic Scans / Month",
       "Advanced AI Area Outage Scans",
       "Predictive Failure Alerts",
       "24/7 Priority Emergency Access",
       "10% Discount on Repairs"
     ],
-    buttonText: "Go Pro via Stripe",
+    buttonText: "Go Pro $97",
     popular: true
   }
 ]
@@ -46,20 +46,20 @@ const COMMERCIAL_PLANS = [
   {
     name: "Business Essential",
     price: "$197",
-    description: "Safety compliance for small retail and offices.",
+    description: "Safety compliance for large facilities.",
     features: [
-      "3x Facility Compliance Audits / Year",
-      "25 AI Diagnostic Scans / Month",
+      "10x Facility Compliance Audits / Year",
+      "Unlimited AI Diagnostic Scans",
       "OSHA Compliance Reports",
       "Energy Efficiency Scans",
       "Dedicated Account Manager",
-      "Employee Safety Training"
+      "Priority Pro Matching"
     ],
-    buttonText: "Subscribe via Stripe",
-    popular: false
+    buttonText: "Go Enterprise $197",
+    popular: true
   },
   {
-    name: "Enterprise",
+    name: "Custom Enterprise",
     price: "Custom",
     description: "Full-scale electrical asset management.",
     features: [
@@ -71,7 +71,7 @@ const COMMERCIAL_PLANS = [
       "Custom API Integration"
     ],
     buttonText: "Contact Sales",
-    popular: true
+    popular: false
   }
 ]
 
@@ -80,10 +80,9 @@ export default function SubscriptionsPage() {
   const [loadingPlan, setLoadingPlan] = useState<string | null>(null)
 
   const handleSubscribe = async (planName: string) => {
-    if (planName === "Enterprise") return // Contact sales logic
+    if (planName.includes("Contact Sales")) return
     
     setLoadingPlan(planName)
-    // Simulate Stripe Checkout Redirect
     await new Promise(resolve => setTimeout(resolve, 1200))
     setLoadingPlan(null)
     toast({
@@ -97,7 +96,7 @@ export default function SubscriptionsPage() {
       <div className="text-center space-y-4">
         <h1 className="text-4xl md:text-5xl font-black tracking-tighter">Choose Your Protection Level</h1>
         <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
-          From single-family homes to industrial complexes, our Stripe-secured billing ensures seamless protection.
+          Audit packs and subscription plans designed for every scale. Secured by Stripe.
         </p>
       </div>
 
@@ -127,7 +126,7 @@ export default function SubscriptionsPage() {
                 <CardTitle className="text-2xl">{plan.name}</CardTitle>
                 <div className="flex items-baseline gap-1 mt-2">
                   <span className="text-4xl font-black">{plan.price}</span>
-                  {plan.price !== "Custom" && <span className="text-muted-foreground">/month</span>}
+                  {plan.price !== "Custom" && <span className="text-muted-foreground">/mo</span>}
                 </div>
                 <CardDescription className="mt-2">{plan.description}</CardDescription>
               </CardHeader>
@@ -168,7 +167,7 @@ export default function SubscriptionsPage() {
                 </div>
                 <div className="flex items-baseline gap-1 mt-2">
                   <span className="text-4xl font-black">{plan.price}</span>
-                  {plan.price !== "Custom" && <span className="text-muted-foreground">/month</span>}
+                  {plan.price !== "Custom" && <span className="text-muted-foreground">/mo</span>}
                 </div>
                 <CardDescription className="mt-2">{plan.description}</CardDescription>
               </CardHeader>
@@ -190,7 +189,7 @@ export default function SubscriptionsPage() {
                 >
                   {loadingPlan === plan.name ? "Redirecting..." : plan.buttonText}
                 </Button>
-                {plan.name !== "Enterprise" && (
+                {plan.price !== "Custom" && (
                   <div className="flex items-center justify-center gap-1 text-[10px] text-muted-foreground">
                     <Lock className="w-2.5 h-2.5" />
                     Secured by Stripe
@@ -201,26 +200,6 @@ export default function SubscriptionsPage() {
           ))}
         </TabsContent>
       </Tabs>
-
-      <section className="bg-muted/30 rounded-3xl p-8 border border-border flex flex-col md:flex-row items-center gap-8">
-        <div className="flex-1 space-y-4">
-          <h2 className="text-2xl font-bold">Not sure which one to pick?</h2>
-          <p className="text-muted-foreground">
-            Our AI can analyze your past job history and home size to recommend the most cost-effective Stripe plan for you.
-          </p>
-          <Button variant="outline" className="font-bold border-primary text-primary">Get Personal Recommendation</Button>
-        </div>
-        <div className="grid grid-cols-2 gap-4 w-full md:w-auto">
-          <div className="p-4 bg-background rounded-2xl border text-center">
-            <p className="text-2xl font-black">15k+</p>
-            <p className="text-[10px] text-muted-foreground uppercase">Homes Protected</p>
-          </div>
-          <div className="p-4 bg-background rounded-2xl border text-center">
-            <p className="text-2xl font-black">400+</p>
-            <p className="text-[10px] text-muted-foreground uppercase">Businesses Audited</p>
-          </div>
-        </div>
-      </section>
     </div>
   )
 }
