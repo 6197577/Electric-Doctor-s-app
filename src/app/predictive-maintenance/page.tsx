@@ -7,6 +7,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter }
 import { Badge } from "@/components/ui/badge"
 import { Progress } from "@/components/ui/progress"
 import { Slider } from "@/components/ui/slider"
+import { Label } from "@/components/ui/label"
 import { useToast } from "@/hooks/use-toast"
 import { predictMaintenanceNeeds, PredictiveMaintenanceOutput } from "@/ai/flows/predictive-maintenance-flow"
 import { Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis, CartesianGrid, Area, AreaChart } from "recharts"
