@@ -10,7 +10,19 @@ export default function sitemap(): MetadataRoute.Sitemap {
   const baseUrl = 'https://emergencyelectricrepair.com';
 
   // Base routes
-  const routes = ['', '/diagnose', '/audit', '/marketplace', '/subscriptions', '/generator-logs', '/ev-readiness', '/video-consult', '/tracking'].map(
+  const routes = [
+    '', 
+    '/diagnose', 
+    '/audit', 
+    '/marketplace', 
+    '/subscriptions', 
+    '/generator-logs', 
+    '/ev-readiness', 
+    '/video-consult', 
+    '/tracking',
+    '/products/smart-panels',
+    '/predictive-maintenance'
+  ].map(
     (route) => ({
       url: `${baseUrl}${route}`,
       lastModified: new Date(),

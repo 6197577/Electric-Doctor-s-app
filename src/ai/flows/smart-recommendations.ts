@@ -35,6 +35,7 @@ const RecommendationSchema = z.object({
   urgencyReason: z
     .string()
     .describe('The reason why this recommendation is urgent and needs immediate attention.'),
+  ctaLink: z.string().optional().describe('An optional link for the call to action.'),
 });
 
 const SmartRecommendationsOutputSchema = z.object({
@@ -62,7 +63,7 @@ const recommendationsPrompt = ai.definePrompt({
   input: {schema: SmartRecommendationsInputSchema},
   output: {schema: SmartRecommendationsOutputSchema},
   prompt: `You are an expert electrician and highly skilled negotiator, blending the persuasive tactics of Chris Voss and Chase Hughes.
-Your goal is to provide clear, urgent, and highly persuasive recommendations for electrical services or products based on an AI diagnosis. Frame the potential consequences of inaction vividly and emphasize the unique benefits of immediate resolution.
+Your goal is to provide clear, urgent, and highly persuasive recommendations for electrical services or products based on an AI diagnosis. 
 
 ### AI Diagnosis:
 {{{diagnosis}}}
@@ -74,7 +75,11 @@ Your goal is to provide clear, urgent, and highly persuasive recommendations for
 {{/each}}
 {{/if}}
 
-Based on this diagnosis, provide specific recommendations. For each recommendation, clearly state whether it's a 'service' or 'product', its name, a detailed description, a list of critical benefits, and a compelling reason for its urgency. Finally, craft an overall persuasive message that acts as a call to action, reflecting the negotiation logic of Chris Voss (e.g., empathy, labeling, calibrated questions) and Chase Hughes (e.g., psychological triggers, pattern interrupts) to motivate the homeowner to act now. Focus on avoiding loss and securing peace of mind.
+Based on this diagnosis, provide specific recommendations. 
+
+**IMPORTANT PRODUCT NOTE**: If the diagnosis involves a panel issue, EV readiness, or general capacity concerns, you MUST strongly recommend a "Smart Electric Panel Upgrade". Highlight its AI-powered safety features, real-time monitoring, and its ability to prevent main breaker trips through digital load management.
+
+For each recommendation, clearly state whether it's a 'service' or 'product', its name, a detailed description, a list of critical benefits, and a compelling reason for its urgency. Finally, craft an overall persuasive message that acts as a call to action, reflecting the negotiation logic of Chris Voss (e.g., empathy, labeling, calibrated questions) and Chase Hughes (e.g., psychological triggers, pattern interrupts) to motivate the homeowner to act now. Focus on avoiding loss and securing peace of mind.
 
 Example for urgencyReason: 'Ignoring this could lead to significant property damage, escalating repair costs, and potential safety hazards such as electrical fires or electrocution.'
 `,
@@ -87,7 +92,21 @@ const smartRecommendationsFlow = ai.defineFlow(
     outputSchema: SmartRecommendationsOutputSchema,
   },
   async input => {
-    const {output} = await recommendationsPrompt(input);
+    const {output} = await promptWithSmartPanelCheck(input);
     return output!;
   }
 );
+
+async function promptWithSmartPanelCheck(input: SmartRecommendationsInput) {
+    const {output} = await recommendationsPrompt(input);
+    // Add ctaLinks to recommendations
+    if (output?.recommendations) {
+        output.recommendations = output.recommendations.map(rec => {
+            if (rec.name.toLowerCase().includes('smart panel') || rec.name.toLowerCase().includes('panel upgrade')) {
+                return { ...rec, ctaLink: '/products/smart-panels' };
+            }
+            return rec;
+        });
+    }
+    return { output };
+}

@@ -1,15 +1,14 @@
-
 "use client"
 
 import Link from "next/link"
 import { usePathname } from "next/navigation"
-import { Home, Zap, ShoppingBag, User, ClipboardList, ShieldCheck } from "lucide-react"
+import { Home, Zap, ShoppingBag, User, ClipboardList, ShieldCheck, Cpu } from "lucide-react"
 import { cn } from "@/lib/utils"
 
 const navItems = [
   { label: "Home", icon: Home, href: "/" },
   { label: "Audit", icon: ShieldCheck, href: "/audit" },
-  { label: "Generator", icon: ClipboardList, href: "/generator-logs" },
+  { label: "Smart Panels", icon: Cpu, href: "/products/smart-panels" },
   { label: "Market", icon: ShoppingBag, href: "/marketplace" },
   { label: "Profile", icon: User, href: "/profile" },
 ]

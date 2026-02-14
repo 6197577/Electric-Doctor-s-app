@@ -10,6 +10,7 @@ export const SERVICES = [
   { id: 'generator-logs', name: 'Generator Maintenance Tracking', description: 'Digital logbook for reliable backup power system maintenance.' },
   { id: 'marketplace', name: 'Professional Electrician Marketplace', description: 'Direct access to verified local electricians with dynamic pricing.' },
   { id: 'ev-readiness', name: 'EV & Capacity Load Calculation', description: 'AI-powered NEC load calculations for EV chargers and electrification.' },
+  { id: 'smart-panels', name: 'Smart Electric Panel Upgrade', description: 'High-performance AI-powered electrical panel upgrades with remote control and load management.' },
 ];
 
 export function generateServiceCityTitle(serviceName: string, city: string, state: string) {
