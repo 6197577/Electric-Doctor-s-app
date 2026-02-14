@@ -1,0 +1,29 @@
+
+{
+  "placeholderImages": [
+    {
+      "id": "hero-bg",
+      "description": "Abstract electrical wiring and sparks",
+      "imageUrl": "https://picsum.photos/seed/elec1/1200/800",
+      "imageHint": "electrical wiring"
+    },
+    {
+      "id": "panel-damaged",
+      "description": "Damaged electrical panel with burnt wires",
+      "imageUrl": "https://picsum.photos/seed/elec2/600/400",
+      "imageHint": "burnt wiring"
+    },
+    {
+      "id": "electrician-avatar",
+      "description": "Professional electrician wearing a hard hat",
+      "imageUrl": "https://picsum.photos/seed/elec3/200/200",
+      "imageHint": "electrician person"
+    },
+    {
+      "id": "outlet-check",
+      "description": "Testing an electrical outlet",
+      "imageUrl": "https://picsum.photos/seed/elec4/600/400",
+      "imageHint": "electrical outlet"
+    }
+  ]
+}
