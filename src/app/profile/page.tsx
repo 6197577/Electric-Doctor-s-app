@@ -94,11 +94,11 @@ export default function ProfilePage() {
                 <div className="grid grid-cols-3 gap-4">
                   <div className="flex flex-col p-3 rounded-lg bg-background border">
                     <span className="text-[10px] text-muted-foreground uppercase font-bold">Audits Used</span>
-                    <span className="text-xl font-bold">1/1</span>
+                    <span className="text-xl font-bold">1/3</span>
                   </div>
                   <div className="flex flex-col p-3 rounded-lg bg-background border">
                     <span className="text-[10px] text-muted-foreground uppercase font-bold">AI Scans</span>
-                    <span className="text-xl font-bold">Unlimited</span>
+                    <span className="text-xl font-bold">2/10</span>
                   </div>
                   <div className="flex flex-col p-3 rounded-lg bg-background border">
                     <span className="text-[10px] text-muted-foreground uppercase font-bold">Next Billing</span>

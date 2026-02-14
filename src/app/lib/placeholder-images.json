@@ -3,63 +3,51 @@
   "placeholderImages": [
     {
       "id": "hero-bg",
-      "description": "Abstract electrical wiring and sparks",
-      "imageUrl": "https://picsum.photos/seed/elec1/1200/800",
-      "imageHint": "electrical wiring"
+      "description": "Abstract high-voltage electrical sparks and plasma",
+      "imageUrl": "https://picsum.photos/seed/elec_hd1/1200/800",
+      "imageHint": "electrical sparks"
     },
     {
-      "id": "panel-damaged",
-      "description": "Damaged electrical panel with burnt wires",
-      "imageUrl": "https://picsum.photos/seed/elec2/600/400",
-      "imageHint": "burnt wiring"
+      "id": "thermal-scan",
+      "description": "Infrared thermal scan of an electrical panel showing hotspots",
+      "imageUrl": "https://picsum.photos/seed/elec_hd2/800/600",
+      "imageHint": "thermal imaging"
     },
     {
-      "id": "electrician-avatar",
-      "description": "Professional electrician wearing a hard hat",
-      "imageUrl": "https://picsum.photos/seed/elec3/200/200",
-      "imageHint": "electrician person"
+      "id": "industrial-motor",
+      "description": "Close-up of a large industrial electric motor and control wiring",
+      "imageUrl": "https://picsum.photos/seed/elec_hd3/800/600",
+      "imageHint": "industrial motor"
     },
     {
-      "id": "outlet-check",
-      "description": "Testing an electrical outlet",
-      "imageUrl": "https://picsum.photos/seed/elec4/600/400",
-      "imageHint": "electrical outlet"
+      "id": "smart-home-hub",
+      "description": "Modern smart home energy management interface on a tablet",
+      "imageUrl": "https://picsum.photos/seed/elec_hd4/1000/600",
+      "imageHint": "smart home"
     },
     {
-      "id": "commercial-gear",
-      "description": "Industrial electrical switchgear and breakers",
-      "imageUrl": "https://picsum.photos/seed/elec5/800/600",
-      "imageHint": "industrial electrical"
+      "id": "arc-fault-detail",
+      "description": "Macro shot of a scorched electrical outlet showing arc fault damage",
+      "imageUrl": "https://picsum.photos/seed/elec_hd5/600/400",
+      "imageHint": "burnt outlet"
     },
     {
-      "id": "smart-panel-product",
-      "description": "Modern smart electrical panel with LED indicators",
-      "imageUrl": "https://picsum.photos/seed/elec6/800/800",
-      "imageHint": "smart panel"
+      "id": "ev-charging-station",
+      "description": "High-end commercial EV charging plaza with multiple units",
+      "imageUrl": "https://picsum.photos/seed/elec_hd6/1200/800",
+      "imageHint": "ev charging"
     },
     {
-      "id": "ev-charger",
-      "description": "Residential Level 2 EV charging station",
-      "imageUrl": "https://picsum.photos/seed/elec7/600/400",
-      "imageHint": "ev charger"
+      "id": "electrician-toolkit",
+      "description": "Professional electrician toolkit with advanced digital testers",
+      "imageUrl": "https://picsum.photos/seed/elec_hd7/800/500",
+      "imageHint": "electrician tools"
     },
     {
-      "id": "generator-home",
-      "description": "Home standby backup generator",
-      "imageUrl": "https://picsum.photos/seed/elec8/800/600",
-      "imageHint": "home generator"
-    },
-    {
-      "id": "lighting-room",
-      "description": "Modern living room with designer lighting",
-      "imageUrl": "https://picsum.photos/seed/elec9/1000/600",
-      "imageHint": "interior lighting"
-    },
-    {
-      "id": "video-doc-screen",
-      "description": "Electrician providing guidance over a video call",
-      "imageUrl": "https://picsum.photos/seed/elec10/800/500",
-      "imageHint": "video consultation"
+      "id": "solar-panel-array",
+      "description": "Large rooftop solar panel installation at sunset",
+      "imageUrl": "https://picsum.photos/seed/elec_hd8/1200/600",
+      "imageHint": "solar panels"
     }
   ]
 }

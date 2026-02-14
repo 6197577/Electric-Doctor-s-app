@@ -16,6 +16,7 @@ const RESIDENTIAL_PLANS = [
     description: "Essential protection for your family home.",
     features: [
       "3x Professional Safety Audits",
+      "10 AI Scans per month",
       "Generator Maintenance Log",
       "Unlimited Lighting Scans",
       "Basic AI Diagnostic Tool",
@@ -30,6 +31,7 @@ const RESIDENTIAL_PLANS = [
     description: "Premium care for modern smart homes.",
     features: [
       "5x Professional Safety Audits",
+      "50 AI Scans per month",
       "Advanced AI Area Outage Scans",
       "Predictive Failure Alerts",
       "24/7 Priority Emergency Access",
@@ -47,6 +49,7 @@ const COMMERCIAL_PLANS = [
     description: "Safety compliance for small retail and offices.",
     features: [
       "3x Facility Compliance Audits",
+      "25 AI Scans per month",
       "OSHA Compliance Reports",
       "Energy Efficiency Scans",
       "Dedicated Account Manager",
@@ -61,6 +64,7 @@ const COMMERCIAL_PLANS = [
     description: "Full-scale electrical asset management.",
     features: [
       "Monthly Facility-Wide Audits",
+      "Unlimited AI Scans",
       "Custom Compliance Dashboards",
       "Industrial Load Balancing AI",
       "On-site Emergency Response",
