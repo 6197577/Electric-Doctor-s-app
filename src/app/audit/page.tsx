@@ -2,7 +2,7 @@
 "use client"
 
 import { useState } from "react"
-import { ShieldCheck, ClipboardCheck, AlertTriangle, FileText, ChevronDown, CheckCircle2, Info, ArrowRight, Zap, Download } from "lucide-react"
+import { ShieldCheck, ClipboardCheck, AlertTriangle, FileText, ChevronDown, CheckCircle2, Info, ArrowRight, Zap, Download, CreditCard } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card"
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
@@ -72,7 +72,7 @@ const AUDIT_CATEGORIES = [
 ]
 
 export default function AuditPage() {
-  const [activeStep, setActiveStep] = useState<"intro" | "form" | "report">("intro")
+  const [activeStep, setActiveStep] = useState<"intro" | "payment" | "form" | "report">("intro")
   const [checkedItems, setCheckedItems] = useState<Record<string, boolean>>({})
   const { toast } = useToast()
 
@@ -86,6 +86,11 @@ export default function AuditPage() {
     const checkedCount = Object.values(checkedItems).filter(Boolean).length
     const totalItems = AUDIT_CATEGORIES.reduce((acc, cat) => acc + cat.items.length, 0)
     return Math.round((checkedCount / totalItems) * 100)
+  }
+
+  const processPayment = () => {
+    toast({ title: "Payment Successful", description: "Standard Residential Audit unlocked for $47.93." })
+    setActiveStep("form")
   }
 
   const generateReport = () => {
@@ -107,9 +112,9 @@ export default function AuditPage() {
         <Card className="border-primary/20 bg-primary/5">
           <CardHeader>
             <ShieldCheck className="w-12 h-12 text-primary mb-4" />
-            <CardTitle className="text-2xl">Start Your Safety Journey</CardTitle>
+            <CardTitle className="text-2xl">Professional Residential Audit</CardTitle>
             <CardDescription>
-              This audit covers critical NEC standards to ensure your home is protected from electrical fires and shocks.
+              Comprehensive safety assessment for single-family homes. Unlock the full 100-point checklist today.
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
@@ -118,26 +123,64 @@ export default function AuditPage() {
                 <CheckCircle2 className="w-5 h-5 text-green-500 shrink-0 mt-0.5" />
                 <div className="text-sm">
                   <p className="font-bold">NEC Standards</p>
-                  <p className="text-muted-foreground">Checkpoints derived directly from modern safety codes.</p>
+                  <p className="text-muted-foreground">Derived from modern electrical codes.</p>
                 </div>
               </div>
               <div className="flex items-start gap-3 p-3 bg-card rounded-lg border">
                 <Zap className="w-5 h-5 text-primary shrink-0 mt-0.5" />
                 <div className="text-sm">
-                  <p className="font-bold">Instant Scoring</p>
-                  <p className="text-muted-foreground">Receive a real-time safety grade out of 100 points.</p>
+                  <p className="font-bold">Professional Report</p>
+                  <p className="text-muted-foreground">Get a downloadable PDF for insurance or sales.</p>
                 </div>
               </div>
             </div>
-            <p className="text-xs text-muted-foreground italic">
-              Note: This tool is for educational assessment. For a certified inspection, always hire a licensed master electrician.
-            </p>
+            <div className="mt-4 p-4 bg-background/50 rounded-xl border border-primary/20 flex items-center justify-between">
+              <div>
+                <p className="text-xs font-bold text-muted-foreground uppercase tracking-widest">Single Use Price</p>
+                <p className="text-3xl font-black text-primary">$47.93</p>
+              </div>
+              <Badge variant="outline" className="text-primary border-primary">Best Value</Badge>
+            </div>
           </CardContent>
           <CardFooter>
-            <Button className="w-full font-bold" size="lg" onClick={() => setActiveStep("form")}>
-              Begin Audit Now
+            <Button className="w-full font-bold" size="lg" onClick={() => setActiveStep("payment")}>
+              Unlock Audit Checklist
               <ArrowRight className="ml-2 w-4 h-4" />
             </Button>
+          </CardFooter>
+        </Card>
+      )}
+
+      {activeStep === "payment" && (
+        <Card className="animate-in fade-in zoom-in-95 duration-300">
+          <CardHeader>
+            <CardTitle>Secure Checkout</CardTitle>
+            <CardDescription>Confirm your residential audit purchase.</CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-6">
+            <div className="flex items-center justify-between p-4 bg-muted rounded-lg">
+              <div className="flex items-center gap-3">
+                <FileText className="w-5 h-5 text-primary" />
+                <span className="font-medium">1x Residential 100-Point Audit</span>
+              </div>
+              <span className="font-bold">$47.93</span>
+            </div>
+            <div className="space-y-4">
+              <div className="p-4 border rounded-lg flex items-center gap-4 cursor-pointer hover:border-primary transition-colors bg-primary/5">
+                <CreditCard className="w-6 h-6 text-primary" />
+                <div className="flex-1">
+                  <p className="font-bold text-sm">Stored Visa ending in 4242</p>
+                  <p className="text-xs text-muted-foreground">Expires 12/26</p>
+                </div>
+                <div className="w-4 h-4 rounded-full border-2 border-primary bg-primary" />
+              </div>
+            </div>
+          </CardContent>
+          <CardFooter className="flex-col gap-3">
+            <Button className="w-full h-12 font-bold" onClick={processPayment}>
+              Pay $47.93 & Begin
+            </Button>
+            <Button variant="ghost" className="w-full" onClick={() => setActiveStep("intro")}>Cancel</Button>
           </CardFooter>
         </Card>
       )}

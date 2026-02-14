@@ -1,12 +1,14 @@
+
 "use client"
 
-import { User, Settings, CreditCard, History, Shield, LogOut, Zap, Bell } from "lucide-react"
+import { User, Settings, CreditCard, History, Shield, LogOut, Zap, Bell, Crown } from "lucide-react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Badge } from "@/components/ui/badge"
 import { Switch } from "@/components/ui/switch"
 import { Label } from "@/components/ui/label"
+import Link from "next/link"
 
 export default function ProfilePage() {
   return (
@@ -19,7 +21,10 @@ export default function ProfilePage() {
         <div className="flex flex-col gap-1">
           <h1 className="text-3xl font-bold">John Doe</h1>
           <div className="flex items-center gap-2">
-            <Badge variant="secondary">Silver Member</Badge>
+            <Badge variant="secondary" className="bg-primary/10 text-primary border-primary/20">
+              <Crown className="w-3 h-3 mr-1" />
+              Standard Residential
+            </Badge>
             <span className="text-sm text-muted-foreground">johndoe@example.com</span>
           </div>
         </div>
@@ -64,15 +69,48 @@ export default function ProfilePage() {
              </CardHeader>
              <CardContent>
                <p className="text-xs text-muted-foreground">
-                 Enabling "Smart Monitoring" allows our AI to predict failures based on home sensor data.
+                 Upgrade to "Home Pro" to unlock predictive failure alerts and a 10% discount on all service calls.
                </p>
-               <Button variant="link" className="p-0 h-auto text-[10px] text-primary mt-2">Learn more &rarr;</Button>
+               <Link href="/subscriptions">
+                <Button variant="link" className="p-0 h-auto text-[10px] text-primary mt-2">View Upgrade Options &rarr;</Button>
+               </Link>
              </CardContent>
           </Card>
         </div>
 
         {/* Main Column - Settings/Overview */}
         <div className="md:col-span-2 flex flex-col gap-6">
+           <Card className="border-primary/20 bg-primary/5">
+             <CardHeader>
+               <div className="flex items-center justify-between">
+                 <div>
+                   <CardTitle>Current Subscription</CardTitle>
+                   <CardDescription>You are currently on the Home Standard plan.</CardDescription>
+                 </div>
+                 <Badge className="bg-primary text-black font-bold">ACTIVE</Badge>
+               </div>
+             </CardHeader>
+             <CardContent className="space-y-4">
+                <div className="grid grid-cols-3 gap-4">
+                  <div className="flex flex-col p-3 rounded-lg bg-background border">
+                    <span className="text-[10px] text-muted-foreground uppercase font-bold">Audits Used</span>
+                    <span className="text-xl font-bold">1/1</span>
+                  </div>
+                  <div className="flex flex-col p-3 rounded-lg bg-background border">
+                    <span className="text-[10px] text-muted-foreground uppercase font-bold">AI Scans</span>
+                    <span className="text-xl font-bold">Unlimited</span>
+                  </div>
+                  <div className="flex flex-col p-3 rounded-lg bg-background border">
+                    <span className="text-[10px] text-muted-foreground uppercase font-bold">Next Billing</span>
+                    <span className="text-xl font-bold">Oct 12</span>
+                  </div>
+                </div>
+                <Link href="/subscriptions">
+                  <Button className="w-full font-bold">Manage or Change Plan</Button>
+                </Link>
+             </CardContent>
+           </Card>
+
            <Card>
              <CardHeader>
                <CardTitle>Notifications</CardTitle>
@@ -93,13 +131,6 @@ export default function ProfilePage() {
                    </div>
                    <Switch defaultChecked />
                 </div>
-                <div className="flex items-center justify-between">
-                   <div className="flex flex-col gap-1">
-                      <Label className="font-bold">Marketing & Offers</Label>
-                      <p className="text-xs text-muted-foreground">Special discounts on products and audits.</p>
-                   </div>
-                   <Switch />
-                </div>
              </CardContent>
            </Card>
 
@@ -116,8 +147,8 @@ export default function ProfilePage() {
                             <Zap className="w-5 h-5 text-primary" />
                          </div>
                          <div>
-                            <p className="text-sm font-bold">Panel Audit</p>
-                            <p className="text-xs text-muted-foreground">Completed • Oct 15, 2023</p>
+                            <p className="text-sm font-bold">Electrical Audit ($47.93)</p>
+                            <p className="text-xs text-muted-foreground">Completed • Today</p>
                          </div>
                       </div>
                       <Button variant="ghost" size="sm">View Receipt</Button>
