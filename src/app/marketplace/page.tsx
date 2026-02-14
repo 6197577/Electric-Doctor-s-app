@@ -12,6 +12,7 @@ import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { TOP_50_CITIES_PRICING } from "@/lib/pricing-data"
 import { calculateDynamicRate, formatCurrency } from "@/lib/pricing-engine"
+import Link from "next/link"
 
 const BASE_ELECTRICIANS = [
   {
@@ -190,9 +191,11 @@ export default function MarketplacePage() {
         <p className="text-muted-foreground max-w-md">
           Join our network of verified professionals. Manage your availability, accept high-value leads in <strong>{selectedCity}</strong>, and track your jobs.
         </p>
-        <Button variant="outline" size="lg" className="font-bold border-primary text-primary hover:bg-primary/10">
-          Apply to Join Network
-        </Button>
+        <Link href="/join-network">
+          <Button variant="outline" size="lg" className="font-bold border-primary text-primary hover:bg-primary/10">
+            Apply to Join Network
+          </Button>
+        </Link>
       </section>
     </div>
   )
