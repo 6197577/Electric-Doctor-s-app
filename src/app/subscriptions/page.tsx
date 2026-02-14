@@ -15,7 +15,7 @@ const RESIDENTIAL_PLANS = [
     price: "$97",
     description: "Essential protection for your family home.",
     features: [
-      "1x Annual 100-Point Audit",
+      "3x Professional Safety Audits",
       "Generator Maintenance Log",
       "Unlimited Lighting Scans",
       "Basic AI Diagnostic Tool",
@@ -29,7 +29,7 @@ const RESIDENTIAL_PLANS = [
     price: "$197",
     description: "Premium care for modern smart homes.",
     features: [
-      "2x Annual 100-Point Audits",
+      "5x Professional Safety Audits",
       "Advanced AI Area Outage Scans",
       "Predictive Failure Alerts",
       "24/7 Priority Emergency Access",
@@ -43,10 +43,10 @@ const RESIDENTIAL_PLANS = [
 const COMMERCIAL_PLANS = [
   {
     name: "Business Essential",
-    price: "$199",
+    price: "$197",
     description: "Safety compliance for small retail and offices.",
     features: [
-      "Quarterly Safety Audits",
+      "3x Facility Compliance Audits",
       "OSHA Compliance Reports",
       "Energy Efficiency Scans",
       "Dedicated Account Manager",

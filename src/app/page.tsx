@@ -1,3 +1,4 @@
+
 import Link from "next/link"
 import { Zap, ShieldAlert, ShoppingBag, ArrowRight, Activity, MapPin, Sun, ClipboardList, ShieldCheck, Globe, BatteryCharging, Video, Stethoscope, BarChart3, TrendingUp, Calculator, Shield, Cpu, Building2, Factory } from "lucide-react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
@@ -84,9 +85,9 @@ export default function Home() {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         {[
           { icon: Video, title: "Video Doctor", desc: "Instant Master Access", href: "/video-consult", label: "Start Call", badge: "$97.00" },
-          { icon: Factory, title: "Commercial Audit", desc: "OSHA & Compliance", href: "/commercial-audit", label: "Book Facility Audit", badge: "$119.73" },
+          { icon: Factory, title: "Commercial Audit", desc: "3-Pack Compliance", href: "/commercial-audit", label: "Book 3-Pack", badge: "$197.00" },
           { icon: BatteryCharging, title: "EV Readiness", desc: "Capacity Calculation", href: "/ev-readiness", label: "Get report", badge: "$29.99" },
-          { icon: ShieldCheck, title: "Safety Audit", desc: "100-Point NEC Check", href: "/audit", label: "Book Audit", badge: "$47.93" }
+          { icon: ShieldCheck, title: "Safety Audit", desc: "3-Pack NEC Check", href: "/audit", label: "Book 3-Pack", badge: "$97.00" }
         ].map((service, i) => (
           <Card key={i} className="group hover:border-primary/50 transition-all cursor-pointer relative overflow-hidden bg-card/30 backdrop-blur-sm">
             {service.badge && (

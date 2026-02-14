@@ -83,7 +83,6 @@ export default function AuditPage() {
   }
 
   const calculateScore = () => {
-    const totalPointsPossible = AUDIT_CATEGORIES.reduce((acc, cat) => acc + cat.points, 0)
     const checkedCount = Object.values(checkedItems).filter(Boolean).length
     const totalItems = AUDIT_CATEGORIES.reduce((acc, cat) => acc + cat.items.length, 0)
     return Math.round((checkedCount / totalItems) * 100)
@@ -94,7 +93,7 @@ export default function AuditPage() {
     // Simulate Stripe payment
     await new Promise(resolve => setTimeout(resolve, 1500))
     setIsProcessing(false)
-    toast({ title: "Payment Successful", description: "Audit unlocked via Stripe Secure Checkout." })
+    toast({ title: "Payment Successful", description: "Audit pack unlocked via Stripe Secure Checkout." })
     setActiveStep("form")
   }
 
@@ -109,17 +108,17 @@ export default function AuditPage() {
   return (
     <div className="max-w-4xl mx-auto flex flex-col gap-8 pb-12">
       <div className="flex flex-col gap-2">
-        <h1 className="text-3xl font-bold tracking-tight">100-Point Electrical Audit</h1>
-        <p className="text-muted-foreground">Professional safety assessment based on the National Electrical Code (NEC).</p>
+        <h1 className="text-3xl font-bold tracking-tight">Professional Residential Audit</h1>
+        <p className="text-muted-foreground">Comprehensive safety assessment based on the National Electrical Code (NEC).</p>
       </div>
 
       {activeStep === "intro" && (
         <Card className="border-primary/20 bg-primary/5">
           <CardHeader>
             <ShieldCheck className="w-12 h-12 text-primary mb-4" />
-            <CardTitle className="text-2xl">Professional Residential Audit</CardTitle>
+            <CardTitle className="text-2xl">3-Audit Value Pack</CardTitle>
             <CardDescription>
-              Comprehensive safety assessment for single-family homes. Unlock the full 100-point checklist today.
+              Get three professional-grade audits for the price of two. Perfect for multi-property owners or seasonal safety monitoring.
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
@@ -134,22 +133,22 @@ export default function AuditPage() {
               <div className="flex items-start gap-3 p-3 bg-card rounded-lg border">
                 <Zap className="w-5 h-5 text-primary shrink-0 mt-0.5" />
                 <div className="text-sm">
-                  <p className="font-bold">Professional Report</p>
-                  <p className="text-muted-foreground">Get a downloadable PDF for insurance or sales.</p>
+                  <p className="font-bold">3 Full Audits Included</p>
+                  <p className="text-muted-foreground">Transferable across residential properties.</p>
                 </div>
               </div>
             </div>
             <div className="mt-4 p-4 bg-background/50 rounded-xl border border-primary/20 flex items-center justify-between">
               <div>
-                <p className="text-xs font-bold text-muted-foreground uppercase tracking-widest">Single Use Price</p>
-                <p className="text-3xl font-black text-primary">$47.93</p>
+                <p className="text-xs font-bold text-muted-foreground uppercase tracking-widest">3-Audit Multi-Pack</p>
+                <p className="text-3xl font-black text-primary">$97.00</p>
               </div>
               <Badge variant="outline" className="text-primary border-primary uppercase text-[10px]">Secure Stripe Checkout</Badge>
             </div>
           </CardContent>
           <CardFooter>
             <Button className="w-full font-bold" size="lg" onClick={() => setActiveStep("payment")}>
-              Unlock Audit Checklist
+              Unlock Audit Pack
               <ArrowRight className="ml-2 w-4 h-4" />
             </Button>
           </CardFooter>
@@ -163,15 +162,15 @@ export default function AuditPage() {
               <Lock className="w-5 h-5 text-primary" />
               Stripe Secure Checkout
             </CardTitle>
-            <CardDescription>Confirm your residential audit purchase ($47.93).</CardDescription>
+            <CardDescription>Confirm your residential audit pack purchase ($97.00).</CardDescription>
           </CardHeader>
           <CardContent className="space-y-6">
             <div className="flex items-center justify-between p-4 bg-muted rounded-lg">
               <div className="flex items-center gap-3">
                 <FileText className="w-5 h-5 text-primary" />
-                <span className="font-medium">1x Residential 100-Point Audit</span>
+                <span className="font-medium">3x Residential 100-Point Audits</span>
               </div>
-              <span className="font-bold">$47.93</span>
+              <span className="font-bold">$97.00</span>
             </div>
             <div className="space-y-4">
               <div className="p-4 border rounded-lg flex items-center gap-4 cursor-pointer hover:border-primary transition-colors bg-primary/5">
@@ -186,7 +185,7 @@ export default function AuditPage() {
           </CardContent>
           <CardFooter className="flex-col gap-3">
             <Button className="w-full h-12 font-bold" onClick={processPayment} disabled={isProcessing}>
-              {isProcessing ? "Processing Stripe Payment..." : "Pay $47.93 & Begin"}
+              {isProcessing ? "Processing Stripe Payment..." : "Pay $97.00 & Begin First Audit"}
             </Button>
             <Button variant="ghost" className="w-full" onClick={() => setActiveStep("intro")}>Cancel</Button>
             <p className="text-[10px] text-muted-foreground text-center">Your payment information is encrypted and processed securely by Stripe.</p>
@@ -313,15 +312,12 @@ export default function AuditPage() {
                 </CardContent>
               </Card>
 
-              <Card className="border-red-500/20 bg-red-500/5">
-                <CardHeader>
-                  <CardTitle className="text-sm text-red-500 flex items-center gap-2">
-                    <AlertTriangle className="w-4 h-4" />
-                    Hazards Found
-                  </CardTitle>
+              <Card className="bg-primary/10 border-primary/20">
+                <CardHeader className="pb-2">
+                  <CardTitle className="text-sm">Multi-Pack Credits</CardTitle>
                 </CardHeader>
-                <CardContent className="text-[10px] text-muted-foreground">
-                  {score < 70 ? "Critical issues detected. Do not attempt complex repairs yourself." : "No critical life-safety hazards detected during this check."}
+                <CardContent>
+                   <p className="text-[10px] text-muted-foreground uppercase font-black">2 Audits Remaining</p>
                 </CardContent>
               </Card>
             </div>

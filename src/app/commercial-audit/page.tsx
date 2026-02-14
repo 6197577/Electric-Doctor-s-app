@@ -1,3 +1,4 @@
+
 "use client"
 
 import { useState } from "react"
@@ -81,7 +82,7 @@ export default function CommercialAuditPage() {
     setIsProcessing(true)
     await new Promise(resolve => setTimeout(resolve, 1500))
     setIsProcessing(false)
-    toast({ title: "Payment Successful", description: "Commercial Audit unlocked via Stripe Secure." })
+    toast({ title: "Payment Successful", description: "3-Pack Commercial Audit unlocked via Stripe Secure." })
     setActiveStep("form")
   }
 
@@ -96,8 +97,8 @@ export default function CommercialAuditPage() {
   return (
     <div className="max-w-5xl mx-auto flex flex-col gap-8 pb-12">
       <div className="flex flex-col gap-2">
-        <h1 className="text-4xl font-black tracking-tighter uppercase">AI Commercial Compliance Audit</h1>
-        <p className="text-muted-foreground text-lg">Professional electrical safety and OSHA 1910 compliance for industrial and retail facilities.</p>
+        <h1 className="text-4xl font-black tracking-tighter uppercase">Professional AI Commercial Audit</h1>
+        <p className="text-muted-foreground text-lg">Industrial-grade electrical safety and OSHA 1910 compliance for mission-critical facilities.</p>
       </div>
 
       {activeStep === "intro" && (
@@ -105,15 +106,15 @@ export default function CommercialAuditPage() {
           <div className="bg-primary/10 px-6 py-3 border-b border-primary/20 flex items-center justify-between">
             <span className="text-[10px] font-black uppercase tracking-widest text-primary flex items-center gap-2">
               <ShieldCheck className="w-3 h-3" />
-              Facility Protection Protocol
+              Enterprise Facility Protocol
             </span>
-            <Badge variant="outline" className="border-primary text-primary text-[10px]">OSHA 1910.303 READY</Badge>
+            <Badge variant="outline" className="border-primary text-primary text-[10px]">OSHA 1910 READY</Badge>
           </div>
           <CardHeader>
             <Factory className="w-16 h-16 text-primary mb-4" />
-            <CardTitle className="text-3xl font-black italic tracking-tighter">Enterprise-Grade Safety Inspection</CardTitle>
+            <CardTitle className="text-3xl font-black italic tracking-tighter">3-Audit Enterprise Pack</CardTitle>
             <CardDescription className="text-base">
-              Avoid costly OSHA fines and prevent facility downtime. Our AI-driven commercial audit covers mission-critical infrastructure.
+              Establish a quarterly safety baseline. Our enterprise pack includes three full facility audits to ensure continuous compliance and risk mitigation.
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-6">
@@ -128,15 +129,15 @@ export default function CommercialAuditPage() {
               <div className="flex items-start gap-4 p-4 bg-background/50 rounded-2xl border border-white/5">
                 <Zap className="w-6 h-6 text-primary shrink-0" />
                 <div className="text-sm">
-                  <p className="font-bold">Insurance Compliance</p>
+                  <p className="font-bold">3 Full Audits Included</p>
                   <p className="text-muted-foreground">Certified digital reports for your liability insurance providers.</p>
                 </div>
               </div>
             </div>
             <div className="p-6 bg-black text-white rounded-2xl border border-primary/40 flex items-center justify-between">
               <div>
-                <p className="text-[10px] font-black uppercase tracking-[0.2em] text-primary">Commercial Report Fee</p>
-                <p className="text-4xl font-black">$119.73</p>
+                <p className="text-[10px] font-black uppercase tracking-[0.2em] text-primary">Enterprise Pack (3 Uses)</p>
+                <p className="text-4xl font-black">$197.00</p>
               </div>
               <div className="text-right flex flex-col items-end gap-1">
                 <Badge className="bg-primary text-black font-black uppercase">Stripe Secure</Badge>
@@ -146,7 +147,7 @@ export default function CommercialAuditPage() {
           </CardContent>
           <CardFooter>
             <Button className="w-full h-16 text-xl font-black bg-primary text-black hover:bg-primary/90 rounded-2xl shadow-xl" onClick={() => setActiveStep("payment")}>
-              Unlock Commercial Audit
+              Unlock Enterprise Pack
               <ArrowRight className="ml-2 w-6 h-6" />
             </Button>
           </CardFooter>
@@ -160,15 +161,15 @@ export default function CommercialAuditPage() {
               <Lock className="w-6 h-6 text-primary" />
               Secure Payout
             </CardTitle>
-            <CardDescription>Professional AI Commercial Audit ($119.73)</CardDescription>
+            <CardDescription>Professional AI Commercial Audit Pack ($197.00)</CardDescription>
           </CardHeader>
           <CardContent className="space-y-6">
             <div className="flex items-center justify-between p-4 bg-muted/50 rounded-xl border border-white/5">
               <div className="flex items-center gap-3">
                 <Building2 className="w-5 h-5 text-primary" />
-                <span className="font-bold">1x Facility Compliance Audit</span>
+                <span className="font-bold">3x Facility Compliance Audits</span>
               </div>
-              <span className="font-black text-lg">$119.73</span>
+              <span className="font-black text-lg">$197.00</span>
             </div>
             <div className="p-4 border rounded-xl flex items-center gap-4 cursor-pointer hover:border-primary transition-all bg-primary/5 border-primary/20">
               <CreditCard className="w-8 h-8 text-primary" />
@@ -180,7 +181,7 @@ export default function CommercialAuditPage() {
           </CardContent>
           <CardFooter className="flex-col gap-4">
             <Button className="w-full h-14 font-black text-lg" onClick={processPayment} disabled={isProcessing}>
-              {isProcessing ? "Authorizing Stripe Transaction..." : "Pay $119.73 & Begin Audit"}
+              {isProcessing ? "Authorizing Stripe Transaction..." : "Pay $197.00 & Begin First Audit"}
             </Button>
             <Button variant="ghost" className="w-full font-bold opacity-60" onClick={() => setActiveStep("intro")}>Cancel</Button>
             <p className="text-[9px] text-muted-foreground text-center uppercase tracking-widest font-bold">256-bit Stripe encryption active</p>
@@ -316,17 +317,14 @@ export default function CommercialAuditPage() {
                 </CardContent>
               </Card>
 
-              <Card className="border-red-500/30 bg-red-500/10">
+              <Card className="border-primary/20 bg-primary/10">
                 <CardHeader className="pb-2">
-                  <CardTitle className="text-sm text-red-500 font-black uppercase flex items-center gap-2 tracking-widest">
-                    <AlertTriangle className="w-4 h-4" />
-                    OSHA Hazard Alert
+                  <CardTitle className="text-sm font-black uppercase flex items-center gap-2 tracking-widest">
+                    Enterprise Credits
                   </CardTitle>
                 </CardHeader>
-                <CardContent className="text-[11px] font-medium leading-relaxed opacity-80">
-                  {score < 80 
-                    ? "Warning: Your facility score indicates liability hazards that could lead to $14,000+ in standard OSHA penalties per violation." 
-                    : "Compliance score is within standard operating safety bounds."}
+                <CardContent className="text-[11px] font-bold">
+                  2 Audits Remaining in Pack
                 </CardContent>
               </Card>
             </div>
