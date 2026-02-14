@@ -3,7 +3,23 @@
 
 import { useState, useMemo, useEffect } from "react"
 import { useParams, useSearchParams, useRouter } from "next/navigation"
-import { Calendar as CalendarIcon, Clock, CreditCard, Lock, CheckCircle2, ArrowRight, ArrowLeft, Loader2, ShieldCheck, Zap, AlertTriangle, RefreshCcw } from "lucide-react"
+import { 
+  Calendar as CalendarIcon, 
+  Clock, 
+  CreditCard, 
+  Lock, 
+  CheckCircle2, 
+  ArrowRight, 
+  ArrowLeft, 
+  Loader2, 
+  ShieldCheck, 
+  Zap, 
+  AlertTriangle, 
+  RefreshCcw,
+  Camera,
+  Upload,
+  Stethoscope
+} from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card"
 import { Calendar } from "@/components/ui/calendar"
@@ -13,6 +29,10 @@ import { calculateDynamicRate, formatCurrency } from "@/lib/pricing-engine"
 import { BASE_ELECTRICIANS } from "@/app/marketplace/page"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { format } from "date-fns"
+import { aiDiagnosticAssistant, AiDiagnosticAssistantOutput } from "@/ai/flows/ai-diagnostic-assistant"
+import Image from "next/image"
+
+type ScheduleStep = "date" | "time" | "diagnosis" | "payment" | "confirmed"
 
 const TIME_SLOTS = [
   "08:00 AM - 10:00 AM",
@@ -28,9 +48,15 @@ export default function SchedulePage() {
   const router = useRouter()
   const { toast } = useToast()
   
-  const [step, setStep] = useState<"date" | "time" | "payment" | "confirmed">("date")
+  const [step, setStep] = useState<ScheduleStep>("date")
   const [date, setDate] = useState<Date | undefined>(new Date())
   const [selectedSlot, setSelectedSlot] = useState<string | null>(null)
+  
+  // Diagnosis State
+  const [file, setFile] = useState<string | null>(null)
+  const [isAnalyzing, setIsAnalyzing] = useState(false)
+  const [diagnosisResults, setDiagnosisResults] = useState<AiDiagnosticAssistantOutput | null>(null)
+
   const [isProcessing, setIsProcessing] = useState(false)
   const [mounted, setMounted] = useState(false)
 
@@ -48,25 +74,55 @@ export default function SchedulePage() {
   const dynamicRate = calculateDynamicRate(pro.baseHourlyRate, city, 1.15)
   const bookingFee = dynamicRate * 4
 
+  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (file) {
+      const reader = new FileReader()
+      reader.onloadend = () => setFile(reader.result as string)
+      reader.readAsDataURL(file)
+    }
+  }
+
+  const runDiagnosis = async () => {
+    if (!file) {
+      toast({ title: "Photo Required", description: "Please provide a photo of the malfunction.", variant: "destructive" })
+      return
+    }
+    setIsAnalyzing(true)
+    try {
+      const result = await aiDiagnosticAssistant({
+        photoDataUri: file,
+        description: `Booking diagnosis for ${pro.name} appointment.`
+      })
+      setDiagnosisResults(result)
+      toast({ title: "Scan Complete", description: "Diagnosis report attached to your booking." })
+    } catch (error) {
+      toast({ title: "Scan Failed", description: "Could not complete AI scan. Please skip or try again.", variant: "destructive" })
+    } finally {
+      setIsAnalyzing(false)
+    }
+  }
+
   const handleNext = () => {
     if (step === "date" && date) setStep("time")
-    else if (step === "time" && selectedSlot) setStep("payment")
+    else if (step === "time" && selectedSlot) setStep("diagnosis")
+    else if (step === "diagnosis") setStep("payment")
   }
 
   const handleBack = () => {
     if (step === "time") setStep("date")
-    else if (step === "payment") setStep("time")
+    else if (step === "diagnosis") setStep("time")
+    else if (step === "payment") setStep("diagnosis")
   }
 
   const handlePayment = async (method: "stripe" | "google") => {
     setIsProcessing(true)
-    // Simulate payment gateway delay
     await new Promise(resolve => setTimeout(resolve, 2000))
     setIsProcessing(false)
     setStep("confirmed")
     toast({
       title: "Appointment Confirmed",
-      description: `Your service with ${pro.name} has been scheduled for ${date ? format(date, 'PPP') : 'selected date'}.`,
+      description: `Your service with ${pro.name} has been scheduled.`,
     })
   }
 
@@ -82,14 +138,14 @@ export default function SchedulePage() {
           </Avatar>
           <div>
             <h1 className="text-3xl font-bold tracking-tight">Schedule {pro.name}</h1>
-            <p className="text-muted-foreground flex items-center gap-1">
+            <p className="text-muted-foreground flex items-center gap-1 text-sm">
               <ShieldCheck className="w-4 h-4 text-primary" />
               {pro.specialty} • {city} Service
             </p>
           </div>
         </div>
         <div className="text-right">
-          <p className="text-xs font-bold text-muted-foreground uppercase tracking-widest">Hold Fee</p>
+          <p className="text-[10px] font-black text-muted-foreground uppercase tracking-widest">Hold Fee (4h min)</p>
           <p className="text-2xl font-black text-primary">{formatCurrency(bookingFee)}</p>
         </div>
       </div>
@@ -103,7 +159,7 @@ export default function SchedulePage() {
                   <CalendarIcon className="w-5 h-5 text-primary" />
                   Select Service Date
                 </CardTitle>
-                <CardDescription>Choose a day that works best for your on-site visit.</CardDescription>
+                <CardDescription>Choose a day for your on-site visit.</CardDescription>
               </CardHeader>
               <CardContent className="flex justify-center p-0 pb-6">
                 <Calendar
@@ -115,7 +171,7 @@ export default function SchedulePage() {
                 />
               </CardContent>
               <CardFooter className="border-t bg-muted/20">
-                <Button className="w-full font-bold" onClick={handleNext} disabled={!date}>
+                <Button className="w-full font-bold h-12" onClick={handleNext} disabled={!date}>
                   Confirm Date & Pick Time
                   <ArrowRight className="ml-2 w-4 h-4" />
                 </Button>
@@ -147,8 +203,98 @@ export default function SchedulePage() {
               </CardContent>
               <CardFooter className="flex gap-4 border-t bg-muted/20">
                 <Button variant="ghost" onClick={handleBack} className="flex-1">Back</Button>
-                <Button className="flex-[2] font-bold" onClick={handleNext} disabled={!selectedSlot}>
-                  Secure with Payment
+                <Button className="flex-[2] font-bold h-12" onClick={handleNext} disabled={!selectedSlot}>
+                  Continue to Diagnosis
+                  <ArrowRight className="ml-2 w-4 h-4" />
+                </Button>
+              </CardFooter>
+            </Card>
+          )}
+
+          {step === "diagnosis" && (
+            <Card className="animate-in fade-in slide-in-from-bottom-4 duration-300 overflow-hidden">
+              <div className="bg-primary/10 px-6 py-3 border-b border-primary/20 flex items-center justify-between">
+                <span className="text-[10px] font-black uppercase tracking-widest text-primary flex items-center gap-2">
+                  <Stethoscope className="w-3 h-3" />
+                  Pre-Visit AI Diagnostic Scan
+                </span>
+                <Badge variant="outline" className="border-primary text-primary text-[10px]">FREE WITH BOOKING</Badge>
+              </div>
+              <CardHeader>
+                <CardTitle>Malfunction Briefing</CardTitle>
+                <CardDescription>Upload a photo of the issue. Our AI will analyze it for {pro.name.split(' ')[0]} to review before arrival.</CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-6">
+                {!diagnosisResults ? (
+                  <div className="flex flex-col gap-6">
+                    <div 
+                      className="border-2 border-dashed rounded-2xl p-8 flex flex-col items-center justify-center gap-4 cursor-pointer hover:bg-muted/30 transition-all bg-muted/10 relative overflow-hidden group"
+                      onClick={() => !file && document.getElementById('diagInput')?.click()}
+                    >
+                      {file ? (
+                        <div className="relative w-full aspect-video rounded-xl overflow-hidden shadow-xl border">
+                          <Image src={file} alt="Issue" fill className="object-cover" />
+                          <Button 
+                            variant="destructive" 
+                            size="icon" 
+                            className="absolute top-2 right-2 rounded-full h-8 w-8"
+                            onClick={(e) => { e.stopPropagation(); setFile(null); }}
+                          >
+                            <ArrowLeft className="h-4 w-4" />
+                          </Button>
+                        </div>
+                      ) : (
+                        <>
+                          <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center group-hover:scale-110 transition-transform">
+                            <Camera className="w-8 h-8 text-primary" />
+                          </div>
+                          <div className="text-center">
+                            <p className="font-bold">Snap a Clear Photo</p>
+                            <p className="text-xs text-muted-foreground">Main panel, scorched outlet, or faulty device</p>
+                          </div>
+                          <Button variant="outline" size="sm">Select Photo</Button>
+                        </>
+                      )}
+                      <input id="diagInput" type="file" className="hidden" accept="image/*" onChange={handleFileUpload} />
+                    </div>
+                    <Button 
+                      className="w-full h-12 font-black" 
+                      disabled={!file || isAnalyzing}
+                      onClick={runDiagnosis}
+                    >
+                      {isAnalyzing ? <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> Analyzing Issue...</> : "Run AI Diagnostic Scan"}
+                    </Button>
+                    <p className="text-[10px] text-muted-foreground text-center italic">
+                      This scan assists in training our AI agents and prepares your pro for the site visit.
+                    </p>
+                  </div>
+                ) : (
+                  <div className="space-y-6 animate-in zoom-in-95 duration-300">
+                    <div className="p-4 bg-primary/5 rounded-2xl border border-primary/20 space-y-3">
+                       <h4 className="text-xs font-black uppercase text-primary flex items-center gap-2">
+                         <Zap className="w-4 h-4" /> Preliminary Diagnosis
+                       </h4>
+                       <p className="text-sm font-medium leading-relaxed italic">"{diagnosisResults.overallDiagnosis}"</p>
+                       <div className="grid grid-cols-2 gap-2">
+                          {diagnosisResults.identifiedParts.slice(0, 2).map((p, i) => (
+                            <Badge key={i} variant="secondary" className="text-[9px] bg-background/50">{p.partName}: {p.condition}</Badge>
+                          ))}
+                       </div>
+                    </div>
+                    <div className="p-4 bg-amber-500/10 rounded-xl border border-amber-500/20 flex gap-3">
+                      <AlertTriangle className="w-5 h-5 text-amber-500 shrink-0" />
+                      <div className="space-y-1">
+                        <p className="text-[10px] font-black uppercase text-amber-600">Pro Briefing Initialized</p>
+                        <p className="text-xs text-muted-foreground leading-tight">These results have been transmitted to {pro.name}. They will review the NEC implications before arrival.</p>
+                      </div>
+                    </div>
+                  </div>
+                )}
+              </CardContent>
+              <CardFooter className="flex gap-4 border-t bg-muted/20">
+                <Button variant="ghost" onClick={handleBack} className="flex-1">Back</Button>
+                <Button className="flex-[2] font-bold h-12" onClick={handleNext} disabled={!diagnosisResults}>
+                  Continue to Payment
                   <ArrowRight className="ml-2 w-4 h-4" />
                 </Button>
               </CardFooter>
@@ -162,7 +308,7 @@ export default function SchedulePage() {
                   <Lock className="w-5 h-5 text-primary" />
                   Secure Booking Payout
                 </CardTitle>
-                <CardDescription>Review your appointment details and complete booking.</CardDescription>
+                <CardDescription>Review appointment details and complete booking.</CardDescription>
               </CardHeader>
               <CardContent className="space-y-6">
                 <div className="p-4 rounded-xl bg-muted/50 border border-white/5 space-y-2">
@@ -171,23 +317,12 @@ export default function SchedulePage() {
                     <span className="font-bold">{pro.name}</span>
                   </div>
                   <div className="flex justify-between text-sm">
-                    <span className="text-muted-foreground">Date</span>
-                    <span className="font-bold">{date ? format(date, 'PPP') : 'N/A'}</span>
-                  </div>
-                  <div className="flex justify-between text-sm">
                     <span className="text-muted-foreground">Window</span>
-                    <span className="font-bold">{selectedSlot}</span>
+                    <span className="font-bold">{date ? format(date, 'MMM do') : 'N/A'} @ {selectedSlot}</span>
                   </div>
-                </div>
-
-                {/* Cancellation Prevention Messaging */}
-                <div className="p-4 bg-primary/5 rounded-xl border border-primary/20 space-y-3">
-                  <div className="flex items-start gap-3">
-                    <Zap className="w-5 h-5 text-primary shrink-0 mt-0.5" />
-                    <div className="text-xs">
-                      <p className="font-bold text-foreground">Pre-Visit Technical Preparation</p>
-                      <p className="text-muted-foreground leading-relaxed">Once booked, {pro.name.split(' ')[0]} will immediately begin reviewing your AI Diagnostic Report to prepare specialized equipment for your home.</p>
-                    </div>
+                  <div className="flex justify-between text-sm pt-2 border-t border-white/5">
+                    <span className="text-muted-foreground">AI Report Status</span>
+                    <Badge className="bg-green-500 text-black font-black text-[9px]">ATTACHED</Badge>
                   </div>
                 </div>
 
@@ -202,7 +337,7 @@ export default function SchedulePage() {
                       <CreditCard className="w-6 h-6 text-primary" />
                       <div className="text-left">
                         <p className="font-bold">Pay with Stripe</p>
-                        <p className="text-[10px] text-muted-foreground uppercase">Card, Apple Pay, Link</p>
+                        <p className="text-[10px] text-muted-foreground uppercase">Fast & Secure</p>
                       </div>
                     </div>
                     {isProcessing ? <Loader2 className="animate-spin w-5 h-5" /> : <ArrowRight className="w-4 h-4" />}
@@ -225,7 +360,7 @@ export default function SchedulePage() {
                       </div>
                       <div className="text-left">
                         <p className="font-bold">Google Pay</p>
-                        <p className="text-[10px] text-muted-foreground uppercase">Fast & Secure Checkout</p>
+                        <p className="text-[10px] text-muted-foreground uppercase">Secure Checkout</p>
                       </div>
                     </div>
                     {isProcessing ? <Loader2 className="animate-spin w-5 h-5" /> : <ArrowRight className="w-4 h-4" />}
@@ -236,7 +371,7 @@ export default function SchedulePage() {
                 <Button variant="ghost" className="w-full" onClick={handleBack} disabled={isProcessing}>Change Details</Button>
                 <div className="flex items-center justify-center gap-2 text-[10px] text-muted-foreground uppercase font-black">
                   <ShieldCheck className="w-3 h-3" />
-                  256-Bit Encrypted Transaction
+                  Stripe PCI Compliant Gateway
                 </div>
               </CardFooter>
             </Card>
@@ -252,22 +387,18 @@ export default function SchedulePage() {
                 <div className="space-y-2">
                   <CardTitle className="text-4xl font-black italic">Booking Confirmed!</CardTitle>
                   <CardDescription className="text-lg">
-                    {pro.name} is scheduled to arrive on <strong>{date ? format(date, 'PPPP') : 'selected date'}</strong>.
+                    {pro.name} will arrive on <strong>{date ? format(date, 'PPPP') : 'selected date'}</strong>.
                   </CardDescription>
                 </div>
                 <div className="p-6 bg-primary/5 rounded-2xl border border-primary/20 max-w-md w-full">
-                   <div className="flex justify-between items-center mb-4">
-                      <span className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">Arrival Window</span>
-                      <Badge className="bg-primary text-black font-black">{selectedSlot}</Badge>
-                   </div>
                    <div className="space-y-4 text-left">
                       <div className="flex items-start gap-3 text-sm">
                          <Zap className="w-5 h-5 text-primary shrink-0 mt-0.5" />
-                         <p>Marcus has received your initial diagnostic report and is preparing the necessary components for your zip code.</p>
+                         <p className="font-medium">AI Report Transmitted: {pro.name.split(' ')[0]} is currently reviewing your scan results to assist in diagnostic training and site prep.</p>
                       </div>
                       <div className="p-3 bg-muted/30 rounded-lg border text-[10px] leading-relaxed">
                         <p className="font-bold uppercase mb-1">Cancellation Policy</p>
-                        Full refund available if canceled 72 hours before your appointment. Need to move your slot? Use our 1-time free Rescheduling Tool anytime.
+                        Full refund if canceled 72h prior. Flexible rescheduling available up to 24h before arrival.
                       </div>
                    </div>
                 </div>
@@ -300,9 +431,6 @@ export default function SchedulePage() {
                 <span>Hold Total</span>
                 <span className="text-primary">{formatCurrency(bookingFee)}</span>
               </div>
-              <p className="text-[10px] text-muted-foreground italic leading-relaxed">
-                Hold fee covers the first 4 hours of labor. Additional hours will be billed on-site via our secure pro-app.
-              </p>
             </CardContent>
           </Card>
 
@@ -310,24 +438,18 @@ export default function SchedulePage() {
             <CardHeader className="pb-2">
               <CardTitle className="text-xs font-black uppercase tracking-widest text-amber-600 flex items-center gap-2">
                 <RefreshCcw className="w-3 h-3" />
-                Flexible Rescheduling
+                Reschedule Anytime
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-4 pt-2">
                <p className="text-[10px] leading-relaxed text-muted-foreground">
-                 We understand plans change. While cancellations require 72h notice for a full refund, you can **reschedule your appointment for free** up to 24 hours before arrival.
+                 Cancellations require 72h notice for a full refund. Reschedule for free up to 24h before.
                </p>
                <div className="flex items-start gap-3 text-xs leading-relaxed">
                   <div className="w-5 h-5 rounded-full bg-green-500/10 flex items-center justify-center shrink-0">
                     <CheckCircle2 className="w-3 h-3 text-green-500" />
                   </div>
-                  <span>1-Time Free Reschedule Option</span>
-               </div>
-               <div className="flex items-start gap-3 text-xs leading-relaxed">
-                  <div className="w-5 h-5 rounded-full bg-green-500/10 flex items-center justify-center shrink-0">
-                    <CheckCircle2 className="w-3 h-3 text-green-500" />
-                  </div>
-                  <span>Refundable 72h prior to arrival</span>
+                  <span>1-Time Free Reschedule</span>
                </div>
             </CardContent>
           </Card>
