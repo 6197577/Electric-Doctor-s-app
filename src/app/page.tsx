@@ -1,4 +1,3 @@
-
 import Link from "next/link"
 import { Zap, ShieldAlert, ShoppingBag, ArrowRight, Activity, MapPin, Sun, ClipboardList, ShieldCheck, Globe, BatteryCharging, Video, Stethoscope, BarChart3, TrendingUp, Calculator, Shield, Cpu, Building2, Factory } from "lucide-react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
@@ -46,7 +45,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* NEW: Smart Panel Sales Section */}
+      {/* Smart Panel Sales Section */}
       <section className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
          <div className="relative aspect-video rounded-3xl overflow-hidden border-2 border-primary/20 orange-glow">
             <Image 
@@ -64,7 +63,6 @@ export default function Home() {
             </div>
          </div>
          <div className="space-y-6">
-            <Badge className="bg-primary text-black font-black uppercase tracking-widest text-[10px]">High-Margin Product</Badge>
             <h2 className="text-4xl md:text-6xl font-black tracking-tighter leading-tight">
               Upgrade to a <br/><span className="text-primary italic">Smart Panel.</span>
             </h2>
