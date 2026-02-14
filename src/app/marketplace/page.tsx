@@ -115,7 +115,7 @@ export default function MarketplacePage() {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {filteredElectricians.map((pro) => {
           const dynamicRate = calculateDynamicRate(pro.baseHourlyRate, selectedCity, demandFactor);
-          const bookingFee = dynamicRate * 0.5; // Example calculation for booking hold
+          const bookingFee = dynamicRate * 4; // Booking hold is a 4-hour minimum
 
           return (
             <Card key={pro.id} className="group hover:border-primary/40 transition-all flex flex-col h-full overflow-hidden">
@@ -165,11 +165,11 @@ export default function MarketplacePage() {
                     </span>
                   </div>
                   <div className="flex justify-between items-end">
-                    <span className="text-[10px] text-muted-foreground">Booking Hold Fee</span>
+                    <span className="text-[10px] text-muted-foreground">Booking Hold Fee (4h min)</span>
                     <span className="text-sm font-semibold opacity-70">{formatCurrency(bookingFee)}</span>
                   </div>
                   <p className="text-[10px] text-muted-foreground text-right italic mt-1">
-                    Hold fee is applied to service and is fully refundable if canceled 24h prior.
+                    Hold fee covers the 4-hour minimum and is fully refundable if canceled 24h prior.
                   </p>
                 </div>
               </CardContent>
