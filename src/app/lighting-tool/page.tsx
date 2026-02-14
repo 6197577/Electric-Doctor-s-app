@@ -66,7 +66,7 @@ export default function LightingToolPage() {
     <div className="max-w-4xl mx-auto flex flex-col gap-8 pb-12">
       <div className="flex flex-col gap-2">
         <h1 className="text-3xl font-bold tracking-tight">Lighting & Outage Analyzer</h1>
-        <p className="text-muted-foreground">Estimate lumens, color temperature, and detect bulb outages with AI.</p>
+        <p className="text-muted-foreground">Estimate lumens, color temperature, and detect outages across your space.</p>
       </div>
 
       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
@@ -77,7 +77,7 @@ export default function LightingToolPage() {
           </TabsTrigger>
           <TabsTrigger value="outages" className="flex items-center gap-2">
             <EyeOff className="w-4 h-4" />
-            Outage Detector
+            Area Outage Detector
           </TabsTrigger>
         </TabsList>
       </Tabs>
@@ -103,8 +103,8 @@ export default function LightingToolPage() {
                   {activeTab === "lumens" ? <Sun className="w-8 h-8 text-primary" /> : <EyeOff className="w-8 h-8 text-primary" />}
                 </div>
                 <div>
-                  <p className="font-semibold">{activeTab === "lumens" ? "Snap your light source" : "Snap your light fixture"}</p>
-                  <p className="text-sm text-muted-foreground">Upload a photo for AI analysis</p>
+                  <p className="font-semibold">{activeTab === "lumens" ? "Snap your room lighting" : "Snap a room or area"}</p>
+                  <p className="text-sm text-muted-foreground">AI will analyze all light points in view</p>
                 </div>
                 <div className="flex gap-2">
                   <Button variant="outline" onClick={() => document.getElementById('fileInput')?.click()}>
@@ -118,11 +118,11 @@ export default function LightingToolPage() {
 
           <Card className="flex flex-col justify-between">
             <CardHeader>
-              <CardTitle>{activeTab === "lumens" ? "Room Context" : "Outage Check"}</CardTitle>
+              <CardTitle>{activeTab === "lumens" ? "Room Context" : "Area Scan"}</CardTitle>
               <CardDescription>
                 {activeTab === "lumens" 
                   ? "Select the room type to help the AI evaluate lighting adequacy." 
-                  : "AI will count bulbs and identify non-functioning ones."}
+                  : "AI will scan the entire area to identify every dark bulb or fixture."}
               </CardDescription>
             </CardHeader>
             <CardContent className="flex flex-col gap-6">
@@ -150,11 +150,11 @@ export default function LightingToolPage() {
                 {isAnalyzing ? (
                   <>
                     <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                    Analyzing...
+                    Scanning Area...
                   </>
                 ) : (
                   <>
-                    {activeTab === "lumens" ? "Analyze Lighting" : "Detect Outages"}
+                    {activeTab === "lumens" ? "Analyze Lighting" : "Scan Area for Outages"}
                     <Zap className="ml-2 w-4 h-4" />
                   </>
                 )}
@@ -240,14 +240,14 @@ export default function LightingToolPage() {
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 <Card className="border-primary/20">
                   <CardHeader className="pb-2">
-                    <CardTitle className="text-sm font-medium">Bulb Health</CardTitle>
+                    <CardTitle className="text-sm font-medium">Total Area Bulbs</CardTitle>
                   </CardHeader>
                   <CardContent className="flex flex-col items-center py-6">
                     <div className="flex items-baseline gap-1">
                       <span className="text-5xl font-black tracking-tighter text-primary">{outageResults.workingBulbs}</span>
                       <span className="text-xl text-muted-foreground font-bold">/ {outageResults.totalBulbsFound}</span>
                     </div>
-                    <span className="text-[10px] text-muted-foreground uppercase mt-2">Working Bulbs</span>
+                    <span className="text-[10px] text-muted-foreground uppercase mt-2">Working correctly</span>
                   </CardContent>
                 </Card>
 
@@ -259,13 +259,13 @@ export default function LightingToolPage() {
                     <span className={`text-5xl font-black tracking-tighter ${outageResults.outageCount > 0 ? "text-destructive" : "text-green-500"}`}>
                       {outageResults.outageCount}
                     </span>
-                    <span className="text-[10px] text-muted-foreground uppercase mt-2">Replace Soon</span>
+                    <span className="text-[10px] text-muted-foreground uppercase mt-2">Need Replacement</span>
                   </CardContent>
                 </Card>
 
                 <Card className="border-primary/20">
                   <CardHeader className="pb-2">
-                    <CardTitle className="text-sm font-medium">Severity</CardTitle>
+                    <CardTitle className="text-sm font-medium">Area Impact</CardTitle>
                   </CardHeader>
                   <CardContent className="flex flex-col items-center py-6">
                     <Badge variant={outageResults.severity === 'hazardous' || outageResults.severity === 'significant' ? 'destructive' : 'default'} className="uppercase py-1 px-4">
@@ -277,14 +277,14 @@ export default function LightingToolPage() {
 
               <Card>
                 <CardHeader>
-                  <CardTitle>Repair Guidance</CardTitle>
+                  <CardTitle>Area Repair Map</CardTitle>
                 </CardHeader>
                 <CardContent className="flex flex-col gap-6">
                   {outageResults.outageLocations.length > 0 && (
                     <div className="p-4 bg-destructive/5 rounded-lg border border-destructive/20">
                       <h4 className="font-bold text-sm mb-2 flex items-center gap-2">
                         <AlertCircle className="w-4 h-4 text-destructive" />
-                        Detected Outage Locations
+                        Outage Locations in Room
                       </h4>
                       <ul className="list-disc pl-5 text-sm space-y-1">
                         {outageResults.outageLocations.map((loc, idx) => <li key={idx}>{loc}</li>)}
@@ -293,7 +293,7 @@ export default function LightingToolPage() {
                   )}
                   
                   <div>
-                    <h4 className="font-bold text-sm mb-3">AI Recommendations</h4>
+                    <h4 className="font-bold text-sm mb-3">Maintenance Plan</h4>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                       {outageResults.recommendations.map((rec, idx) => (
                         <div key={idx} className="flex gap-3 p-3 rounded-lg border bg-card text-xs">
@@ -310,10 +310,10 @@ export default function LightingToolPage() {
 
           <div className="flex justify-center mt-4 gap-4">
             <Button variant="ghost" onClick={() => { setLightingResults(null); setOutageResults(null); setFile(null); }}>
-              Reset Analysis
+              New Scan
             </Button>
             {outageResults && outageResults.outageCount > 0 && (
-              <Button className="font-bold">Buy Replacement Bulbs</Button>
+              <Button className="font-bold">Buy Replacements</Button>
             )}
           </div>
         </div>
