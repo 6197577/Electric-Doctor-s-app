@@ -24,6 +24,42 @@
       "description": "Testing an electrical outlet",
       "imageUrl": "https://picsum.photos/seed/elec4/600/400",
       "imageHint": "electrical outlet"
+    },
+    {
+      "id": "commercial-gear",
+      "description": "Industrial electrical switchgear and breakers",
+      "imageUrl": "https://picsum.photos/seed/elec5/800/600",
+      "imageHint": "industrial electrical"
+    },
+    {
+      "id": "smart-panel-product",
+      "description": "Modern smart electrical panel with LED indicators",
+      "imageUrl": "https://picsum.photos/seed/elec6/800/800",
+      "imageHint": "smart panel"
+    },
+    {
+      "id": "ev-charger",
+      "description": "Residential Level 2 EV charging station",
+      "imageUrl": "https://picsum.photos/seed/elec7/600/400",
+      "imageHint": "ev charger"
+    },
+    {
+      "id": "generator-home",
+      "description": "Home standby backup generator",
+      "imageUrl": "https://picsum.photos/seed/elec8/800/600",
+      "imageHint": "home generator"
+    },
+    {
+      "id": "lighting-room",
+      "description": "Modern living room with designer lighting",
+      "imageUrl": "https://picsum.photos/seed/elec9/1000/600",
+      "imageHint": "interior lighting"
+    },
+    {
+      "id": "video-doc-screen",
+      "description": "Electrician providing guidance over a video call",
+      "imageUrl": "https://picsum.photos/seed/elec10/800/500",
+      "imageHint": "video consultation"
     }
   ]
 }
