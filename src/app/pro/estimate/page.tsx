@@ -1,7 +1,7 @@
 "use client"
 
 import { useState } from "react"
-import { Calculator, ClipboardList, Zap, Loader2, Download, FileText, CheckCircle2, Info, MapPin, DollarSign, ShieldCheck } from "lucide-react"
+import { Calculator, ClipboardList, Zap, Loader2, Download, FileText, CheckCircle2, Info, MapPin, DollarSign, ShieldCheck, Upload, X, AlertTriangle, FileSearch } from "lucide-react"
 import { generateEstimate, ElectricalEstimatorOutput } from "@/ai/flows/electrical-estimator-flow"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card"
@@ -14,13 +14,26 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { TOP_50_CITIES_PRICING } from "@/lib/pricing-data"
 import { formatCurrency } from "@/lib/pricing-engine"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
+import Image from "next/image"
 
 export default function ProEstimatePage() {
   const [description, setDescription] = useState("")
   const [city, setCity] = useState("New York")
+  const [file, setFile] = useState<string | null>(null)
   const [isAnalyzing, setIsAnalyzing] = useState(false)
   const [results, setResults] = useState<ElectricalEstimatorOutput | null>(null)
   const { toast } = useToast()
+
+  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const uploadedFile = e.target.files?.[0]
+    if (uploadedFile) {
+      const reader = new FileReader()
+      reader.onloadend = () => {
+        setFile(reader.result as string)
+      }
+      reader.readAsDataURL(uploadedFile)
+    }
+  }
 
   const handleGenerate = async () => {
     if (!description || description.length < 10) {
@@ -32,10 +45,11 @@ export default function ProEstimatePage() {
     try {
       const estimate = await generateEstimate({
         jobDescription: description,
-        city: city
+        city: city,
+        plansPhotoDataUri: file || undefined
       })
       setResults(estimate)
-      toast({ title: "Estimate Generated", description: "AI has calculated your project breakdown." })
+      toast({ title: "Estimate Generated", description: "AI has verified plans and calculated your project breakdown." })
     } catch (error) {
       toast({ title: "Error", description: "Failed to generate estimate. Please try again.", variant: "destructive" })
     } finally {
@@ -44,21 +58,21 @@ export default function ProEstimatePage() {
   }
 
   return (
-    <div className="max-w-6xl mx-auto flex flex-col gap-8 pb-12">
+    <div className="max-w-7xl mx-auto flex flex-col gap-8 pb-12">
       <div className="flex flex-col gap-2">
         <div className="flex items-center gap-2">
            <Badge className="bg-primary text-black font-black uppercase tracking-widest text-[10px]">Pro Tools</Badge>
-           <h1 className="text-3xl font-bold tracking-tight">AI Electrical Estimator</h1>
+           <h1 className="text-3xl font-bold tracking-tight">AI Electrical Estimator & Plan Verifier</h1>
         </div>
-        <p className="text-muted-foreground">Assist your field work with instant, NEC-compliant project estimates and material lists.</p>
+        <p className="text-muted-foreground">Upload blueprints or snap a photo of site plans for instant NEC-compliant verification and cost analysis.</p>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        <div className="lg:col-span-1 space-y-6">
+      <div className="grid grid-cols-1 xl:grid-cols-4 gap-8">
+        <div className="xl:col-span-1 space-y-6">
           <Card className="border-primary/20 bg-card/50">
             <CardHeader>
-              <CardTitle className="text-lg">Project Details</CardTitle>
-              <CardDescription>Describe the scope of work and location.</CardDescription>
+              <CardTitle className="text-lg">Project Data</CardTitle>
+              <CardDescription>Input description and site plans.</CardDescription>
             </CardHeader>
             <CardContent className="space-y-6">
               <div className="space-y-2">
@@ -74,16 +88,42 @@ export default function ProEstimatePage() {
                   </SelectContent>
                 </Select>
               </div>
+
+              <div className="space-y-3">
+                <Label>Blueprints / Site Plans (Optional)</Label>
+                {file ? (
+                  <div className="relative aspect-video rounded-lg overflow-hidden border border-primary/20 bg-black">
+                    <Image src={file} alt="Plan Preview" fill className="object-contain" />
+                    <Button 
+                      variant="destructive" 
+                      size="icon" 
+                      className="absolute top-2 right-2 h-8 w-8 rounded-full"
+                      onClick={() => setFile(null)}
+                    >
+                      <X className="h-4 w-4" />
+                    </Button>
+                  </div>
+                ) : (
+                  <div 
+                    className="border-2 border-dashed rounded-lg p-6 flex flex-col items-center justify-center gap-2 cursor-pointer hover:bg-muted/30 transition-colors"
+                    onClick={() => document.getElementById('planInput')?.click()}
+                  >
+                    <Upload className="h-8 w-8 text-muted-foreground" />
+                    <p className="text-xs text-muted-foreground text-center">Click to upload or drag blueprints</p>
+                    <input id="planInput" type="file" className="hidden" accept="image/*" onChange={handleFileUpload} />
+                  </div>
+                )}
+              </div>
+
               <div className="space-y-2">
                 <Label htmlFor="desc">Job Description</Label>
                 <Textarea 
                   id="desc" 
-                  placeholder="e.g., Install a new 240V 50A circuit for an EV charger in a garage. Requires 40ft of conduit and 6/3 wire."
-                  className="min-h-[200px]"
+                  placeholder="e.g., Install a new 240V 50A circuit for an EV charger in a garage. Verify conduit runs on plans."
+                  className="min-h-[150px]"
                   value={description}
                   onChange={(e) => setDescription(e.target.value)}
                 />
-                <p className="text-[10px] text-muted-foreground italic">Tip: Be specific about distances and materials for more accurate results.</p>
               </div>
               <Button 
                 className="w-full h-12 font-bold" 
@@ -91,9 +131,9 @@ export default function ProEstimatePage() {
                 disabled={isAnalyzing}
               >
                 {isAnalyzing ? (
-                  <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> Calculating Costs...</>
+                  <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> Verifying Plans...</>
                 ) : (
-                  <><Zap className="mr-2 h-4 w-4" /> Generate AI Estimate</>
+                  <><Zap className="mr-2 h-4 w-4" /> Run Verification Scan</>
                 )}
               </Button>
             </CardContent>
@@ -102,25 +142,84 @@ export default function ProEstimatePage() {
           <Card className="bg-primary/5 border-primary/20">
              <CardHeader className="pb-2">
                 <CardTitle className="text-sm flex items-center gap-2">
-                  <Info className="w-4 h-4 text-primary" />
-                  Estimator Logic
+                  <ShieldCheck className="w-4 h-4 text-primary" />
+                  Compliance Guard
                 </CardTitle>
              </CardHeader>
              <CardContent>
-                <p className="text-xs text-muted-foreground leading-relaxed">
-                  Our AI uses standard industry labor units and local labor multipliers for <b>{city}</b>. Materials are estimated based on current national averages.
+                <p className="text-[10px] text-muted-foreground leading-relaxed">
+                  The AI identifies plan symbols (circuits, outlets, fixtures) and flags NEC Article 220 violations automatically.
                 </p>
              </CardContent>
           </Card>
         </div>
 
-        <div className="lg:col-span-2">
+        <div className="xl:col-span-3">
           {results ? (
             <div className="space-y-6 animate-in slide-in-from-bottom-4 duration-500">
+              {/* Plan Verification Banner */}
+              <Card className={`border-2 ${results.planVerification.loadVerified ? 'border-green-500/30 bg-green-500/5' : 'border-amber-500/30 bg-amber-500/5'}`}>
+                <CardContent className="pt-6 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+                  <div className="flex items-center gap-4">
+                    <div className={`p-3 rounded-2xl ${results.planVerification.loadVerified ? 'bg-green-500/10' : 'bg-amber-500/10'}`}>
+                      <FileSearch className={`w-8 h-8 ${results.planVerification.loadVerified ? 'text-green-500' : 'text-amber-500'}`} />
+                    </div>
+                    <div>
+                      <h3 className="text-xl font-bold italic tracking-tight">Plan Verification Status</h3>
+                      <p className="text-sm opacity-80">{results.planVerification.loadVerified ? 'Calculations and loads verified as NEC compliant.' : 'Action required: Plan discrepancies detected.'}</p>
+                    </div>
+                  </div>
+                  <Badge variant={results.planVerification.loadVerified ? 'default' : 'secondary'} className="uppercase font-black px-6 py-2">
+                    {results.planVerification.loadVerified ? 'LOAD VERIFIED' : 'ATTENTION REQUIRED'}
+                  </Badge>
+                </CardContent>
+              </Card>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {/* Discrepancies */}
+                <Card className="border-red-500/20 bg-red-500/5">
+                  <CardHeader>
+                    <CardTitle className="text-sm font-black uppercase tracking-widest flex items-center gap-2">
+                      <AlertTriangle className="w-4 h-4 text-red-500" />
+                      Plan Discrepancies
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    {results.planVerification.discrepanciesFound.length > 0 ? (
+                      <ul className="space-y-2">
+                        {results.planVerification.discrepanciesFound.map((d, i) => (
+                          <li key={i} className="text-xs flex items-start gap-2">
+                            <span className="text-red-500 font-black">•</span>
+                            {d}
+                          </li>
+                        ))}
+                      </ul>
+                    ) : (
+                      <p className="text-xs italic text-muted-foreground">No discrepancies found between plans and description.</p>
+                    )}
+                  </CardContent>
+                </Card>
+
+                {/* Safety Notes */}
+                <Card className="border-primary/20">
+                  <CardHeader>
+                    <CardTitle className="text-sm font-black uppercase tracking-widest flex items-center gap-2">
+                      <ShieldCheck className="w-4 h-4 text-primary" />
+                      Visual Safety Insights
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <p className="text-xs text-muted-foreground italic leading-relaxed">
+                      {results.planVerification.safetyNotes}
+                    </p>
+                  </CardContent>
+                </Card>
+              </div>
+
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <Card className="orange-glow border-primary/30">
                   <CardHeader className="p-4 pb-0">
-                    <CardTitle className="text-[10px] uppercase text-muted-foreground">Total Estimate</CardTitle>
+                    <CardTitle className="text-[10px] uppercase text-muted-foreground">Verified Estimate</CardTitle>
                   </CardHeader>
                   <CardContent className="p-4 pt-1">
                     <p className="text-3xl font-black text-primary">{formatCurrency(results.totalEstimate)}</p>
@@ -128,7 +227,7 @@ export default function ProEstimatePage() {
                 </Card>
                 <Card className="border-border">
                   <CardHeader className="p-4 pb-0">
-                    <CardTitle className="text-[10px] uppercase text-muted-foreground">Labor Hours</CardTitle>
+                    <CardTitle className="text-[10px] uppercase text-muted-foreground">Total Labor</CardTitle>
                   </CardHeader>
                   <CardContent className="p-4 pt-1">
                     <p className="text-3xl font-black">{results.laborBreakdown.hours} hrs</p>
@@ -136,7 +235,7 @@ export default function ProEstimatePage() {
                 </Card>
                 <Card className="border-border">
                   <CardHeader className="p-4 pb-0">
-                    <CardTitle className="text-[10px] uppercase text-muted-foreground">Suggested Margin</CardTitle>
+                    <CardTitle className="text-[10px] uppercase text-muted-foreground">Profit Factor</CardTitle>
                   </CardHeader>
                   <CardContent className="p-4 pt-1">
                     <p className="text-3xl font-black">{results.overheadAndProfit}%</p>
@@ -147,11 +246,11 @@ export default function ProEstimatePage() {
               <Card>
                 <CardHeader className="flex flex-row items-center justify-between">
                   <div>
-                    <CardTitle>Bill of Materials & Labor</CardTitle>
-                    <CardDescription>Detailed breakdown for your proposal.</CardDescription>
+                    <CardTitle>Bill of Materials & Verified Tasks</CardTitle>
+                    <CardDescription>Breakdown based on blueprints and scope.</CardDescription>
                   </div>
                   <Button variant="outline" size="sm" className="gap-2">
-                    <Download className="w-4 h-4" /> Export CSV
+                    <Download className="w-4 h-4" /> Export Proposal
                   </Button>
                 </CardHeader>
                 <CardContent className="p-0">
@@ -172,7 +271,7 @@ export default function ProEstimatePage() {
                         </TableRow>
                       ))}
                       <TableRow className="bg-muted/30">
-                        <TableCell className="font-black">Total Labor Cost ({results.laborBreakdown.hours}h @ {formatCurrency(results.laborBreakdown.rate)}/hr)</TableCell>
+                        <TableCell className="font-black">Labor ({results.laborBreakdown.hours}h @ {formatCurrency(results.laborBreakdown.rate)}/hr)</TableCell>
                         <TableCell></TableCell>
                         <TableCell className="text-right font-black">{formatCurrency(results.laborBreakdown.totalLabor)}</TableCell>
                       </TableRow>
@@ -185,8 +284,8 @@ export default function ProEstimatePage() {
                 <Card className="border-primary/20">
                   <CardHeader>
                     <CardTitle className="text-sm font-black uppercase tracking-widest flex items-center gap-2">
-                      <ShieldCheck className="w-4 h-4 text-primary" />
-                      NEC Compliance References
+                      <ClipboardList className="w-4 h-4 text-primary" />
+                      NEC Code References
                     </CardTitle>
                   </CardHeader>
                   <CardContent>
@@ -203,7 +302,7 @@ export default function ProEstimatePage() {
 
                 <Card className="bg-muted/20">
                   <CardHeader>
-                    <CardTitle className="text-sm font-black uppercase tracking-widest">Pro Field Notes</CardTitle>
+                    <CardTitle className="text-sm font-black uppercase tracking-widest">Technical Field Notes</CardTitle>
                   </CardHeader>
                   <CardContent>
                     <p className="text-xs text-muted-foreground italic leading-relaxed">
@@ -215,9 +314,9 @@ export default function ProEstimatePage() {
             </div>
           ) : (
             <Card className="h-full border-dashed border-2 flex flex-col items-center justify-center p-12 text-center opacity-50">
-              <Calculator className="w-16 h-16 mb-4 text-muted-foreground" />
-              <CardTitle>Awaiting Project Data</CardTitle>
-              <CardDescription>Fill out the project details to the left to generate a professional estimate.</CardDescription>
+              <FileSearch className="w-16 h-16 mb-4 text-muted-foreground" />
+              <CardTitle>Plan Verification Pending</CardTitle>
+              <CardDescription>Upload site plans and input job scope to trigger AI verification and cost estimation.</CardDescription>
             </Card>
           )}
         </div>
