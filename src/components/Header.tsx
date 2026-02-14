@@ -1,3 +1,4 @@
+
 import Link from "next/link"
 import { Zap } from "lucide-react"
 
@@ -11,9 +12,9 @@ export function Header() {
         </Link>
         <div className="ml-auto hidden md:flex items-center space-x-6 text-sm font-medium">
           <Link href="/diagnose" className="hover:text-primary transition-colors">AI Diagnostic</Link>
-          <Link href="/lighting-tool" className="hover:text-primary transition-colors">Lighting Analyzer</Link>
+          <Link href="/audit" className="hover:text-primary transition-colors">Safety Audit</Link>
+          <Link href="/generator-logs" className="hover:text-primary transition-colors">Generator</Link>
           <Link href="/marketplace" className="hover:text-primary transition-colors">Marketplace</Link>
-          <Link href="/tracking" className="hover:text-primary transition-colors">Tracking</Link>
           <Link href="/profile" className="hover:text-primary transition-colors">Account</Link>
         </div>
       </div>

@@ -1,0 +1,58 @@
+
+{
+  "entities": {
+    "GeneratorLog": {
+      "title": "Generator Maintenance Log",
+      "description": "A record of maintenance performed on a home generator.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "date": { "type": "string", "format": "date" },
+        "serviceType": { "type": "string", "enum": ["Oil Change", "Filter Replacement", "Battery Check", "Spark Plug Service", "General Inspection", "Repair"] },
+        "hoursRun": { "type": "number", "description": "Total engine hours at time of service." },
+        "performedBy": { "type": "string" },
+        "notes": { "type": "string" }
+      },
+      "required": ["date", "serviceType", "hoursRun"]
+    },
+    "ElectricalAudit": {
+      "title": "100-Point Electrical Audit",
+      "description": "A comprehensive electrical safety audit based on NEC standards.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "date": { "type": "string", "format": "date" },
+        "auditorName": { "type": "string" },
+        "overallScore": { "type": "number", "description": "Score out of 100." },
+        "status": { "type": "string", "enum": ["Safe", "Caution", "Hazardous"] },
+        "categories": {
+          "type": "object",
+          "properties": {
+            "serviceEntrance": { "type": "number" },
+            "grounding": { "type": "number" },
+            "mainPanel": { "type": "number" },
+            "branchWiring": { "type": "number" },
+            "gfciAfci": { "type": "number" },
+            "devices": { "type": "number" },
+            "safetyDevices": { "type": "number" }
+          }
+        },
+        "findings": { "type": "array", "items": { "type": "string" } },
+        "recommendations": { "type": "array", "items": { "type": "string" } }
+      }
+    }
+  },
+  "auth": {
+    "providers": ["google.com"]
+  },
+  "firestore": {
+    "/users/{userId}/generatorLogs/{logId}": {
+      "schema": "#/entities/GeneratorLog",
+      "description": "Collection of maintenance logs for a specific user's generator."
+    },
+    "/users/{userId}/audits/{auditId}": {
+      "schema": "#/entities/ElectricalAudit",
+      "description": "Historical electrical audits performed for a user."
+    }
+  }
+}
