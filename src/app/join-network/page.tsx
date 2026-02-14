@@ -1,3 +1,4 @@
+
 "use client"
 
 import { useState } from "react"
@@ -15,7 +16,8 @@ import {
   CreditCard,
   Target,
   Lock,
-  BarChart3
+  BarChart3,
+  ScanEye
 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
@@ -278,8 +280,8 @@ export default function JoinNetworkPage() {
         <Card className="animate-in fade-in slide-in-from-right-4 duration-300">
           <CardHeader>
             <Target className="w-5 h-5 text-primary" />
-            <CardTitle>Lead Billing & Model</CardTitle>
-            <CardDescription>Choose how you want to receive and pay for job leads via Stripe.</CardDescription>
+            <CardTitle>Lead Billing & AI Access</CardTitle>
+            <CardDescription>Choose how you want to receive leads and your AI diagnostic quota.</CardDescription>
           </CardHeader>
           <CardContent className="space-y-8">
             <div className="space-y-6">
@@ -325,14 +327,26 @@ export default function JoinNetworkPage() {
                     <RadioGroupItem value="pre-paid" id="pre-paid" />
                     <Label htmlFor="pre-paid" className="font-bold cursor-pointer">Pre-paid Leads</Label>
                   </div>
-                  <p className="text-xs text-muted-foreground leading-relaxed">Buy credits in advance via Stripe at a discount. Best for consistent work volume.</p>
+                  <div className="space-y-2">
+                    <p className="text-xs text-muted-foreground leading-relaxed">Buy credits in advance via Stripe at a discount.</p>
+                    <div className="flex items-center gap-2 text-[10px] font-bold text-primary">
+                      <ScanEye className="w-3 h-3" />
+                      UNLIMITED AI SCANS INCLUDED
+                    </div>
+                  </div>
                 </div>
                 <div className={`p-4 border rounded-xl cursor-pointer transition-all ${formData.leadModel === 'pay-as-you-go' ? 'border-primary bg-primary/5' : 'hover:border-muted-foreground/30'}`} onClick={() => updateField('leadModel', 'pay-as-you-go')}>
                   <div className="flex items-center gap-3 mb-2">
                     <RadioGroupItem value="pay-as-you-go" id="pay-as-you-go" />
                     <Label htmlFor="pay-as-you-go" className="font-bold cursor-pointer">Pay As You Go</Label>
                   </div>
-                  <p className="text-xs text-muted-foreground leading-relaxed">Stripe charges only when you accept a lead. No upfront costs or commitments.</p>
+                  <div className="space-y-2">
+                    <p className="text-xs text-muted-foreground leading-relaxed">Stripe charges only when you accept a lead.</p>
+                    <div className="flex items-center gap-2 text-[10px] font-bold text-muted-foreground">
+                      <ScanEye className="w-3 h-3" />
+                      100 AI SCANS / MO INCLUDED
+                    </div>
+                  </div>
                 </div>
               </RadioGroup>
             </div>
@@ -418,6 +432,12 @@ export default function JoinNetworkPage() {
               <p className="text-sm text-muted-foreground leading-relaxed">
                 Our verification team will review your **Contractor License ({formData.contractorLicense})**. Your **Stripe Customer Profile** has been created for the **{formData.leadModel.replace(/-/g, ' ')}** lead model.
               </p>
+              <div className="mt-4 pt-4 border-t border-primary/10">
+                <p className="text-xs font-bold text-primary flex items-center justify-center gap-2">
+                  <ScanEye className="w-4 h-4" />
+                  {formData.leadModel === 'pre-paid' ? 'UNLIMITED' : '100'} AI SCANS ACTIVATED
+                </p>
+              </div>
             </div>
             <Link href="/marketplace">
               <Button variant="outline" className="font-bold">Return to Marketplace</Button>
