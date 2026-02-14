@@ -120,35 +120,37 @@ export default function SmartPanelsPage() {
         
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
            <Card className="lg:col-span-2 overflow-hidden border-primary/20">
-              <TableHeader className="bg-muted/50">
-                 <TableRow>
-                    <TableHead className="font-black text-[10px] uppercase tracking-widest">Expense Category</TableHead>
-                    <TableHead className="font-black text-[10px] uppercase tracking-widest">Standard Panel</TableHead>
-                    <TableHead className="font-black text-[10px] uppercase tracking-widest text-primary">Smart Panel (X-1)</TableHead>
-                 </TableRow>
-              </TableHeader>
-              <TableBody>
-                 <TableRow>
-                    <TableCell className="font-bold">Hardware Cost</TableCell>
-                    <TableCell>$250 - $500</TableCell>
-                    <TableCell className="text-primary font-bold">$2,499 - $4,500</TableCell>
-                 </TableRow>
-                 <TableRow>
-                    <TableCell className="font-bold">Installation Labor</TableCell>
-                    <TableCell>$1,500 - $2,500</TableCell>
-                    <TableCell>$2,000 - $3,500</TableCell>
-                 </TableRow>
-                 <TableRow>
-                    <TableCell className="font-bold">Utility Service Upgrade</TableCell>
-                    <TableCell>$3,000 - $12,000*</TableCell>
-                    <TableCell className="text-green-500 font-bold">$0 (Digital Mgmt)</TableCell>
-                 </TableRow>
-                 <TableRow className="bg-primary/5">
-                    <TableCell className="font-black">Federal Tax Credit</TableCell>
-                    <TableCell>$0</TableCell>
-                    <TableCell className="text-green-500 font-black">-$600 (30% IRA Credit)</TableCell>
-                 </TableRow>
-              </TableBody>
+              <Table>
+                <TableHeader className="bg-muted/50">
+                   <TableRow>
+                      <TableHead className="font-black text-[10px] uppercase tracking-widest">Expense Category</TableHead>
+                      <TableHead className="font-black text-[10px] uppercase tracking-widest">Standard Panel</TableHead>
+                      <TableHead className="font-black text-[10px] uppercase tracking-widest text-primary">Smart Panel (X-1)</TableHead>
+                   </TableRow>
+                </TableHeader>
+                <TableBody>
+                   <TableRow>
+                      <TableCell className="font-bold">Hardware Cost</TableCell>
+                      <TableCell>$250 - $500</TableCell>
+                      <TableCell className="text-primary font-bold">$2,499 - $4,500</TableCell>
+                   </TableRow>
+                   <TableRow>
+                      <TableCell className="font-bold">Installation Labor</TableCell>
+                      <TableCell>$1,500 - $2,500</TableCell>
+                      <TableCell>$2,000 - $3,500</TableCell>
+                   </TableRow>
+                   <TableRow>
+                      <TableCell className="font-bold">Utility Service Upgrade</TableCell>
+                      <TableCell>$3,000 - $12,000*</TableCell>
+                      <TableCell className="text-green-500 font-bold">$0 (Digital Mgmt)</TableCell>
+                   </TableRow>
+                   <TableRow className="bg-primary/5">
+                      <TableCell className="font-black">Federal Tax Credit</TableCell>
+                      <TableCell>$0</TableCell>
+                      <TableCell className="text-green-500 font-black">-$600 (30% IRA Credit)</TableCell>
+                   </TableRow>
+                </TableBody>
+              </Table>
               <CardFooter className="bg-muted/30 p-4 border-t">
                  <p className="text-[10px] text-muted-foreground italic">
                     *Standard panels often require expensive utility-side service upgrades (400A) for EVs. Smart panels use software to avoid these costs.
