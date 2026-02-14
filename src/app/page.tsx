@@ -1,5 +1,5 @@
 import Link from "next/link"
-import { Zap, ShieldAlert, ShoppingBag, ArrowRight, Activity, MapPin, Sun, ClipboardList, ShieldCheck, Globe } from "lucide-react"
+import { Zap, ShieldAlert, ShoppingBag, ArrowRight, Activity, MapPin, Sun, ClipboardList, ShieldCheck, Globe, BatteryCharging } from "lucide-react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
@@ -28,10 +28,10 @@ export default function Home() {
                 <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
               </Button>
             </Link>
-            <Link href="/audit">
+            <Link href="/ev-readiness">
               <Button size="lg" variant="outline" className="font-bold h-14 px-8 border-primary text-primary hover:bg-primary/10">
-                100-Point Audit
-                <ShieldCheck className="ml-2 w-5 h-5" />
+                EV Capacity Tool
+                <BatteryCharging className="ml-2 w-5 h-5" />
               </Button>
             </Link>
           </div>
@@ -44,12 +44,15 @@ export default function Home() {
       {/* Grid of services */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         {[
+          { icon: BatteryCharging, title: "EV Readiness", desc: "Capacity Calculation", href: "/ev-readiness", label: "Get report", badge: "$29.99" },
           { icon: Sun, title: "Lighting Tool", desc: "Lumens & Quality", href: "/lighting-tool", label: "Test bulbs" },
           { icon: ClipboardList, title: "Generator Log", desc: "Maintenance Tracker", href: "/generator-logs", label: "View logs" },
-          { icon: MapPin, title: "Marketplace", desc: "Verified Pros", href: "/marketplace", label: "Browse pros" },
-          { icon: ShieldAlert, title: "Safety Audit", desc: "NEC Compliance", href: "/audit", label: "Start audit" }
+          { icon: MapPin, title: "Marketplace", desc: "Verified Pros", href: "/marketplace", label: "Browse pros" }
         ].map((service, i) => (
-          <Card key={i} className="group hover:border-primary/50 transition-all cursor-pointer">
+          <Card key={i} className="group hover:border-primary/50 transition-all cursor-pointer relative overflow-hidden">
+            {service.badge && (
+              <Badge className="absolute top-2 right-2 bg-primary text-black font-bold text-[10px]">{service.badge}</Badge>
+            )}
             <CardHeader>
               <service.icon className="w-10 h-10 text-primary mb-2 group-hover:scale-110 transition-transform" />
               <CardTitle className="text-xl font-bold">{service.title}</CardTitle>
@@ -103,17 +106,17 @@ export default function Home() {
             <div className="divide-y border-t border-border">
               <div className="p-5 flex items-center justify-between hover:bg-muted/30 transition-colors">
                 <div className="flex flex-col gap-1">
+                  <span className="font-bold">EV Load Calculation Generated</span>
+                  <span className="text-xs text-muted-foreground">Today • 200A Panel • San Francisco, CA</span>
+                </div>
+                <Badge className="bg-primary/10 text-primary border-primary/20 font-bold uppercase text-[10px]">View Report</Badge>
+              </div>
+              <div className="p-5 flex items-center justify-between hover:bg-muted/30 transition-colors">
+                <div className="flex flex-col gap-1">
                   <span className="font-bold">100-Point Audit Completed</span>
                   <span className="text-xs text-muted-foreground">Today • Safety Score: 84/100 • New York, NY</span>
                 </div>
                 <Badge className="bg-amber-500/10 text-amber-500 border-amber-500/20 font-bold uppercase text-[10px]">Review Report</Badge>
-              </div>
-              <div className="p-5 flex items-center justify-between hover:bg-muted/30 transition-colors">
-                <div className="flex flex-col gap-1">
-                  <span className="font-bold">Generator: Oil Change Logged</span>
-                  <span className="text-xs text-muted-foreground">Yesterday • 124 Engine Hours • Charleston, WV</span>
-                </div>
-                <Badge variant="secondary" className="bg-green-500/10 text-green-500 border-green-500/20 font-bold uppercase text-[10px]">Verified</Badge>
               </div>
             </div>
           </CardContent>

@@ -8,6 +8,7 @@ export const SERVICES = [
   { id: 'lighting-tool', name: 'Lighting & Lumens Analysis', description: 'Expert analysis of room brightness and color temperature quality.' },
   { id: 'generator-logs', name: 'Generator Maintenance Tracking', description: 'Digital logbook for reliable backup power system maintenance.' },
   { id: 'marketplace', name: 'Professional Electrician Marketplace', description: 'Direct access to verified local electricians with dynamic pricing.' },
+  { id: 'ev-readiness', name: 'EV & Capacity Load Calculation', description: 'AI-powered NEC load calculations for EV chargers and electrification.' },
 ];
 
 export function generateServiceCityTitle(serviceName: string, city: string, state: string) {

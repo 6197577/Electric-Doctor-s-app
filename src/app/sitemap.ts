@@ -10,7 +10,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
   const baseUrl = 'https://electric-doctors.com';
 
   // Base routes
-  const routes = ['', '/diagnose', '/audit', '/marketplace', '/subscriptions', '/generator-logs'].map(
+  const routes = ['', '/diagnose', '/audit', '/marketplace', '/subscriptions', '/generator-logs', '/ev-readiness'].map(
     (route) => ({
       url: `${baseUrl}${route}`,
       lastModified: new Date(),
