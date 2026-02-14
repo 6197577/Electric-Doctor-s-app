@@ -1,7 +1,6 @@
-
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { ClipboardList, Plus, History, Settings, Zap, Trash2, Calendar, Clock } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card"
@@ -23,13 +22,20 @@ export default function GeneratorLogsPage() {
   const [logs, setLogs] = useState(INITIAL_LOGS)
   const [isAdding, setIsAdding] = useState(false)
   const [formData, setFormData] = useState({
-    date: format(new Date(), 'yyyy-MM-dd'),
+    date: "", // Initialized empty for hydration safety
     serviceType: "General Inspection",
     hoursRun: "",
     performedBy: "",
     notes: ""
   })
   const { toast } = useToast()
+
+  useEffect(() => {
+    setFormData(prev => ({
+      ...prev,
+      date: format(new Date(), 'yyyy-MM-dd')
+    }))
+  }, [])
 
   const handleAddLog = (e: React.FormEvent) => {
     e.preventDefault()

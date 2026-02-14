@@ -1,4 +1,3 @@
-
 "use client"
 
 import { useState } from "react"
@@ -44,7 +43,6 @@ export default function JoinNetworkPage() {
     licensingState: "",
     insuranceProvider: "",
     insurancePolicy: "",
-    tin: "",
     leadModel: "pay-as-you-go",
     cardNumber: "",
     expiry: "",
@@ -238,19 +236,9 @@ export default function JoinNetworkPage() {
                 <FileText className="w-4 h-4 text-primary" />
                 W-9 Information
               </h4>
-              <div className="space-y-2">
-                <Label htmlFor="tin">Taxpayer Identification Number (TIN/SSN)</Label>
-                <Input 
-                  id="tin" 
-                  type="password"
-                  placeholder="XX-XXXXXXX" 
-                  value={formData.tin} 
-                  onChange={e => updateField('tin', e.target.value)}
-                />
-              </div>
               <div className="p-4 border border-dashed rounded-xl bg-muted/20 flex flex-col items-center justify-center gap-2 text-center">
                 <Upload className="w-6 h-6 text-muted-foreground" />
-                <p className="text-xs text-muted-foreground">Upload Signed W-9 (Optional now, required for first payout)</p>
+                <p className="text-xs text-muted-foreground">Upload Signed W-9 (Required for verification)</p>
                 <Button variant="outline" size="sm">Select File</Button>
               </div>
             </div>
