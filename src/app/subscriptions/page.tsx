@@ -1,11 +1,13 @@
 
 "use client"
 
-import { Check, Zap, Shield, Building2, User, Star } from "lucide-react"
+import { Check, Zap, Shield, Building2, User, Star, Lock } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Badge } from "@/components/ui/badge"
+import { useToast } from "@/hooks/use-toast"
+import { useState } from "react"
 
 const RESIDENTIAL_PLANS = [
   {
@@ -19,7 +21,7 @@ const RESIDENTIAL_PLANS = [
       "Basic AI Diagnostic Tool",
       "Standard Priority Support"
     ],
-    buttonText: "Subscribe Now",
+    buttonText: "Subscribe via Stripe",
     popular: false
   },
   {
@@ -33,7 +35,7 @@ const RESIDENTIAL_PLANS = [
       "24/7 Priority Emergency Access",
       "10% Discount on Repairs"
     ],
-    buttonText: "Go Pro Today",
+    buttonText: "Go Pro via Stripe",
     popular: true
   }
 ]
@@ -50,7 +52,7 @@ const COMMERCIAL_PLANS = [
       "Dedicated Account Manager",
       "Employee Safety Training"
     ],
-    buttonText: "Select Plan",
+    buttonText: "Subscribe via Stripe",
     popular: false
   },
   {
@@ -70,12 +72,28 @@ const COMMERCIAL_PLANS = [
 ]
 
 export default function SubscriptionsPage() {
+  const { toast } = useToast()
+  const [loadingPlan, setLoadingPlan] = useState<string | null>(null)
+
+  const handleSubscribe = async (planName: string) => {
+    if (planName === "Enterprise") return // Contact sales logic
+    
+    setLoadingPlan(planName)
+    // Simulate Stripe Checkout Redirect
+    await new Promise(resolve => setTimeout(resolve, 1200))
+    setLoadingPlan(null)
+    toast({
+      title: "Redirecting to Stripe",
+      description: `Opening secure checkout for ${planName}...`,
+    })
+  }
+
   return (
     <div className="max-w-6xl mx-auto flex flex-col gap-12 pb-16">
       <div className="text-center space-y-4">
         <h1 className="text-4xl md:text-5xl font-black tracking-tighter">Choose Your Protection Level</h1>
         <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
-          From single-family homes to industrial complexes, we provide the AI-powered tools you need for electrical peace of mind.
+          From single-family homes to industrial complexes, our Stripe-secured billing ensures seamless protection.
         </p>
       </div>
 
@@ -119,10 +137,18 @@ export default function SubscriptionsPage() {
                   ))}
                 </ul>
               </CardContent>
-              <CardFooter>
-                <Button className={`w-full h-12 font-bold ${plan.popular ? "bg-primary" : "variant-outline border-primary text-primary hover:bg-primary/10"}`}>
-                  {plan.buttonText}
+              <CardFooter className="flex flex-col gap-2">
+                <Button 
+                  className={`w-full h-12 font-bold ${plan.popular ? "bg-primary" : "variant-outline border-primary text-primary hover:bg-primary/10"}`}
+                  onClick={() => handleSubscribe(plan.name)}
+                  disabled={loadingPlan !== null}
+                >
+                  {loadingPlan === plan.name ? "Redirecting..." : plan.buttonText}
                 </Button>
+                <div className="flex items-center justify-center gap-1 text-[10px] text-muted-foreground">
+                  <Lock className="w-2.5 h-2.5" />
+                  Secured by Stripe
+                </div>
               </CardFooter>
             </Card>
           ))}
@@ -152,10 +178,20 @@ export default function SubscriptionsPage() {
                   ))}
                 </ul>
               </CardContent>
-              <CardFooter>
-                <Button className="w-full h-12 font-bold bg-primary">
-                  {plan.buttonText}
+              <CardFooter className="flex flex-col gap-2">
+                <Button 
+                  className="w-full h-12 font-bold bg-primary"
+                  onClick={() => handleSubscribe(plan.name)}
+                  disabled={loadingPlan !== null}
+                >
+                  {loadingPlan === plan.name ? "Redirecting..." : plan.buttonText}
                 </Button>
+                {plan.name !== "Enterprise" && (
+                  <div className="flex items-center justify-center gap-1 text-[10px] text-muted-foreground">
+                    <Lock className="w-2.5 h-2.5" />
+                    Secured by Stripe
+                  </div>
+                )}
               </CardFooter>
             </Card>
           ))}
@@ -166,7 +202,7 @@ export default function SubscriptionsPage() {
         <div className="flex-1 space-y-4">
           <h2 className="text-2xl font-bold">Not sure which one to pick?</h2>
           <p className="text-muted-foreground">
-            Our AI can analyze your past job history and home size to recommend the most cost-effective plan for you.
+            Our AI can analyze your past job history and home size to recommend the most cost-effective Stripe plan for you.
           </p>
           <Button variant="outline" className="font-bold border-primary text-primary">Get Personal Recommendation</Button>
         </div>

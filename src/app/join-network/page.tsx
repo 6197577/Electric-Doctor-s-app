@@ -1,3 +1,4 @@
+
 "use client"
 
 import { useState } from "react"
@@ -13,7 +14,8 @@ import {
   Zap,
   Info,
   CreditCard,
-  Target
+  Target,
+  Lock
 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
@@ -58,13 +60,13 @@ export default function JoinNetworkPage() {
 
   const handleSubmit = async () => {
     setIsSubmitting(true)
-    // Simulate API call
-    await new Promise(resolve => setTimeout(resolve, 2000))
+    // Simulate Stripe Onboarding & Payment Method Verification
+    await new Promise(resolve => setTimeout(resolve, 2500))
     setIsSubmitting(false)
     setStep(5)
     toast({
       title: "Application Submitted",
-      description: "Our verification team will review your credentials and billing info within 48 hours.",
+      description: "Verification team & Stripe billing profile successfully initialized.",
     })
   }
 
@@ -72,7 +74,7 @@ export default function JoinNetworkPage() {
     <div className="max-w-3xl mx-auto flex flex-col gap-8 pb-12">
       <div className="flex flex-col gap-2">
         <h1 className="text-3xl font-bold tracking-tight">Join the Pro Network</h1>
-        <p className="text-muted-foreground">Apply to become a verified Electric Doctor and receive high-value leads in your region.</p>
+        <p className="text-muted-foreground">Apply to become a verified Electric Doctor and receive high-value leads. Payments processed via Stripe.</p>
       </div>
 
       <div className="space-y-2">
@@ -270,7 +272,7 @@ export default function JoinNetworkPage() {
               <Target className="w-5 h-5 text-primary" />
               Lead Billing & Model
             </CardTitle>
-            <CardDescription>Choose how you want to receive and pay for job leads.</CardDescription>
+            <CardDescription>Choose how you want to receive and pay for job leads via Stripe.</CardDescription>
           </CardHeader>
           <CardContent className="space-y-8">
             <div className="space-y-4">
@@ -285,14 +287,14 @@ export default function JoinNetworkPage() {
                     <RadioGroupItem value="pre-paid" id="pre-paid" />
                     <Label htmlFor="pre-paid" className="font-bold cursor-pointer">Pre-paid Leads</Label>
                   </div>
-                  <p className="text-xs text-muted-foreground leading-relaxed">Buy credits in advance at a discount. Best for consistent work volume.</p>
+                  <p className="text-xs text-muted-foreground leading-relaxed">Buy credits in advance via Stripe at a discount. Best for consistent work volume.</p>
                 </div>
                 <div className={`p-4 border rounded-xl cursor-pointer transition-all ${formData.leadModel === 'pay-as-you-go' ? 'border-primary bg-primary/5' : 'hover:border-muted-foreground/30'}`} onClick={() => updateField('leadModel', 'pay-as-you-go')}>
                   <div className="flex items-center gap-3 mb-2">
                     <RadioGroupItem value="pay-as-you-go" id="pay-as-you-go" />
                     <Label htmlFor="pay-as-you-go" className="font-bold cursor-pointer">Pay As You Go</Label>
                   </div>
-                  <p className="text-xs text-muted-foreground leading-relaxed">Pay only when you accept a lead. No upfront costs or commitments.</p>
+                  <p className="text-xs text-muted-foreground leading-relaxed">Stripe charges only when you accept a lead. No upfront costs or commitments.</p>
                 </div>
               </RadioGroup>
             </div>
@@ -301,9 +303,12 @@ export default function JoinNetworkPage() {
               <div className="flex items-center justify-between">
                 <Label className="text-base font-bold flex items-center gap-2">
                   <CreditCard className="w-5 h-5 text-primary" />
-                  Payment Method
+                  Stripe Payment Method
                 </Label>
-                <Badge variant="outline" className="text-[10px] text-primary border-primary">Encrypted</Badge>
+                <Badge variant="outline" className="text-[10px] text-primary border-primary flex items-center gap-1">
+                  <Lock className="w-2.5 h-2.5" />
+                  Stripe Secure
+                </Badge>
               </div>
               <div className="space-y-4">
                 <div className="space-y-2">
@@ -338,7 +343,7 @@ export default function JoinNetworkPage() {
               </div>
               <div className="p-3 bg-primary/5 rounded-lg border border-primary/20 flex gap-3 text-[10px] text-muted-foreground">
                 <ShieldCheck className="w-4 h-4 text-primary shrink-0" />
-                <p>Your card will be held on file for lead billing. No charges will occur until you choose a package or accept a Pay As You Go lead.</p>
+                <p>Your card will be stored securely on Stripe for lead billing. No charges will occur until you choose a package or accept a Pay As You Go lead.</p>
               </div>
             </div>
           </CardContent>
@@ -349,7 +354,7 @@ export default function JoinNetworkPage() {
               onClick={handleSubmit}
               disabled={isSubmitting}
             >
-              {isSubmitting ? "Processing..." : "Complete Application"}
+              {isSubmitting ? "Processing with Stripe..." : "Complete Application"}
             </Button>
           </CardFooter>
         </Card>
@@ -364,7 +369,7 @@ export default function JoinNetworkPage() {
             <div className="space-y-2">
               <CardTitle className="text-3xl">Application Received!</CardTitle>
               <CardDescription className="text-lg">
-                Thank you for applying to the Electric Doctor's network.
+                Your profile & Stripe billing are being verified.
               </CardDescription>
             </div>
             <div className="p-6 bg-primary/5 rounded-2xl border border-primary/20 max-w-md">
@@ -373,7 +378,7 @@ export default function JoinNetworkPage() {
                 What's Next?
               </h4>
               <p className="text-sm text-muted-foreground leading-relaxed">
-                Our verification team will review your **Contractor License ({formData.contractorLicense})** and **Billing Profile**. You've selected the **{formData.leadModel.replace(/-/g, ' ')}** lead model. You'll receive an email once approved.
+                Our verification team will review your **Contractor License ({formData.contractorLicense})**. Your **Stripe Customer Profile** has been created for the **{formData.leadModel.replace(/-/g, ' ')}** lead model.
               </p>
             </div>
             <Link href="/marketplace">

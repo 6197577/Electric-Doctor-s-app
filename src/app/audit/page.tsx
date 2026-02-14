@@ -2,7 +2,7 @@
 "use client"
 
 import { useState } from "react"
-import { ShieldCheck, ClipboardCheck, AlertTriangle, FileText, ChevronDown, CheckCircle2, Info, ArrowRight, Zap, Download, CreditCard } from "lucide-react"
+import { ShieldCheck, ClipboardCheck, AlertTriangle, FileText, ChevronDown, CheckCircle2, Info, ArrowRight, Zap, Download, CreditCard, Lock } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card"
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
@@ -74,6 +74,7 @@ const AUDIT_CATEGORIES = [
 export default function AuditPage() {
   const [activeStep, setActiveStep] = useState<"intro" | "payment" | "form" | "report">("intro")
   const [checkedItems, setCheckedItems] = useState<Record<string, boolean>>({})
+  const [isProcessing, setIsProcessing] = useState(false)
   const { toast } = useToast()
 
   const toggleItem = (category: string, index: number) => {
@@ -88,8 +89,12 @@ export default function AuditPage() {
     return Math.round((checkedCount / totalItems) * 100)
   }
 
-  const processPayment = () => {
-    toast({ title: "Payment Successful", description: "Standard Residential Audit unlocked for $47.93." })
+  const processPayment = async () => {
+    setIsProcessing(true)
+    // Simulate Stripe payment
+    await new Promise(resolve => setTimeout(resolve, 1500))
+    setIsProcessing(false)
+    toast({ title: "Payment Successful", description: "Audit unlocked via Stripe Secure Checkout." })
     setActiveStep("form")
   }
 
@@ -139,7 +144,7 @@ export default function AuditPage() {
                 <p className="text-xs font-bold text-muted-foreground uppercase tracking-widest">Single Use Price</p>
                 <p className="text-3xl font-black text-primary">$47.93</p>
               </div>
-              <Badge variant="outline" className="text-primary border-primary">Best Value</Badge>
+              <Badge variant="outline" className="text-primary border-primary uppercase text-[10px]">Secure Stripe Checkout</Badge>
             </div>
           </CardContent>
           <CardFooter>
@@ -154,8 +159,11 @@ export default function AuditPage() {
       {activeStep === "payment" && (
         <Card className="animate-in fade-in zoom-in-95 duration-300">
           <CardHeader>
-            <CardTitle>Secure Checkout</CardTitle>
-            <CardDescription>Confirm your residential audit purchase.</CardDescription>
+            <CardTitle className="flex items-center gap-2">
+              <Lock className="w-5 h-5 text-primary" />
+              Stripe Secure Checkout
+            </CardTitle>
+            <CardDescription>Confirm your residential audit purchase ($47.93).</CardDescription>
           </CardHeader>
           <CardContent className="space-y-6">
             <div className="flex items-center justify-between p-4 bg-muted rounded-lg">
@@ -170,17 +178,18 @@ export default function AuditPage() {
                 <CreditCard className="w-6 h-6 text-primary" />
                 <div className="flex-1">
                   <p className="font-bold text-sm">Stored Visa ending in 4242</p>
-                  <p className="text-xs text-muted-foreground">Expires 12/26</p>
+                  <p className="text-xs text-muted-foreground">Expires 12/26 • Powered by Stripe</p>
                 </div>
                 <div className="w-4 h-4 rounded-full border-2 border-primary bg-primary" />
               </div>
             </div>
           </CardContent>
           <CardFooter className="flex-col gap-3">
-            <Button className="w-full h-12 font-bold" onClick={processPayment}>
-              Pay $47.93 & Begin
+            <Button className="w-full h-12 font-bold" onClick={processPayment} disabled={isProcessing}>
+              {isProcessing ? "Processing Stripe Payment..." : "Pay $47.93 & Begin"}
             </Button>
             <Button variant="ghost" className="w-full" onClick={() => setActiveStep("intro")}>Cancel</Button>
+            <p className="text-[10px] text-muted-foreground text-center">Your payment information is encrypted and processed securely by Stripe.</p>
           </CardFooter>
         </Card>
       )}
