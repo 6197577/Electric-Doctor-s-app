@@ -1,12 +1,13 @@
 "use client"
 
 import { useState } from "react"
-import { ShieldCheck, Zap, BarChart3, AppWindow, Cpu, CheckCircle2, ArrowRight, Loader2, DollarSign, Activity, Settings, Power } from "lucide-react"
+import { ShieldCheck, Zap, BarChart3, AppWindow, Cpu, CheckCircle2, ArrowRight, Loader2, DollarSign, Activity, Settings, Power, Info, Calculator, Flame } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { useToast } from "@/hooks/use-toast"
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import Image from "next/image"
 
 const PANEL_FEATURES = [
@@ -38,7 +39,6 @@ export default function SmartPanelsPage() {
 
   const handleOrder = async () => {
     setIsOrdering(true)
-    // Simulate Stripe Checkout for a high-ticket item
     await new Promise(resolve => setTimeout(resolve, 2000))
     setIsOrdering(false)
     toast({
@@ -92,7 +92,7 @@ export default function SmartPanelsPage() {
         </div>
       </section>
 
-      {/* Features Grid */}
+      {/* Feature Analysis */}
       <section className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
         {PANEL_FEATURES.map((feature, i) => (
           <Card key={i} className="bg-card/30 backdrop-blur-sm border-white/5 hover:border-primary/40 transition-all">
@@ -109,6 +109,88 @@ export default function SmartPanelsPage() {
             </CardContent>
           </Card>
         ))}
+      </section>
+
+      {/* Cost Discovery & Comparison */}
+      <section className="space-y-8">
+        <div className="flex flex-col gap-2">
+           <h2 className="text-3xl font-black tracking-tight uppercase">Smart Panel Price Discovery</h2>
+           <p className="text-muted-foreground">Detailed breakdown of hardware, labor, and long-term incentives.</p>
+        </div>
+        
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+           <Card className="lg:col-span-2 overflow-hidden border-primary/20">
+              <TableHeader className="bg-muted/50">
+                 <TableRow>
+                    <TableHead className="font-black text-[10px] uppercase tracking-widest">Expense Category</TableHead>
+                    <TableHead className="font-black text-[10px] uppercase tracking-widest">Standard Panel</TableHead>
+                    <TableHead className="font-black text-[10px] uppercase tracking-widest text-primary">Smart Panel (X-1)</TableHead>
+                 </TableRow>
+              </TableHeader>
+              <TableBody>
+                 <TableRow>
+                    <TableCell className="font-bold">Hardware Cost</TableCell>
+                    <TableCell>$250 - $500</TableCell>
+                    <TableCell className="text-primary font-bold">$2,499 - $4,500</TableCell>
+                 </TableRow>
+                 <TableRow>
+                    <TableCell className="font-bold">Installation Labor</TableCell>
+                    <TableCell>$1,500 - $2,500</TableCell>
+                    <TableCell>$2,000 - $3,500</TableCell>
+                 </TableRow>
+                 <TableRow>
+                    <TableCell className="font-bold">Utility Service Upgrade</TableCell>
+                    <TableCell>$3,000 - $12,000*</TableCell>
+                    <TableCell className="text-green-500 font-bold">$0 (Digital Mgmt)</TableCell>
+                 </TableRow>
+                 <TableRow className="bg-primary/5">
+                    <TableCell className="font-black">Federal Tax Credit</TableCell>
+                    <TableCell>$0</TableCell>
+                    <TableCell className="text-green-500 font-black">-$600 (30% IRA Credit)</TableCell>
+                 </TableRow>
+              </TableBody>
+              <CardFooter className="bg-muted/30 p-4 border-t">
+                 <p className="text-[10px] text-muted-foreground italic">
+                    *Standard panels often require expensive utility-side service upgrades (400A) for EVs. Smart panels use software to avoid these costs.
+                 </p>
+              </CardFooter>
+           </Card>
+
+           <div className="flex flex-col gap-6">
+              <Card className="bg-primary text-black">
+                 <CardHeader>
+                    <CardTitle className="text-xl font-black tracking-tight">The "Avoided Cost" ROI</CardTitle>
+                 </CardHeader>
+                 <CardContent className="space-y-4">
+                    <div className="flex flex-col gap-1">
+                       <span className="text-4xl font-black tracking-tighter">$9,000+</span>
+                       <span className="text-xs font-bold uppercase tracking-widest opacity-80">Potential Savings</span>
+                    </div>
+                    <p className="text-xs font-medium leading-relaxed">
+                       By choosing a Smart Panel, you can avoid a full service upgrade from your utility company, which often costs over $10,000 in trenching and permits.
+                    </p>
+                 </CardContent>
+              </Card>
+
+              <Card>
+                 <CardHeader className="pb-2">
+                    <CardTitle className="text-sm font-black uppercase tracking-widest flex items-center gap-2">
+                       <Calculator className="w-4 h-4 text-primary" />
+                       Net Investment
+                    </CardTitle>
+                 </CardHeader>
+                 <CardContent>
+                    <div className="flex justify-between items-center">
+                       <span className="text-muted-foreground text-sm">After IRA Credits</span>
+                       <span className="text-xl font-black">$3,899*</span>
+                    </div>
+                    <p className="text-[10px] text-muted-foreground mt-2 italic">
+                       *Estimated for standard 200A retrofit including labor and tax credits.
+                    </p>
+                 </CardContent>
+              </Card>
+           </div>
+        </div>
       </section>
 
       {/* ROI Section */}
