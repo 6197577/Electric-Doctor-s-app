@@ -43,7 +43,7 @@ export default function VideoConsultPage() {
               </div>
               <CardTitle className="text-2xl font-black tracking-tight uppercase">Instant Video Consult</CardTitle>
               <CardDescription>
-                High-definition video support for urgent electrical issues.
+                High-definition video support for urgent electrical issues. 15-minute expert consultation.
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
@@ -53,8 +53,8 @@ export default function VideoConsultPage() {
               </div>
               <div className="p-4 bg-background/50 rounded-xl border border-primary/20 flex items-center justify-between mt-4">
                 <div>
-                  <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">Consultation Fee</p>
-                  <p className="text-3xl font-black text-primary">$49.00</p>
+                  <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">Consultation Fee (15 min)</p>
+                  <p className="text-3xl font-black text-primary">$97.00</p>
                 </div>
                 <Badge variant="outline" className="border-primary text-primary">STRIPE SECURE</Badge>
               </div>
@@ -117,12 +117,12 @@ export default function VideoConsultPage() {
               <Lock className="w-5 h-5 text-primary" />
               Stripe Secure Checkout
             </CardTitle>
-            <CardDescription>Emergency Video Consultation ($49.00)</CardDescription>
+            <CardDescription>Emergency Video Consultation - 15 Minutes ($97.00)</CardDescription>
           </CardHeader>
           <CardContent className="space-y-6">
             <div className="p-4 bg-muted rounded-lg flex justify-between items-center font-bold">
-              <span>Emergency Session</span>
-              <span>$49.00</span>
+              <span>Emergency Session (15 min)</span>
+              <span>$97.00</span>
             </div>
             <div className="p-4 border rounded-lg flex items-center gap-4 bg-primary/5 border-primary/30">
               <CreditCard className="w-6 h-6 text-primary" />

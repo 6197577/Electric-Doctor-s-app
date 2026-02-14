@@ -4,6 +4,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { TOP_50_CITIES_PRICING } from "@/lib/pricing-data"
+import Image from "next/image"
 
 export default function Home() {
   const featuredCities = TOP_50_CITIES_PRICING.slice(0, 12);
@@ -21,7 +22,7 @@ export default function Home() {
             <span className="text-primary italic">Talk to a Doctor.</span>
           </h1>
           <p className="text-muted-foreground text-xl md:text-2xl max-w-xl leading-relaxed font-medium">
-            Instant AI diagnostics, $49 Master Electrician video consults, and predictive maintenance to prevent electrical fires.
+            Instant AI diagnostics, $97 Master Electrician video consults, and predictive maintenance to prevent electrical fires.
           </p>
           <div className="flex flex-wrap gap-4 mt-4">
             <Link href="/video-consult">
@@ -82,7 +83,7 @@ export default function Home() {
       {/* Grid of services */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         {[
-          { icon: Video, title: "Video Doctor", desc: "Instant Master Access", href: "/video-consult", label: "Start Call", badge: "$49.00" },
+          { icon: Video, title: "Video Doctor", desc: "Instant Master Access", href: "/video-consult", label: "Start Call", badge: "$97.00" },
           { icon: BarChart3, title: "Predictive AI", desc: "Prevent Failure Points", href: "/predictive-maintenance", label: "Discovery Scan", badge: "NEW" },
           { icon: BatteryCharging, title: "EV Readiness", desc: "Capacity Calculation", href: "/ev-readiness", label: "Get report", badge: "$29.99" },
           { icon: ShieldCheck, title: "Safety Audit", desc: "100-Point NEC Check", href: "/audit", label: "Book Audit", badge: "$47.93" }
@@ -108,10 +109,6 @@ export default function Home() {
           </Card>
         ))}
       </div>
-      
-      {/* ... (rest of the file) */}
     </div>
   )
 }
-
-import Image from "next/image"
