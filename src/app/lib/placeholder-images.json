@@ -48,6 +48,30 @@
       "description": "Large rooftop solar panel installation at sunset",
       "imageUrl": "https://picsum.photos/seed/elec_hd8/1200/600",
       "imageHint": "solar panels"
+    },
+    {
+      "id": "commercial-switchgear",
+      "description": "Massive industrial electrical switchgear and distribution cabinet",
+      "imageUrl": "https://picsum.photos/seed/elec_hd9/1200/800",
+      "imageHint": "electrical switchgear"
+    },
+    {
+      "id": "video-consultation-ui",
+      "description": "Professional Master Electrician explaining panel safety on a video call",
+      "imageUrl": "https://picsum.photos/seed/elec_hd10/1000/700",
+      "imageHint": "video consultation"
+    },
+    {
+      "id": "smart-panel-install",
+      "description": "Clean, modern installation of a SPAN smart electrical panel",
+      "imageUrl": "https://picsum.photos/seed/elec_hd11/800/1000",
+      "imageHint": "smart panel"
+    },
+    {
+      "id": "electrician-training",
+      "description": "Electrician using a tablet to perform an AI-driven safety audit",
+      "imageUrl": "https://picsum.photos/seed/elec_hd12/1000/600",
+      "imageHint": "electrician tablet"
     }
   ]
 }

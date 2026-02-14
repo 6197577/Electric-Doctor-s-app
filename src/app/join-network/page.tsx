@@ -287,7 +287,6 @@ export default function JoinNetworkPage() {
             <div className="space-y-6">
               <Label className="text-base font-bold">Select Lead Model</Label>
               
-              {/* Cost Comparison Chart */}
               <div className="bg-muted/10 border rounded-xl p-4 space-y-4">
                 <div className="flex items-center gap-2 text-sm font-bold">
                   <BarChart3 className="w-4 h-4 text-primary" />
@@ -331,7 +330,7 @@ export default function JoinNetworkPage() {
                     <p className="text-xs text-muted-foreground leading-relaxed">Buy credits in advance via Stripe at a discount.</p>
                     <div className="flex items-center gap-2 text-[10px] font-bold text-primary">
                       <ScanEye className="w-3 h-3" />
-                      UNLIMITED AI SCANS INCLUDED
+                      UNLIMITED AI DIAGNOSTIC SCANS
                     </div>
                   </div>
                 </div>
@@ -344,7 +343,7 @@ export default function JoinNetworkPage() {
                     <p className="text-xs text-muted-foreground leading-relaxed">Stripe charges only when you accept a lead.</p>
                     <div className="flex items-center gap-2 text-[10px] font-bold text-muted-foreground">
                       <ScanEye className="w-3 h-3" />
-                      100 AI SCANS / MO INCLUDED
+                      100 AI DIAGNOSTIC SCANS / MO
                     </div>
                   </div>
                 </div>
@@ -402,7 +401,7 @@ export default function JoinNetworkPage() {
           <CardFooter className="flex gap-4">
             <Button variant="outline" className="flex-1" onClick={prevStep}>Back</Button>
             <Button 
-              className="flex-[2] font-bold" 
+              className="flex-[2] font-bold bg-primary text-black hover:bg-primary/90" 
               onClick={handleSubmit}
               disabled={isSubmitting}
             >
@@ -440,7 +439,7 @@ export default function JoinNetworkPage() {
               </div>
             </div>
             <Link href="/marketplace">
-              <Button variant="outline" className="font-bold">Return to Marketplace</Button>
+              <Button variant="outline" className="font-bold border-primary text-primary">Return to Marketplace</Button>
             </Link>
           </CardContent>
         </Card>

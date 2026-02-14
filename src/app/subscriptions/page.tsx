@@ -15,8 +15,8 @@ const RESIDENTIAL_PLANS = [
     price: "$97",
     description: "Essential protection for your family home.",
     features: [
-      "3x Professional Safety Audits",
-      "10 AI Scans per month",
+      "3x Professional Safety Audits / Year",
+      "10 AI Diagnostic Scans / Month",
       "Generator Maintenance Log",
       "Unlimited Lighting Scans",
       "Basic AI Diagnostic Tool",
@@ -30,8 +30,8 @@ const RESIDENTIAL_PLANS = [
     price: "$197",
     description: "Premium care for modern smart homes.",
     features: [
-      "5x Professional Safety Audits",
-      "50 AI Scans per month",
+      "5x Professional Safety Audits / Year",
+      "50 AI Diagnostic Scans / Month",
       "Advanced AI Area Outage Scans",
       "Predictive Failure Alerts",
       "24/7 Priority Emergency Access",
@@ -48,8 +48,8 @@ const COMMERCIAL_PLANS = [
     price: "$197",
     description: "Safety compliance for small retail and offices.",
     features: [
-      "3x Facility Compliance Audits",
-      "25 AI Scans per month",
+      "3x Facility Compliance Audits / Year",
+      "25 AI Diagnostic Scans / Month",
       "OSHA Compliance Reports",
       "Energy Efficiency Scans",
       "Dedicated Account Manager",
@@ -64,7 +64,7 @@ const COMMERCIAL_PLANS = [
     description: "Full-scale electrical asset management.",
     features: [
       "Monthly Facility-Wide Audits",
-      "Unlimited AI Scans",
+      "Unlimited AI Diagnostic Scans",
       "Custom Compliance Dashboards",
       "Industrial Load Balancing AI",
       "On-site Emergency Response",
@@ -143,7 +143,7 @@ export default function SubscriptionsPage() {
               </CardContent>
               <CardFooter className="flex flex-col gap-2">
                 <Button 
-                  className={`w-full h-12 font-bold ${plan.popular ? "bg-primary" : "variant-outline border-primary text-primary hover:bg-primary/10"}`}
+                  className={`w-full h-12 font-bold ${plan.popular ? "bg-primary text-black" : "variant-outline border-primary text-primary hover:bg-primary/10"}`}
                   onClick={() => handleSubscribe(plan.name)}
                   disabled={loadingPlan !== null}
                 >
@@ -184,7 +184,7 @@ export default function SubscriptionsPage() {
               </CardContent>
               <CardFooter className="flex flex-col gap-2">
                 <Button 
-                  className="w-full h-12 font-bold bg-primary"
+                  className="w-full h-12 font-bold bg-primary text-black"
                   onClick={() => handleSubscribe(plan.name)}
                   disabled={loadingPlan !== null}
                 >
@@ -217,7 +217,7 @@ export default function SubscriptionsPage() {
           </div>
           <div className="p-4 bg-background rounded-2xl border text-center">
             <p className="text-2xl font-black">400+</p>
-            <p className="text-[10px] text-muted-foreground uppercase">Businesses Audit</p>
+            <p className="text-[10px] text-muted-foreground uppercase">Businesses Audited</p>
           </div>
         </div>
       </section>

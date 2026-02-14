@@ -34,7 +34,6 @@ export default function ProfilePage() {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-        {/* Left Column - Nav */}
         <div className="md:col-span-1 flex flex-col gap-4">
           <Card className="p-2">
             <nav className="flex flex-col">
@@ -78,7 +77,6 @@ export default function ProfilePage() {
           </Card>
         </div>
 
-        {/* Main Column - Settings/Overview */}
         <div className="md:col-span-2 flex flex-col gap-6">
            <Card className="border-primary/20 bg-primary/5">
              <CardHeader>
@@ -97,7 +95,7 @@ export default function ProfilePage() {
                     <span className="text-xl font-bold">1/3</span>
                   </div>
                   <div className="flex flex-col p-3 rounded-lg bg-background border">
-                    <span className="text-[10px] text-muted-foreground uppercase font-bold">AI Scans</span>
+                    <span className="text-[10px] text-muted-foreground uppercase font-bold">AI Scans (Mo)</span>
                     <span className="text-xl font-bold">2/10</span>
                   </div>
                   <div className="flex flex-col p-3 rounded-lg bg-background border">
@@ -106,7 +104,7 @@ export default function ProfilePage() {
                   </div>
                 </div>
                 <Link href="/subscriptions">
-                  <Button className="w-full font-bold">Manage or Change Plan</Button>
+                  <Button className="w-full font-bold bg-primary text-black hover:bg-primary/90">Manage or Change Plan</Button>
                 </Link>
              </CardContent>
            </Card>
