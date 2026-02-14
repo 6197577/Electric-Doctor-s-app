@@ -3,7 +3,7 @@
 
 import { useState, useMemo, useEffect } from "react"
 import { useParams, useSearchParams, useRouter } from "next/navigation"
-import { Calendar as CalendarIcon, Clock, CreditCard, Lock, CheckCircle2, ArrowRight, ArrowLeft, Loader2, ShieldCheck, Zap } from "lucide-react"
+import { Calendar as CalendarIcon, Clock, CreditCard, Lock, CheckCircle2, ArrowRight, ArrowLeft, Loader2, ShieldCheck, Zap, AlertTriangle, RefreshCcw } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card"
 import { Calendar } from "@/components/ui/calendar"
@@ -180,6 +180,17 @@ export default function SchedulePage() {
                   </div>
                 </div>
 
+                {/* Cancellation Prevention Messaging */}
+                <div className="p-4 bg-primary/5 rounded-xl border border-primary/20 space-y-3">
+                  <div className="flex items-start gap-3">
+                    <Zap className="w-5 h-5 text-primary shrink-0 mt-0.5" />
+                    <div className="text-xs">
+                      <p className="font-bold text-foreground">Pre-Visit Technical Preparation</p>
+                      <p className="text-muted-foreground leading-relaxed">Once booked, {pro.name.split(' ')[0]} will immediately begin reviewing your AI Diagnostic Report to prepare specialized equipment for your home.</p>
+                    </div>
+                  </div>
+                </div>
+
                 <div className="grid grid-cols-1 gap-4">
                   <Button 
                     variant="outline" 
@@ -249,10 +260,14 @@ export default function SchedulePage() {
                       <span className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">Arrival Window</span>
                       <Badge className="bg-primary text-black font-black">{selectedSlot}</Badge>
                    </div>
-                   <div className="space-y-4">
-                      <div className="flex items-start gap-3 text-left text-sm">
+                   <div className="space-y-4 text-left">
+                      <div className="flex items-start gap-3 text-sm">
                          <Zap className="w-5 h-5 text-primary shrink-0 mt-0.5" />
-                         <p>Marcus has received your initial diagnostic report and is preparing the necessary components.</p>
+                         <p>Marcus has received your initial diagnostic report and is preparing the necessary components for your zip code.</p>
+                      </div>
+                      <div className="p-3 bg-muted/30 rounded-lg border text-[10px] leading-relaxed">
+                        <p className="font-bold uppercase mb-1">Cancellation Policy</p>
+                        Full refund available if canceled 72 hours before your appointment. Need to move your slot? Use our 1-time free Rescheduling Tool anytime.
                       </div>
                    </div>
                 </div>
@@ -291,28 +306,28 @@ export default function SchedulePage() {
             </CardContent>
           </Card>
 
-          <Card>
+          <Card className="border-amber-500/20 bg-amber-500/5">
             <CardHeader className="pb-2">
-              <CardTitle className="text-xs font-black uppercase tracking-widest text-muted-foreground">Why Pre-Pay?</CardTitle>
+              <CardTitle className="text-xs font-black uppercase tracking-widest text-amber-600 flex items-center gap-2">
+                <RefreshCcw className="w-3 h-3" />
+                Flexible Rescheduling
+              </CardTitle>
             </CardHeader>
             <CardContent className="space-y-4 pt-2">
+               <p className="text-[10px] leading-relaxed text-muted-foreground">
+                 We understand plans change. While cancellations require 72h notice for a full refund, you can **reschedule your appointment for free** up to 24 hours before arrival.
+               </p>
                <div className="flex items-start gap-3 text-xs leading-relaxed">
                   <div className="w-5 h-5 rounded-full bg-green-500/10 flex items-center justify-center shrink-0">
                     <CheckCircle2 className="w-3 h-3 text-green-500" />
                   </div>
-                  <span>Guaranteed arrival window with prioritized dispatch.</span>
+                  <span>1-Time Free Reschedule Option</span>
                </div>
                <div className="flex items-start gap-3 text-xs leading-relaxed">
                   <div className="w-5 h-5 rounded-full bg-green-500/10 flex items-center justify-center shrink-0">
                     <CheckCircle2 className="w-3 h-3 text-green-500" />
                   </div>
-                  <span>Fully refundable if canceled 24 hours in advance.</span>
-               </div>
-               <div className="flex items-start gap-3 text-xs leading-relaxed">
-                  <div className="w-5 h-5 rounded-full bg-green-500/10 flex items-center justify-center shrink-0">
-                    <CheckCircle2 className="w-3 h-3 text-green-500" />
-                  </div>
-                  <span>Payment processed via Stripe or Google Pay for maximum security.</span>
+                  <span>Refundable 72h prior to arrival</span>
                </div>
             </CardContent>
           </Card>

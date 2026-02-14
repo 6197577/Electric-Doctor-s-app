@@ -2,7 +2,7 @@
 "use client"
 
 import { useState, useMemo } from "react"
-import { Search, Star, MapPin, ShieldCheck, Zap, Info, Calendar } from "lucide-react"
+import { Search, Star, MapPin, ShieldCheck, Zap, Info, Calendar, AlertCircle } from "lucide-react"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -169,9 +169,12 @@ export default function MarketplacePage() {
                     <span className="text-[10px] text-muted-foreground">Booking Hold Fee (4h min)</span>
                     <span className="text-sm font-semibold opacity-70">{formatCurrency(bookingFee)}</span>
                   </div>
-                  <p className="text-[10px] text-muted-foreground text-right italic mt-1">
-                    Hold fee covers the 4-hour minimum and is fully refundable if canceled 24h prior.
-                  </p>
+                  <div className="p-2 bg-muted/20 rounded-md border border-border/50 mt-2">
+                    <p className="text-[9px] text-muted-foreground flex items-center gap-1 leading-tight">
+                      <AlertCircle className="w-3 h-3 text-primary shrink-0" />
+                      Hold fee fully refundable if canceled 72h prior. Includes priority AI diagnosis review.
+                    </p>
+                  </div>
                 </div>
               </CardContent>
               <CardFooter className="bg-muted/30 p-4">
