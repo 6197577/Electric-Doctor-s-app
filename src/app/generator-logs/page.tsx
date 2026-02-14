@@ -1,3 +1,4 @@
+
 "use client"
 
 import { useState, useEffect } from "react"
@@ -11,6 +12,7 @@ import { Textarea } from "@/components/ui/textarea"
 import { Badge } from "@/components/ui/badge"
 import { useToast } from "@/hooks/use-toast"
 import { format } from "date-fns"
+import Image from "next/image"
 
 // Mock data for initial state
 const INITIAL_LOGS = [
@@ -147,9 +149,20 @@ export default function GeneratorLogsPage() {
 
       <div className="grid grid-cols-1 gap-4">
         {logs.length === 0 ? (
-          <div className="text-center py-12 bg-muted/20 rounded-xl border border-dashed">
-            <ClipboardList className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
-            <p className="text-muted-foreground">No maintenance logs found. Start by adding your first entry.</p>
+          <div className="text-center py-20 bg-muted/20 rounded-2xl border border-dashed flex flex-col items-center justify-center gap-6">
+            <div className="relative w-48 h-32 opacity-20 grayscale">
+              <Image 
+                src="https://picsum.photos/seed/elec_hd3/400/300" 
+                alt="Empty logs" 
+                fill 
+                className="object-cover rounded-xl"
+                data-ai-hint="industrial motor"
+              />
+            </div>
+            <div className="space-y-2">
+              <ClipboardList className="w-10 h-10 text-muted-foreground mx-auto" />
+              <p className="text-muted-foreground font-medium">No maintenance logs found. Start by adding your first entry.</p>
+            </div>
           </div>
         ) : (
           logs.map((log) => (

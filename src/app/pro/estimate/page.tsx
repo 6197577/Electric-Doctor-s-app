@@ -1,3 +1,4 @@
+
 "use client"
 
 import { useState } from "react"
@@ -313,10 +314,21 @@ export default function ProEstimatePage() {
               </div>
             </div>
           ) : (
-            <Card className="h-full border-dashed border-2 flex flex-col items-center justify-center p-12 text-center opacity-50">
-              <FileSearch className="w-16 h-16 mb-4 text-muted-foreground" />
-              <CardTitle>Plan Verification Pending</CardTitle>
-              <CardDescription>Upload site plans and input job scope to trigger AI verification and cost estimation.</CardDescription>
+            <Card className="h-full border-dashed border-2 flex flex-col items-center justify-center p-12 text-center relative overflow-hidden">
+              <div className="absolute inset-0 opacity-10 grayscale hover:opacity-20 transition-opacity">
+                <Image 
+                  src="https://picsum.photos/seed/elec_hd12/1200/800" 
+                  alt="Pro Training" 
+                  fill 
+                  className="object-cover" 
+                  data-ai-hint="electrician tablet"
+                />
+              </div>
+              <div className="relative z-10 flex flex-col items-center">
+                <FileSearch className="w-16 h-16 mb-4 text-muted-foreground" />
+                <CardTitle>Plan Verification Pending</CardTitle>
+                <CardDescription>Upload site plans and input job scope to trigger AI verification and cost estimation.</CardDescription>
+              </div>
             </Card>
           )}
         </div>
