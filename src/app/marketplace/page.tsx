@@ -2,7 +2,7 @@
 "use client"
 
 import { useState, useMemo } from "react"
-import { Search, Star, MapPin, ShieldCheck, Zap, Info, ChevronDown } from "lucide-react"
+import { Search, Star, MapPin, ShieldCheck, Zap, Info, Calendar } from "lucide-react"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -14,7 +14,7 @@ import { TOP_50_CITIES_PRICING } from "@/lib/pricing-data"
 import { calculateDynamicRate, formatCurrency } from "@/lib/pricing-engine"
 import Link from "next/link"
 
-const BASE_ELECTRICIANS = [
+export const BASE_ELECTRICIANS = [
   {
     id: 1,
     name: "Alex Rivera",
@@ -175,10 +175,12 @@ export default function MarketplacePage() {
                 </div>
               </CardContent>
               <CardFooter className="bg-muted/30 p-4">
-                <Button className="w-full font-bold group">
-                  Request Service
-                  <Zap className="ml-2 w-4 h-4 fill-current group-hover:scale-110 transition-transform" />
-                </Button>
+                <Link href={`/schedule/${pro.id}?city=${selectedCity}`} className="w-full">
+                  <Button className="w-full font-bold group">
+                    Schedule Service
+                    <Calendar className="ml-2 w-4 h-4 group-hover:scale-110 transition-transform" />
+                  </Button>
+                </Link>
               </CardFooter>
             </Card>
           );
