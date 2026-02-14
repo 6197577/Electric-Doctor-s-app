@@ -3,6 +3,7 @@
  */
 
 export const SERVICES = [
+  { id: 'video-consult', name: 'Emergency Video Doctor', description: 'Instant video consultation with a Master Electrician for safety and troubleshooting.' },
   { id: 'diagnose', name: 'AI Electrical Diagnosis', description: 'Instant AI-powered electrical fault detection and safety analysis.' },
   { id: 'audit', name: '100-Point Safety Audit', description: 'Comprehensive NEC-compliant electrical safety inspections for homes.' },
   { id: 'lighting-tool', name: 'Lighting & Lumens Analysis', description: 'Expert analysis of room brightness and color temperature quality.' },
@@ -12,7 +13,7 @@ export const SERVICES = [
 ];
 
 export function generateServiceCityTitle(serviceName: string, city: string, state: string) {
-  return `${serviceName} in ${city}, ${state} | Electric Doctor's`;
+  return `${serviceName} in ${city}, ${state} | Emergency Electric Repair`;
 }
 
 export function generateServiceCityDescription(serviceName: string, city: string, state: string) {

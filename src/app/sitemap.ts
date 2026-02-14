@@ -7,10 +7,10 @@ import { SERVICES } from '@/lib/seo-utils';
  */
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const baseUrl = 'https://electric-doctors.com';
+  const baseUrl = 'https://emergencyelectricrepair.com';
 
   // Base routes
-  const routes = ['', '/diagnose', '/audit', '/marketplace', '/subscriptions', '/generator-logs', '/ev-readiness'].map(
+  const routes = ['', '/diagnose', '/audit', '/marketplace', '/subscriptions', '/generator-logs', '/ev-readiness', '/video-consult', '/tracking'].map(
     (route) => ({
       url: `${baseUrl}${route}`,
       lastModified: new Date(),
