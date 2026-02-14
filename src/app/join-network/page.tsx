@@ -1,4 +1,3 @@
-
 "use client"
 
 import { useState } from "react"
@@ -12,7 +11,9 @@ import {
   Upload, 
   Construction, 
   Zap,
-  Info
+  Info,
+  CreditCard,
+  Target
 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
@@ -21,9 +22,10 @@ import { Label } from "@/components/ui/label"
 import { Progress } from "@/components/ui/progress"
 import { useToast } from "@/hooks/use-toast"
 import { Badge } from "@/components/ui/badge"
-import Link from "next/link"
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
+import Link from "link"
 
-type Step = 1 | 2 | 3 | 4
+type Step = 1 | 2 | 3 | 4 | 5
 
 export default function JoinNetworkPage() {
   const [step, setStep] = useState<Step>(1)
@@ -41,6 +43,10 @@ export default function JoinNetworkPage() {
     insuranceProvider: "",
     insurancePolicy: "",
     tin: "",
+    leadModel: "pay-as-you-go",
+    cardNumber: "",
+    expiry: "",
+    cvv: "",
   })
 
   const updateField = (field: keyof typeof formData, value: string) => {
@@ -55,10 +61,10 @@ export default function JoinNetworkPage() {
     // Simulate API call
     await new Promise(resolve => setTimeout(resolve, 2000))
     setIsSubmitting(false)
-    setStep(4)
+    setStep(5)
     toast({
       title: "Application Submitted",
-      description: "Our verification team will review your credentials within 48 hours.",
+      description: "Our verification team will review your credentials and billing info within 48 hours.",
     })
   }
 
@@ -71,10 +77,10 @@ export default function JoinNetworkPage() {
 
       <div className="space-y-2">
         <div className="flex justify-between text-xs font-bold uppercase tracking-widest text-muted-foreground">
-          <span>Step {step} of 3</span>
-          <span>{step === 4 ? "Complete" : Math.round(((step - 1) / 3) * 100) + "%"}</span>
+          <span>Step {step} of 4</span>
+          <span>{step === 5 ? "Complete" : Math.round(((step - 1) / 4) * 100) + "%"}</span>
         </div>
-        <Progress value={step === 4 ? 100 : ((step - 1) / 3) * 100} className="h-2" />
+        <Progress value={step === 5 ? 100 : ((step - 1) / 4) * 100} className="h-2" />
       </div>
 
       {step === 1 && (
@@ -249,18 +255,107 @@ export default function JoinNetworkPage() {
           </CardContent>
           <CardFooter className="flex gap-4">
             <Button variant="outline" className="flex-1" onClick={prevStep}>Back</Button>
-            <Button 
-              className="flex-[2] font-bold" 
-              onClick={handleSubmit}
-              disabled={isSubmitting}
-            >
-              {isSubmitting ? "Submitting Application..." : "Submit Application"}
+            <Button className="flex-[2] font-bold" onClick={nextStep}>
+              Billing & Leads
+              <ArrowRight className="ml-2 w-4 h-4" />
             </Button>
           </CardFooter>
         </Card>
       )}
 
       {step === 4 && (
+        <Card className="animate-in fade-in slide-in-from-right-4 duration-300">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Target className="w-5 h-5 text-primary" />
+              Lead Billing & Model
+            </CardTitle>
+            <CardDescription>Choose how you want to receive and pay for job leads.</CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-8">
+            <div className="space-y-4">
+              <Label className="text-base font-bold">Select Lead Model</Label>
+              <RadioGroup 
+                value={formData.leadModel} 
+                onValueChange={v => updateField('leadModel', v)}
+                className="grid grid-cols-1 md:grid-cols-2 gap-4"
+              >
+                <div className={`p-4 border rounded-xl cursor-pointer transition-all ${formData.leadModel === 'pre-paid' ? 'border-primary bg-primary/5' : 'hover:border-muted-foreground/30'}`} onClick={() => updateField('leadModel', 'pre-paid')}>
+                  <div className="flex items-center gap-3 mb-2">
+                    <RadioGroupItem value="pre-paid" id="pre-paid" />
+                    <Label htmlFor="pre-paid" className="font-bold cursor-pointer">Pre-paid Leads</Label>
+                  </div>
+                  <p className="text-xs text-muted-foreground leading-relaxed">Buy credits in advance at a discount. Best for consistent work volume.</p>
+                </div>
+                <div className={`p-4 border rounded-xl cursor-pointer transition-all ${formData.leadModel === 'pay-as-you-go' ? 'border-primary bg-primary/5' : 'hover:border-muted-foreground/30'}`} onClick={() => updateField('leadModel', 'pay-as-you-go')}>
+                  <div className="flex items-center gap-3 mb-2">
+                    <RadioGroupItem value="pay-as-you-go" id="pay-as-you-go" />
+                    <Label htmlFor="pay-as-you-go" className="font-bold cursor-pointer">Pay As You Go</Label>
+                  </div>
+                  <p className="text-xs text-muted-foreground leading-relaxed">Pay only when you accept a lead. No upfront costs or commitments.</p>
+                </div>
+              </RadioGroup>
+            </div>
+
+            <div className="space-y-4 pt-4 border-t">
+              <div className="flex items-center justify-between">
+                <Label className="text-base font-bold flex items-center gap-2">
+                  <CreditCard className="w-5 h-5 text-primary" />
+                  Payment Method
+                </Label>
+                <Badge variant="outline" className="text-[10px] text-primary border-primary">Encrypted</Badge>
+              </div>
+              <div className="space-y-4">
+                <div className="space-y-2">
+                  <Label htmlFor="cardNum">Card Number</Label>
+                  <Input 
+                    id="cardNum" 
+                    placeholder="4242 4242 4242 4242" 
+                    value={formData.cardNumber}
+                    onChange={e => updateField('cardNumber', e.target.value)}
+                  />
+                </div>
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="expiry">Expiry (MM/YY)</Label>
+                    <Input 
+                      id="expiry" 
+                      placeholder="12/26" 
+                      value={formData.expiry}
+                      onChange={e => updateField('expiry', e.target.value)}
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="cvv">CVV</Label>
+                    <Input 
+                      id="cvv" 
+                      placeholder="123" 
+                      value={formData.cvv}
+                      onChange={e => updateField('cvv', e.target.value)}
+                    />
+                  </div>
+                </div>
+              </div>
+              <div className="p-3 bg-primary/5 rounded-lg border border-primary/20 flex gap-3 text-[10px] text-muted-foreground">
+                <ShieldCheck className="w-4 h-4 text-primary shrink-0" />
+                <p>Your card will be held on file for lead billing. No charges will occur until you choose a package or accept a Pay As You Go lead.</p>
+              </div>
+            </div>
+          </CardContent>
+          <CardFooter className="flex gap-4">
+            <Button variant="outline" className="flex-1" onClick={prevStep}>Back</Button>
+            <Button 
+              className="flex-[2] font-bold" 
+              onClick={handleSubmit}
+              disabled={isSubmitting}
+            >
+              {isSubmitting ? "Processing..." : "Complete Application"}
+            </Button>
+          </CardFooter>
+        </Card>
+      )}
+
+      {step === 5 && (
         <Card className="animate-in zoom-in-95 duration-500 text-center py-12">
           <CardContent className="flex flex-col items-center gap-6">
             <div className="w-20 h-20 rounded-full bg-green-500/10 flex items-center justify-center">
@@ -278,7 +373,7 @@ export default function JoinNetworkPage() {
                 What's Next?
               </h4>
               <p className="text-sm text-muted-foreground leading-relaxed">
-                Our verification team will review your **Contractor License ({formData.contractorLicense})** and **Electrician License** with the state board. You'll receive an email confirmation once approved.
+                Our verification team will review your **Contractor License ({formData.contractorLicense})** and **Billing Profile**. You've selected the **{formData.leadModel.replace(/-/g, ' ')}** lead model. You'll receive an email once approved.
               </p>
             </div>
             <Link href="/marketplace">
