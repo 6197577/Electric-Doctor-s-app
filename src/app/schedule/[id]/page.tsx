@@ -1,4 +1,3 @@
-
 "use client"
 
 import { useState, useMemo, useEffect } from "react"
@@ -18,7 +17,9 @@ import {
   RefreshCcw,
   Camera,
   Upload,
-  Stethoscope
+  Stethoscope,
+  X,
+  Plus
 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card"
@@ -42,6 +43,8 @@ const TIME_SLOTS = [
   "04:00 PM - 06:00 PM"
 ]
 
+const MAX_PHOTOS = 5
+
 export default function SchedulePage() {
   const params = useParams()
   const searchParams = useSearchParams()
@@ -53,7 +56,7 @@ export default function SchedulePage() {
   const [selectedSlot, setSelectedSlot] = useState<string | null>(null)
   
   // Diagnosis State
-  const [file, setFile] = useState<string | null>(null)
+  const [files, setFiles] = useState<string[]>([])
   const [isAnalyzing, setIsAnalyzing] = useState(false)
   const [diagnosisResults, setDiagnosisResults] = useState<AiDiagnosticAssistantOutput | null>(null)
 
@@ -75,27 +78,38 @@ export default function SchedulePage() {
   const bookingFee = dynamicRate * 4
 
   const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0]
-    if (file) {
-      const reader = new FileReader()
-      reader.onloadend = () => setFile(reader.result as string)
-      reader.readAsDataURL(file)
+    const uploadedFiles = Array.from(e.target.files || [])
+    if (files.length + uploadedFiles.length > MAX_PHOTOS) {
+      toast({ title: "Limit Exceeded", description: `You can upload up to ${MAX_PHOTOS} photos.`, variant: "destructive" })
+      return
     }
+
+    uploadedFiles.forEach(file => {
+      const reader = new FileReader()
+      reader.onloadend = () => {
+        setFiles(prev => [...prev, reader.result as string].slice(0, MAX_PHOTOS))
+      }
+      reader.readAsDataURL(file)
+    })
+  }
+
+  const removeFile = (index: number) => {
+    setFiles(prev => prev.filter((_, i) => i !== index))
   }
 
   const runDiagnosis = async () => {
-    if (!file) {
-      toast({ title: "Photo Required", description: "Please provide a photo of the malfunction.", variant: "destructive" })
+    if (files.length === 0) {
+      toast({ title: "Photo Required", description: "Please provide at least one photo of the malfunction.", variant: "destructive" })
       return
     }
     setIsAnalyzing(true)
     try {
       const result = await aiDiagnosticAssistant({
-        photoDataUri: file,
-        description: `Booking diagnosis for ${pro.name} appointment.`
+        photoDataUris: files,
+        description: `Booking diagnosis for ${pro.name} appointment. ${files.length} photos provided.`
       })
       setDiagnosisResults(result)
-      toast({ title: "Scan Complete", description: "Diagnosis report attached to your booking." })
+      toast({ title: "Scan Complete", description: "Comprehensive diagnosis report attached to your booking." })
     } catch (error) {
       toast({ title: "Scan Failed", description: "Could not complete AI scan. Please skip or try again.", variant: "destructive" })
     } finally {
@@ -218,74 +232,71 @@ export default function SchedulePage() {
                   <Stethoscope className="w-3 h-3" />
                   Pre-Visit AI Diagnostic Scan
                 </span>
-                <Badge variant="outline" className="border-primary text-primary text-[10px]">FREE WITH BOOKING</Badge>
+                <Badge variant="outline" className="border-primary text-primary text-[10px]">UP TO 5 PHOTOS</Badge>
               </div>
               <CardHeader>
                 <CardTitle>Malfunction Briefing</CardTitle>
-                <CardDescription>Upload a photo of the issue. Our AI will analyze it for {pro.name.split(' ')[0]} to review before arrival.</CardDescription>
+                <CardDescription>Provide up to {MAX_PHOTOS} photos of the issue. Our AI analyzes the set for {pro.name.split(' ')[0]} to review.</CardDescription>
               </CardHeader>
               <CardContent className="space-y-6">
                 {!diagnosisResults ? (
                   <div className="flex flex-col gap-6">
-                    <div 
-                      className="border-2 border-dashed rounded-2xl p-8 flex flex-col items-center justify-center gap-4 cursor-pointer hover:bg-muted/30 transition-all bg-muted/10 relative overflow-hidden group"
-                      onClick={() => !file && document.getElementById('diagInput')?.click()}
-                    >
-                      {file ? (
-                        <div className="relative w-full aspect-video rounded-xl overflow-hidden shadow-xl border">
-                          <Image src={file} alt="Issue" fill className="object-cover" />
+                    <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+                      {files.map((file, idx) => (
+                        <div key={idx} className="relative aspect-square rounded-xl overflow-hidden shadow-sm border group">
+                          <Image src={file} alt={`Issue ${idx + 1}`} fill className="object-cover" />
                           <Button 
                             variant="destructive" 
                             size="icon" 
-                            className="absolute top-2 right-2 rounded-full h-8 w-8"
-                            onClick={(e) => { e.stopPropagation(); setFile(null); }}
+                            className="absolute top-1 right-1 rounded-full h-6 w-6 opacity-0 group-hover:opacity-100 transition-opacity"
+                            onClick={() => removeFile(idx)}
                           >
-                            <ArrowLeft className="h-4 w-4" />
+                            <X className="h-3 w-3" />
                           </Button>
                         </div>
-                      ) : (
-                        <>
-                          <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center group-hover:scale-110 transition-transform">
-                            <Camera className="w-8 h-8 text-primary" />
-                          </div>
-                          <div className="text-center">
-                            <p className="font-bold">Snap a Clear Photo</p>
-                            <p className="text-xs text-muted-foreground">Main panel, scorched outlet, or faulty device</p>
-                          </div>
-                          <Button variant="outline" size="sm">Select Photo</Button>
-                        </>
+                      ))}
+                      {files.length < MAX_PHOTOS && (
+                        <div 
+                          className="aspect-square border-2 border-dashed rounded-xl flex flex-col items-center justify-center gap-2 cursor-pointer hover:bg-muted/30 transition-all bg-muted/10"
+                          onClick={() => document.getElementById('diagInput')?.click()}
+                        >
+                          <Plus className="w-8 h-8 text-muted-foreground" />
+                          <span className="text-[10px] font-bold text-muted-foreground uppercase">Add Photo</span>
+                        </div>
                       )}
-                      <input id="diagInput" type="file" className="hidden" accept="image/*" onChange={handleFileUpload} />
                     </div>
+                    
+                    <input id="diagInput" type="file" className="hidden" accept="image/*" multiple onChange={handleFileUpload} />
+                    
                     <Button 
                       className="w-full h-12 font-black" 
-                      disabled={!file || isAnalyzing}
+                      disabled={files.length === 0 || isAnalyzing}
                       onClick={runDiagnosis}
                     >
-                      {isAnalyzing ? <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> Analyzing Issue...</> : "Run AI Diagnostic Scan"}
+                      {isAnalyzing ? <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> Analyzing {files.length} Photos...</> : `Run AI Scan on ${files.length} Photos`}
                     </Button>
                     <p className="text-[10px] text-muted-foreground text-center italic">
-                      This scan assists in training our AI agents and prepares your pro for the site visit.
+                      Uploading multiple angles helps the AI provide a more accurate safety assessment.
                     </p>
                   </div>
                 ) : (
                   <div className="space-y-6 animate-in zoom-in-95 duration-300">
                     <div className="p-4 bg-primary/5 rounded-2xl border border-primary/20 space-y-3">
                        <h4 className="text-xs font-black uppercase text-primary flex items-center gap-2">
-                         <Zap className="w-4 h-4" /> Preliminary Diagnosis
+                         <Zap className="w-4 h-4" /> Comprehensive Multi-Angle Diagnosis
                        </h4>
                        <p className="text-sm font-medium leading-relaxed italic">"{diagnosisResults.overallDiagnosis}"</p>
                        <div className="grid grid-cols-2 gap-2">
-                          {diagnosisResults.identifiedParts.slice(0, 2).map((p, i) => (
-                            <Badge key={i} variant="secondary" className="text-[9px] bg-background/50">{p.partName}: {p.condition}</Badge>
+                          {diagnosisResults.identifiedParts.map((p, i) => (
+                            <Badge key={i} variant="secondary" className="text-[9px] bg-background/50 truncate">{p.partName}: {p.condition}</Badge>
                           ))}
                        </div>
                     </div>
                     <div className="p-4 bg-amber-500/10 rounded-xl border border-amber-500/20 flex gap-3">
                       <AlertTriangle className="w-5 h-5 text-amber-500 shrink-0" />
                       <div className="space-y-1">
-                        <p className="text-[10px] font-black uppercase text-amber-600">Pro Briefing Initialized</p>
-                        <p className="text-xs text-muted-foreground leading-tight">These results have been transmitted to {pro.name}. They will review the NEC implications before arrival.</p>
+                        <p className="text-[10px] font-black uppercase text-amber-600">Pro Review Initialized</p>
+                        <p className="text-xs text-muted-foreground leading-tight">Your {files.length} photos and diagnostic report are now in {pro.name}&apos;s dispatch queue for pre-visit analysis.</p>
                       </div>
                     </div>
                   </div>
@@ -321,8 +332,8 @@ export default function SchedulePage() {
                     <span className="font-bold">{date ? format(date, 'MMM do') : 'N/A'} @ {selectedSlot}</span>
                   </div>
                   <div className="flex justify-between text-sm pt-2 border-t border-white/5">
-                    <span className="text-muted-foreground">AI Report Status</span>
-                    <Badge className="bg-green-500 text-black font-black text-[9px]">ATTACHED</Badge>
+                    <span className="text-muted-foreground">Multi-Angle AI Report</span>
+                    <Badge className="bg-green-500 text-black font-black text-[9px] uppercase">Attached ({files.length} Photos)</Badge>
                   </div>
                 </div>
 
@@ -337,7 +348,7 @@ export default function SchedulePage() {
                       <CreditCard className="w-6 h-6 text-primary" />
                       <div className="text-left">
                         <p className="font-bold">Pay with Stripe</p>
-                        <p className="text-[10px] text-muted-foreground uppercase">Fast & Secure</p>
+                        <p className="text-[10px] text-muted-foreground uppercase">72H Cancel Policy Active</p>
                       </div>
                     </div>
                     {isProcessing ? <Loader2 className="animate-spin w-5 h-5" /> : <ArrowRight className="w-4 h-4" />}
@@ -394,16 +405,16 @@ export default function SchedulePage() {
                    <div className="space-y-4 text-left">
                       <div className="flex items-start gap-3 text-sm">
                          <Zap className="w-5 h-5 text-primary shrink-0 mt-0.5" />
-                         <p className="font-medium">AI Report Transmitted: {pro.name.split(' ')[0]} is currently reviewing your scan results to assist in diagnostic training and site prep.</p>
+                         <p className="font-medium">Multi-Angle Report Transmitted: {pro.name.split(' ')[0]} has received your {files.length} photos for pre-visit briefing.</p>
                       </div>
                       <div className="p-3 bg-muted/30 rounded-lg border text-[10px] leading-relaxed">
-                        <p className="font-bold uppercase mb-1">Cancellation Policy</p>
-                        Full refund if canceled 72h prior. Flexible rescheduling available up to 24h before arrival.
+                        <p className="font-bold uppercase mb-1 text-destructive">Cancellation Policy Reminder</p>
+                        Full refund if canceled at least 72h prior. Cancellations after this window help compensate the pro for reserved routing.
                       </div>
                    </div>
                 </div>
                 <div className="flex gap-4">
-                  <Button variant="outline" onClick={() => router.push('/tracking')} className="font-bold border-primary text-primary">
+                  <Button onClick={() => router.push('/tracking')} className="font-bold">
                     Live Dispatch Tracking
                   </Button>
                   <Button onClick={() => router.push('/')} variant="ghost">Return Home</Button>
@@ -449,7 +460,7 @@ export default function SchedulePage() {
                   <div className="w-5 h-5 rounded-full bg-green-500/10 flex items-center justify-center shrink-0">
                     <CheckCircle2 className="w-3 h-3 text-green-500" />
                   </div>
-                  <span>1-Time Free Reschedule</span>
+                  <span>1-Time Free Reschedule Incentive</span>
                </div>
             </CardContent>
           </Card>

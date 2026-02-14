@@ -11,10 +11,10 @@ import {ai} from '@/ai/genkit';
 import {z} from 'genkit';
 
 const AiDiagnosticAssistantInputSchema = z.object({
-  photoDataUri: z
-    .string()
+  photoDataUris: z
+    .array(z.string())
     .describe(
-      "A photo or video frame of an electrical issue, as a data URI that must include a MIME type and use Base64 encoding. Expected format: 'data:<mimetype>;base64,<encoded_data>'."
+      "A list of photos or video frames of an electrical issue, as data URIs that must include a MIME type and use Base64 encoding. Expected format: 'data:<mimetype>;base64,<encoded_data>'."
     ),
   description: z
     .string()
@@ -44,19 +44,21 @@ const diagnosticPrompt = ai.definePrompt({
   name: 'electricalDiagnosticPrompt',
   input: {schema: AiDiagnosticAssistantInputSchema},
   output: {schema: AiDiagnosticAssistantOutputSchema},
-  prompt: `You are an expert electrical diagnostic assistant. Your task is to analyze an electrical issue based on an image and an optional description provided by a homeowner. Your response must be in JSON format, strictly adhering to the provided schema.
+  prompt: `You are an expert electrical diagnostic assistant. Your task is to analyze an electrical issue based on multiple images and an optional description provided by a homeowner. Your response must be in JSON format, strictly adhering to the provided schema.
 
 Perform the following steps:
-1.  **Diagnose the problem**: Provide an overall diagnosis of the electrical issue.
-2.  **Identify damaged parts**: List any damaged, worn, or missing electrical parts visible in the image or described by the user.
-3.  **Explain the nature of the problem**: Provide a detailed explanation of what is happening, why it might be happening, and its potential consequences.
-4.  **Assess urgency**: Determine the urgency level of the issue (low, medium, high, critical).
-5.  **Provide safety recommendations**: Offer immediate safety advice or warnings.
+1.  **Diagnose the problem**: Provide an overall diagnosis based on all provided images.
+2.  **Identify damaged parts**: List any damaged, worn, or missing electrical parts visible across the images.
+3.  **Explain the nature of the problem**: Provide a detailed explanation of what is happening.
+4.  **Assess urgency**: Determine the urgency level (low, medium, high, critical).
+5.  **Provide safety recommendations**: Offer immediate safety advice.
 
 Use the following as the primary sources of information:
 
 Description: {{{description}}}
-Photo/Video Frame: {{media url=photoDataUri}}`,
+{{#each photoDataUris}}
+Photo/Video Frame {{ @index }}: {{media url=this}}
+{{/each}}`,
 });
 
 const aiDiagnosticAssistantFlow = ai.defineFlow(
