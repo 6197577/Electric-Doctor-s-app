@@ -23,7 +23,7 @@ import { Progress } from "@/components/ui/progress"
 import { useToast } from "@/hooks/use-toast"
 import { Badge } from "@/components/ui/badge"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
-import Link from "link"
+import Link from "next/link"
 
 type Step = 1 | 2 | 3 | 4 | 5
 
