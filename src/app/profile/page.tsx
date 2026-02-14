@@ -1,4 +1,3 @@
-
 "use client"
 
 import { User, Settings, CreditCard, History, Shield, LogOut, Zap, Bell } from "lucide-react"
@@ -97,7 +96,7 @@ export default function ProfilePage() {
                 <div className="flex items-center justify-between">
                    <div className="flex flex-col gap-1">
                       <Label className="font-bold">Marketing & Offers</Label>
-                      <p className="text-xs text-muted-foreground">Special discounts on products and inspections.</p>
+                      <p className="text-xs text-muted-foreground">Special discounts on products and audits.</p>
                    </div>
                    <Switch />
                 </div>
@@ -117,7 +116,7 @@ export default function ProfilePage() {
                             <Zap className="w-5 h-5 text-primary" />
                          </div>
                          <div>
-                            <p className="text-sm font-bold">Panel Inspection</p>
+                            <p className="text-sm font-bold">Panel Audit</p>
                             <p className="text-xs text-muted-foreground">Completed • Oct 15, 2023</p>
                          </div>
                       </div>
