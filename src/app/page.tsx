@@ -1,5 +1,5 @@
 import Link from "next/link"
-import { Zap, ShieldAlert, ShoppingBag, ArrowRight, Activity, MapPin, Sun, ClipboardList, ShieldCheck, Globe, BatteryCharging, Video, Stethoscope } from "lucide-react"
+import { Zap, ShieldAlert, ShoppingBag, ArrowRight, Activity, MapPin, Sun, ClipboardList, ShieldCheck, Globe, BatteryCharging, Video, Stethoscope, BarChart3 } from "lucide-react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
@@ -19,7 +19,7 @@ export default function Home() {
             <span className="text-primary">Talk to a Doctor.</span>
           </h1>
           <p className="text-muted-foreground text-xl max-w-lg leading-relaxed">
-            Instant AI diagnostics, $49 Master Electrician video consults, and live-tracked emergency repairs.
+            Instant AI diagnostics, $49 Master Electrician video consults, and predictive maintenance to prevent fires.
           </p>
           <div className="flex flex-wrap gap-4 mt-4">
             <Link href="/video-consult">
@@ -29,10 +29,10 @@ export default function Home() {
                 <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
               </Button>
             </Link>
-            <Link href="/diagnose">
+            <Link href="/predictive-maintenance">
               <Button size="lg" variant="outline" className="font-bold h-14 px-8 border-primary text-primary hover:bg-primary/10">
-                Instant AI Scan
-                <Zap className="ml-2 w-5 h-5" />
+                Predictive Risk Scan
+                <BarChart3 className="ml-2 w-5 h-5" />
               </Button>
             </Link>
           </div>
@@ -46,9 +46,9 @@ export default function Home() {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         {[
           { icon: Video, title: "Video Doctor", desc: "Consult with a Master", href: "/video-consult", label: "Start Call", badge: "$49.00" },
+          { icon: BarChart3, title: "Predictive AI", desc: "Prevent Failure Points", href: "/predictive-maintenance", label: "Discovery Scan", badge: "NEW" },
           { icon: BatteryCharging, title: "EV Readiness", desc: "Capacity Calculation", href: "/ev-readiness", label: "Get report", badge: "$29.99" },
-          { icon: ShieldCheck, title: "Safety Audit", desc: "100-Point NEC Check", href: "/audit", label: "Book Audit", badge: "$47.93" },
-          { icon: MapPin, title: "Live Tracking", desc: "Track your Dispatch", href: "/tracking", label: "Track Pro" }
+          { icon: ShieldCheck, title: "Safety Audit", desc: "100-Point NEC Check", href: "/audit", label: "Book Audit", badge: "$47.93" }
         ].map((service, i) => (
           <Card key={i} className="group hover:border-primary/50 transition-all cursor-pointer relative overflow-hidden">
             {service.badge && (
