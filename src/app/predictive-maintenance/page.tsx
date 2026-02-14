@@ -11,7 +11,7 @@ import { Label } from "@/components/ui/label"
 import { useToast } from "@/hooks/use-toast"
 import { predictMaintenanceNeeds, PredictiveMaintenanceOutput } from "@/ai/flows/predictive-maintenance-flow"
 import { Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis, CartesianGrid, Area, AreaChart } from "recharts"
-import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart"
+import { ChartContainer, ChartTooltip, ChartTooltipContent, type ChartConfig } from "@/components/ui/chart"
 
 const costData = [
   { year: "Year 1", reactive: 200, predictive: 240, gap: 40 },
@@ -20,6 +20,17 @@ const costData = [
   { year: "Year 4", reactive: 600, predictive: 240, gap: 360 },
   { year: "Year 5", reactive: 2500, predictive: 240, gap: 2260 },
 ]
+
+const chartConfig = {
+  reactive: {
+    label: "Emergency Cost",
+    color: "#ff4d4d",
+  },
+  predictive: {
+    label: "Predictive Plan",
+    color: "hsl(var(--primary))",
+  },
+} satisfies ChartConfig
 
 export default function PredictiveMaintenancePage() {
   const [isAnalyzing, setIsAnalyzing] = useState(false)
@@ -80,7 +91,7 @@ export default function PredictiveMaintenancePage() {
           </CardHeader>
           <CardContent className="pt-8 space-y-12">
              <div className="h-[350px] w-full">
-                <ResponsiveContainer width="100%" height="100%">
+                <ChartContainer config={chartConfig} className="h-full w-full">
                   <AreaChart data={costData}>
                     <defs>
                       <linearGradient id="colorReactive" x1="0" y1="0" x2="0" y2="1">
@@ -95,14 +106,13 @@ export default function PredictiveMaintenancePage() {
                     <CartesianGrid strokeDasharray="3 3" opacity={0.05} vertical={false} />
                     <XAxis dataKey="year" stroke="#888888" fontSize={12} tickLine={false} axisLine={false} />
                     <YAxis stroke="#888888" fontSize={12} tickLine={false} axisLine={false} tickFormatter={(value) => `$${value}`} />
-                    <Tooltip 
+                    <ChartTooltip 
                       content={<ChartTooltipContent />}
-                      contentStyle={{ backgroundColor: "#000", border: "1px solid #333", borderRadius: "12px" }}
                     />
                     <Area type="monotone" dataKey="reactive" name="Emergency Cost" stroke="#ff4d4d" fillOpacity={1} fill="url(#colorReactive)" strokeWidth={3} />
                     <Area type="monotone" dataKey="predictive" name="Predictive Plan" stroke="hsl(var(--primary))" fillOpacity={1} fill="url(#colorPredictive)" strokeWidth={3} />
                   </AreaChart>
-                </ResponsiveContainer>
+                </ChartContainer>
              </div>
              
              <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
