@@ -13,7 +13,7 @@ export function Header() {
           <Link href="/diagnose" className="hover:text-primary transition-colors">AI Diagnostic</Link>
           <Link href="/products/smart-panels" className="hover:text-primary transition-colors font-bold text-primary">Smart Panels</Link>
           <Link href="/predictive-maintenance" className="hover:text-primary transition-colors">Predictive</Link>
-          <Link href="/audit" className="hover:text-primary transition-colors">Safety Audit</Link>
+          <Link href="/commercial-audit" className="hover:text-primary transition-colors">Commercial Audit</Link>
           <Link href="/subscriptions" className="hover:text-primary transition-colors">Plans</Link>
           <Link href="/marketplace" className="hover:text-primary transition-colors">Marketplace</Link>
           <Link href="/profile" className="hover:text-primary transition-colors">Account</Link>

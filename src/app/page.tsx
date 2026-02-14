@@ -1,5 +1,5 @@
 import Link from "next/link"
-import { Zap, ShieldAlert, ShoppingBag, ArrowRight, Activity, MapPin, Sun, ClipboardList, ShieldCheck, Globe, BatteryCharging, Video, Stethoscope, BarChart3, TrendingUp, Calculator, Shield, Cpu } from "lucide-react"
+import { Zap, ShieldAlert, ShoppingBag, ArrowRight, Activity, MapPin, Sun, ClipboardList, ShieldCheck, Globe, BatteryCharging, Video, Stethoscope, BarChart3, TrendingUp, Calculator, Shield, Cpu, Building2, Factory } from "lucide-react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
@@ -84,7 +84,7 @@ export default function Home() {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         {[
           { icon: Video, title: "Video Doctor", desc: "Instant Master Access", href: "/video-consult", label: "Start Call", badge: "$97.00" },
-          { icon: BarChart3, title: "Predictive AI", desc: "Prevent Failure Points", href: "/predictive-maintenance", label: "Discovery Scan", badge: "NEW" },
+          { icon: Factory, title: "Commercial Audit", desc: "OSHA & Compliance", href: "/commercial-audit", label: "Book Facility Audit", badge: "$119.73" },
           { icon: BatteryCharging, title: "EV Readiness", desc: "Capacity Calculation", href: "/ev-readiness", label: "Get report", badge: "$29.99" },
           { icon: ShieldCheck, title: "Safety Audit", desc: "100-Point NEC Check", href: "/audit", label: "Book Audit", badge: "$47.93" }
         ].map((service, i) => (

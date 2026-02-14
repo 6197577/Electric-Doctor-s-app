@@ -14,6 +14,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     '', 
     '/diagnose', 
     '/audit', 
+    '/commercial-audit',
     '/marketplace', 
     '/subscriptions', 
     '/generator-logs', 
