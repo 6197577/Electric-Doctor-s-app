@@ -12,7 +12,7 @@ import { useState } from "react"
 const RESIDENTIAL_PLANS = [
   {
     name: "Home Standard",
-    price: "$19",
+    price: "$97",
     description: "Essential protection for your family home.",
     features: [
       "1x Annual 100-Point Audit",
@@ -26,7 +26,7 @@ const RESIDENTIAL_PLANS = [
   },
   {
     name: "Home Pro",
-    price: "$49",
+    price: "$197",
     description: "Premium care for modern smart homes.",
     features: [
       "2x Annual 100-Point Audits",
