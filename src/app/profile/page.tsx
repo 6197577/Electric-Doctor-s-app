@@ -1,7 +1,6 @@
-
 "use client"
 
-import { User, Settings, CreditCard, History, Shield, LogOut, Zap, Bell, Crown } from "lucide-react"
+import { User, Settings, CreditCard, History, Shield, LogOut, Zap, Bell, Crown, Calculator, Briefcase } from "lucide-react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
@@ -23,7 +22,7 @@ export default function ProfilePage() {
           <div className="flex items-center gap-2">
             <Badge variant="secondary" className="bg-primary/10 text-primary border-primary/20">
               <Crown className="w-3 h-3 mr-1" />
-              Standard Residential
+              Verified Electrician
             </Badge>
             <span className="text-sm text-muted-foreground">johndoe@example.com</span>
           </div>
@@ -41,16 +40,18 @@ export default function ProfilePage() {
                 <User className="w-4 h-4 text-primary" /> Account Overview
               </Button>
               <Button variant="ghost" className="justify-start gap-3 font-medium h-12 hover:bg-muted/30">
-                <History className="w-4 h-4 text-primary" /> Job History
+                <Briefcase className="w-4 h-4 text-primary" /> Pro Leads
+              </Button>
+              <Link href="/pro/estimate">
+                <Button variant="ghost" className="w-full justify-start gap-3 font-medium h-12 hover:bg-muted/30">
+                  <Calculator className="w-4 h-4 text-primary" /> AI Estimator
+                </Button>
+              </Link>
+              <Button variant="ghost" className="justify-start gap-3 font-medium h-12 hover:bg-muted/30">
+                <CreditCard className="w-4 h-4 text-primary" /> Billing
               </Button>
               <Button variant="ghost" className="justify-start gap-3 font-medium h-12 hover:bg-muted/30">
-                <CreditCard className="w-4 h-4 text-primary" /> Payment Methods
-              </Button>
-              <Button variant="ghost" className="justify-start gap-3 font-medium h-12 hover:bg-muted/30">
-                <Shield className="w-4 h-4 text-primary" /> Security & Privacy
-              </Button>
-              <Button variant="ghost" className="justify-start gap-3 font-medium h-12 hover:bg-muted/30">
-                <Settings className="w-4 h-4 text-primary" /> App Settings
+                <Shield className="w-4 h-4 text-primary" /> Security
               </Button>
               <div className="my-2 border-t border-border" />
               <Button variant="ghost" className="justify-start gap-3 font-medium h-12 text-destructive hover:bg-destructive/10">
@@ -63,16 +64,13 @@ export default function ProfilePage() {
              <CardHeader className="pb-2">
                <CardTitle className="text-sm flex items-center gap-2">
                  <Zap className="w-4 h-4 text-primary fill-primary" />
-                 Pro Tip
+                 Pro Access
                </CardTitle>
              </CardHeader>
              <CardContent>
                <p className="text-xs text-muted-foreground">
-                 Upgrade to "Home Pro" to unlock predictive failure alerts and a 10% discount on all service calls.
+                 You have <b>Unlimited AI Scans</b> and full access to our project estimation suite.
                </p>
-               <Link href="/subscriptions">
-                <Button variant="link" className="p-0 h-auto text-[10px] text-primary mt-2">View Upgrade Options &rarr;</Button>
-               </Link>
              </CardContent>
           </Card>
         </div>
@@ -82,50 +80,50 @@ export default function ProfilePage() {
              <CardHeader>
                <div className="flex items-center justify-between">
                  <div>
-                   <CardTitle>Current Subscription</CardTitle>
-                   <CardDescription>You are currently on the Home Standard plan.</CardDescription>
+                   <CardTitle>Professional Status</CardTitle>
+                   <CardDescription>Network Tier: Master Electrician (High Volume)</CardDescription>
                  </div>
-                 <Badge className="bg-primary text-black font-bold">ACTIVE</Badge>
+                 <Badge className="bg-primary text-black font-bold">VERIFIED</Badge>
                </div>
              </CardHeader>
              <CardContent className="space-y-4">
                 <div className="grid grid-cols-3 gap-4">
                   <div className="flex flex-col p-3 rounded-lg bg-background border">
-                    <span className="text-[10px] text-muted-foreground uppercase font-bold">Audits Used</span>
-                    <span className="text-xl font-bold">1/3</span>
+                    <span className="text-[10px] text-muted-foreground uppercase font-bold">Leads Won</span>
+                    <span className="text-xl font-bold">42</span>
                   </div>
                   <div className="flex flex-col p-3 rounded-lg bg-background border">
                     <span className="text-[10px] text-muted-foreground uppercase font-bold">AI Scans (Mo)</span>
-                    <span className="text-xl font-bold">2/10</span>
+                    <span className="text-xl font-bold">Unlimited</span>
                   </div>
                   <div className="flex flex-col p-3 rounded-lg bg-background border">
-                    <span className="text-[10px] text-muted-foreground uppercase font-bold">Next Billing</span>
-                    <span className="text-xl font-bold">Oct 12</span>
+                    <span className="text-[10px] text-muted-foreground uppercase font-bold">Earnings</span>
+                    <span className="text-xl font-bold text-green-500">$12.4k</span>
                   </div>
                 </div>
-                <Link href="/subscriptions">
-                  <Button className="w-full font-bold bg-primary text-black hover:bg-primary/90">Manage or Change Plan</Button>
+                <Link href="/pro/estimate">
+                  <Button className="w-full font-bold bg-primary text-black hover:bg-primary/90">Open Project Estimator</Button>
                 </Link>
              </CardContent>
            </Card>
 
            <Card>
              <CardHeader>
-               <CardTitle>Notifications</CardTitle>
-               <CardDescription>Manage how you receive alerts and updates.</CardDescription>
+               <CardTitle>Pro Notifications</CardTitle>
+               <CardDescription>Manage your high-priority lead alerts.</CardDescription>
              </CardHeader>
              <CardContent className="flex flex-col gap-6">
                 <div className="flex items-center justify-between">
                    <div className="flex flex-col gap-1">
-                      <Label className="font-bold">Push Notifications</Label>
-                      <p className="text-xs text-muted-foreground">Receive real-time tracking updates and safety alerts.</p>
+                      <Label className="font-bold">Urgent Lead Alerts</Label>
+                      <p className="text-xs text-muted-foreground">Get notified within seconds of emergency video consult requests.</p>
                    </div>
                    <Switch defaultChecked />
                 </div>
                 <div className="flex items-center justify-between">
                    <div className="flex flex-col gap-1">
-                      <Label className="font-bold">Predictive Maintenance Alerts</Label>
-                      <p className="text-xs text-muted-foreground">AI warnings about potential system failures.</p>
+                      <Label className="font-bold">Estimator AI Updates</Label>
+                      <p className="text-xs text-muted-foreground">Receive updates when local material pricing indices change.</p>
                    </div>
                    <Switch defaultChecked />
                 </div>
@@ -134,8 +132,8 @@ export default function ProfilePage() {
 
            <Card>
              <CardHeader>
-               <CardTitle>Recent Job Activity</CardTitle>
-               <CardDescription>Your last 3 interactions with service pros.</CardDescription>
+               <CardTitle>Recent Projects</CardTitle>
+               <CardDescription>Your last 3 estimated or completed jobs.</CardDescription>
              </CardHeader>
              <CardContent className="p-0">
                 <div className="divide-y border-t">
@@ -145,11 +143,13 @@ export default function ProfilePage() {
                             <Zap className="w-5 h-5 text-primary" />
                          </div>
                          <div>
-                            <p className="text-sm font-bold">Electrical Audit ($47.93)</p>
-                            <p className="text-xs text-muted-foreground">Completed • Today</p>
+                            <p className="text-sm font-bold">EV Charger Install ($842.00)</p>
+                            <p className="text-xs text-muted-foreground">Estimated • 2 hours ago</p>
                          </div>
                       </div>
-                      <Button variant="ghost" size="sm">View Receipt</Button>
+                      <Link href="/pro/estimate">
+                        <Button variant="ghost" size="sm">View Estimate</Button>
+                      </Link>
                    </div>
                    <div className="p-4 flex items-center justify-between">
                       <div className="flex items-center gap-3">
@@ -157,11 +157,11 @@ export default function ProfilePage() {
                             <Zap className="w-5 h-5 text-primary" />
                          </div>
                          <div>
-                            <p className="text-sm font-bold">Outlet Repair</p>
+                            <p className="text-sm font-bold">Main Panel Retrofit</p>
                             <p className="text-xs text-muted-foreground">Completed • Sept 22, 2023</p>
                          </div>
                       </div>
-                      <Button variant="ghost" size="sm">View Receipt</Button>
+                      <Button variant="ghost" size="sm">View Job</Button>
                    </div>
                 </div>
              </CardContent>
