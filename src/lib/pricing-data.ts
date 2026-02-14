@@ -47,7 +47,7 @@ export const TOP_50_CITIES_PRICING: CityPricing[] = [
   { city: "Minneapolis", state: "MN", multiplier: 1.12 },
   { city: "Morgantown", state: "WV", multiplier: 0.92 },
   { city: "Nashville", state: "TN", multiplier: 1.08 },
-  { city: "New York", state: "NY", multiplier: 1.35 },
+  { city: "New York", state: "NY", multiplier: 1.65 },
   { city: "Oakland", state: "CA", multiplier: 1.28 },
   { city: "Oklahoma City", state: "OK", multiplier: 0.88 },
   { city: "Omaha", state: "NE", multiplier: 0.94 },
