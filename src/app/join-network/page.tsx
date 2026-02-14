@@ -14,7 +14,8 @@ import {
   Info,
   CreditCard,
   Target,
-  Lock
+  Lock,
+  BarChart3
 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
@@ -25,8 +26,34 @@ import { useToast } from "@/hooks/use-toast"
 import { Badge } from "@/components/ui/badge"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import Link from "next/link"
+import { Bar, BarChart, CartesianGrid, XAxis, YAxis, ResponsiveContainer } from "recharts"
+import { ChartContainer, ChartTooltip, ChartTooltipContent, type ChartConfig } from "@/components/ui/chart"
 
 type Step = 1 | 2 | 3 | 4 | 5
+
+const chartData = [
+  { model: "Pay As You Go", cost: 35, fill: "var(--color-paygo)" },
+  { model: "Pre-paid (10)", cost: 28, fill: "var(--color-prepaid10)" },
+  { model: "Pre-paid (50)", cost: 22, fill: "var(--color-prepaid50)" },
+]
+
+const chartConfig = {
+  cost: {
+    label: "Cost Per Lead ($)",
+  },
+  paygo: {
+    label: "Pay As You Go",
+    color: "hsl(var(--muted))",
+  },
+  prepaid10: {
+    label: "Pre-paid (10)",
+    color: "hsl(var(--primary))",
+  },
+  prepaid50: {
+    label: "Pre-paid (50)",
+    color: "hsl(var(--primary))",
+  },
+} satisfies ChartConfig
 
 export default function JoinNetworkPage() {
   const [step, setStep] = useState<Step>(1)
@@ -86,10 +113,8 @@ export default function JoinNetworkPage() {
       {step === 1 && (
         <Card className="animate-in fade-in slide-in-from-right-4 duration-300">
           <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Briefcase className="w-5 h-5 text-primary" />
-              Professional Identity
-            </CardTitle>
+            <Briefcase className="w-5 h-5 text-primary" />
+            <CardTitle>Professional Identity</CardTitle>
             <CardDescription>Tell us about yourself and your business.</CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
@@ -146,10 +171,8 @@ export default function JoinNetworkPage() {
       {step === 2 && (
         <Card className="animate-in fade-in slide-in-from-right-4 duration-300">
           <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Construction className="w-5 h-5 text-primary" />
-              Trade Licenses
-            </CardTitle>
+            <Construction className="w-5 h-5 text-primary" />
+            <CardTitle>Trade Licenses</CardTitle>
             <CardDescription>State verification requires valid contractor and master/journeyman numbers.</CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
@@ -200,10 +223,8 @@ export default function JoinNetworkPage() {
       {step === 3 && (
         <Card className="animate-in fade-in slide-in-from-right-4 duration-300">
           <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <ShieldCheck className="w-5 h-5 text-primary" />
-              Insurance & Tax (W-9)
-            </CardTitle>
+            <ShieldCheck className="w-5 h-5 text-primary" />
+            <CardTitle>Insurance & Tax (W-9)</CardTitle>
             <CardDescription>Final requirements for payout and liability compliance.</CardDescription>
           </CardHeader>
           <CardContent className="space-y-6">
@@ -256,15 +277,44 @@ export default function JoinNetworkPage() {
       {step === 4 && (
         <Card className="animate-in fade-in slide-in-from-right-4 duration-300">
           <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Target className="w-5 h-5 text-primary" />
-              Lead Billing & Model
-            </CardTitle>
+            <Target className="w-5 h-5 text-primary" />
+            <CardTitle>Lead Billing & Model</CardTitle>
             <CardDescription>Choose how you want to receive and pay for job leads via Stripe.</CardDescription>
           </CardHeader>
           <CardContent className="space-y-8">
-            <div className="space-y-4">
+            <div className="space-y-6">
               <Label className="text-base font-bold">Select Lead Model</Label>
+              
+              {/* Cost Comparison Chart */}
+              <div className="bg-muted/10 border rounded-xl p-4 space-y-4">
+                <div className="flex items-center gap-2 text-sm font-bold">
+                  <BarChart3 className="w-4 h-4 text-primary" />
+                  Lead Cost Comparison
+                </div>
+                <ChartContainer config={chartConfig} className="h-[200px] w-full">
+                  <BarChart data={chartData}>
+                    <CartesianGrid vertical={false} strokeDasharray="3 3" opacity={0.1} />
+                    <XAxis
+                      dataKey="model"
+                      tickLine={false}
+                      tickMargin={10}
+                      axisLine={false}
+                    />
+                    <YAxis 
+                      tickLine={false}
+                      axisLine={false}
+                      tickFormatter={(value) => `$${value}`}
+                    />
+                    <ChartTooltip content={<ChartTooltipContent />} />
+                    <Bar
+                      dataKey="cost"
+                      radius={[4, 4, 0, 0]}
+                    />
+                  </BarChart>
+                </ChartContainer>
+                <p className="text-[10px] text-muted-foreground text-center">Save up to 37% per lead with Pre-paid (50) credits.</p>
+              </div>
+
               <RadioGroup 
                 value={formData.leadModel} 
                 onValueChange={v => updateField('leadModel', v)}
