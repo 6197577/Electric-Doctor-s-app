@@ -1,24 +1,25 @@
-
 "use client"
 
 import { useState } from "react"
-import { Camera, Upload, AlertTriangle, CheckCircle, Zap, Loader2 } from "lucide-react"
+import { Camera, Upload, AlertTriangle, CheckCircle, Zap, Loader2, ArrowRight, DollarSign, TrendingDown } from "lucide-react"
 import { aiDiagnosticAssistant, AiDiagnosticAssistantOutput } from "@/ai/flows/ai-diagnostic-assistant"
 import { smartRecommendations, SmartRecommendationsOutput } from "@/ai/flows/smart-recommendations"
+import { runSalesCloser, SalesCloserOutput } from "@/ai/flows/ai-sales-closer"
 import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card"
 import { Textarea } from "@/components/ui/textarea"
 import { Badge } from "@/components/ui/badge"
 import { Progress } from "@/components/ui/progress"
 import { useToast } from "@/hooks/use-toast"
 import Image from "next/image"
+import Link from "next/link"
 
 export default function DiagnosePage() {
   const [file, setFile] = useState<string | null>(null)
   const [description, setDescription] = useState("")
   const [isAnalyzing, setIsAnalyzing] = useState(false)
   const [results, setResults] = useState<AiDiagnosticAssistantOutput | null>(null)
-  const [recs, setRecs] = useState<SmartRecommendationsOutput | null>(null)
+  const [salesPitch, setSalesPitch] = useState<SalesCloserOutput | null>(null)
   const { toast } = useToast()
 
   const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -41,16 +42,16 @@ export default function DiagnosePage() {
     setIsAnalyzing(true)
     try {
       const diagnosis = await aiDiagnosticAssistant({
-        photoDataUri: file,
+        photoDataUris: [file],
         description: description || "Electrical issue photo for analysis."
       })
       setResults(diagnosis)
 
-      const recommendations = await smartRecommendations({
+      const sales = await runSalesCloser({
         diagnosis: diagnosis.overallDiagnosis,
-        identifiedParts: diagnosis.identifiedParts.map(p => `${p.partName} (${p.condition})`)
+        urgency: diagnosis.urgencyLevel
       })
-      setRecs(recommendations)
+      setSalesPitch(sales)
     } catch (error) {
       toast({ title: "Error", description: "Analysis failed. Please try again.", variant: "destructive" })
     } finally {
@@ -138,7 +139,7 @@ export default function DiagnosePage() {
         <div className="flex flex-col gap-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
           {/* Analysis Results */}
           <section className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            <Card className="lg:col-span-2 border-primary/20">
+            <Card className="lg:col-span-2 border-primary/20 bg-card/50 backdrop-blur-sm">
               <CardHeader className="flex flex-row items-center justify-between space-y-0">
                 <div>
                   <CardTitle className="text-2xl">Diagnosis Report</CardTitle>
@@ -146,35 +147,35 @@ export default function DiagnosePage() {
                 </div>
                 <Badge 
                   variant={results.urgencyLevel === 'critical' || results.urgencyLevel === 'high' ? 'destructive' : 'default'}
-                  className="uppercase"
+                  className="uppercase px-4"
                 >
                   {results.urgencyLevel} Urgency
                 </Badge>
               </CardHeader>
               <CardContent className="flex flex-col gap-6">
-                <div className="bg-muted/30 p-4 rounded-lg border border-border">
-                  <h4 className="font-bold flex items-center gap-2 mb-2">
-                    <CheckCircle className="w-4 h-4 text-primary" />
+                <div className="bg-primary/5 p-4 rounded-xl border border-primary/20">
+                  <h4 className="font-bold flex items-center gap-2 mb-2 text-primary">
+                    <CheckCircle className="w-4 h-4" />
                     Overall Diagnosis
                   </h4>
-                  <p className="text-sm">{results.overallDiagnosis}</p>
+                  <p className="text-sm leading-relaxed">{results.overallDiagnosis}</p>
                 </div>
 
                 <div>
-                  <h4 className="font-bold mb-3">Identified Issues</h4>
+                  <h4 className="font-bold mb-3 uppercase tracking-widest text-[10px] text-muted-foreground">Identified Faults</h4>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                     {results.identifiedParts.map((part, idx) => (
-                      <div key={idx} className="flex flex-col p-3 rounded-lg border border-border bg-card">
-                        <span className="font-semibold text-sm">{part.partName}</span>
-                        <span className="text-xs text-primary">{part.condition}</span>
-                        {part.location && <span className="text-xs text-muted-foreground italic mt-1">{part.location}</span>}
+                      <div key={idx} className="flex flex-col p-3 rounded-lg border border-border bg-background/50">
+                        <span className="font-bold text-sm">{part.partName}</span>
+                        <span className="text-xs text-primary font-medium">{part.condition}</span>
+                        {part.location && <span className="text-[10px] text-muted-foreground italic mt-1">{part.location}</span>}
                       </div>
                     ))}
                   </div>
                 </div>
 
                 <div>
-                  <h4 className="font-bold mb-2">Technical Explanation</h4>
+                  <h4 className="font-bold mb-2 uppercase tracking-widest text-[10px] text-muted-foreground">Technical Breakdown</h4>
                   <p className="text-sm text-muted-foreground leading-relaxed">
                     {results.explanation}
                   </p>
@@ -183,71 +184,61 @@ export default function DiagnosePage() {
             </Card>
 
             <div className="flex flex-col gap-6">
+              {salesPitch && (
+                <Card className="border-primary bg-primary text-black orange-glow relative overflow-hidden">
+                  <Zap className="absolute -right-4 -bottom-4 w-24 h-24 opacity-10" />
+                  <CardHeader>
+                    <CardTitle className="text-xl font-black italic">Next Critical Step</CardTitle>
+                    <CardDescription className="text-black/70 font-bold">Recommended by AI Sales Advisor</CardDescription>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    <p className="text-sm font-black leading-tight">"{salesPitch.persuasiveHook}"</p>
+                    <div className="space-y-2">
+                       <p className="text-xs font-medium leading-relaxed">{salesPitch.riskAnalysis}</p>
+                    </div>
+                    <div className="grid grid-cols-2 gap-2 pt-2">
+                       <div className="bg-black/10 p-2 rounded-lg">
+                          <p className="text-[9px] font-black uppercase tracking-tighter opacity-60">Emergency Avoidance</p>
+                          <p className="text-sm font-black">${salesPitch.roiModeling.immediateSavings.toLocaleString()}</p>
+                       </div>
+                       <div className="bg-black/10 p-2 rounded-lg">
+                          <p className="text-[9px] font-black uppercase tracking-tighter opacity-60">Value Protection</p>
+                          <p className="text-sm font-black">${salesPitch.roiModeling.longTermValue.toLocaleString()}</p>
+                       </div>
+                    </div>
+                  </CardContent>
+                  <CardFooter className="flex-col gap-3">
+                    <Link href={salesPitch.recommendedAction.type === 'Video Consult' ? '/video-consult' : '/products/smart-panels'} className="w-full">
+                      <Button className="w-full h-12 font-black bg-black text-white hover:bg-black/90 rounded-xl">
+                        {salesPitch.recommendedAction.type}: {salesPitch.recommendedAction.pricePoint}
+                      </Button>
+                    </Link>
+                    <p className="text-[10px] text-center font-bold italic">"{salesPitch.closingStatement}"</p>
+                  </CardFooter>
+                </Card>
+              )}
+
               <Card className="bg-red-500/10 border-red-500/30">
                 <CardHeader>
-                  <CardTitle className="text-red-500 flex items-center gap-2">
+                  <CardTitle className="text-red-500 flex items-center gap-2 font-black uppercase text-sm">
                     <AlertTriangle className="w-5 h-5" />
-                    Safety Warnings
+                    Safety Protocol
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <ul className="list-disc pl-4 text-sm flex flex-col gap-2">
+                  <ul className="list-disc pl-4 text-xs flex flex-col gap-3 font-medium">
                     {results.safetyRecommendations.map((rec, idx) => (
-                      <li key={idx}>{rec}</li>
+                      <li key={idx} className="leading-snug">{rec}</li>
                     ))}
                   </ul>
                 </CardContent>
               </Card>
-
-              {recs && (
-                <Card className="border-primary orange-glow">
-                  <CardHeader>
-                    <CardTitle className="text-primary">Next Steps</CardTitle>
-                  </CardHeader>
-                  <CardContent className="flex flex-col gap-4">
-                    <p className="text-sm font-medium italic">&quot;{recs.persuasiveMessage}&quot;</p>
-                    <Button className="w-full font-bold">Book Electrician Now</Button>
-                    <Button variant="outline" className="w-full">Order Parts</Button>
-                  </CardContent>
-                </Card>
-              )}
             </div>
           </section>
 
-          {/* Upsells / Recommendations */}
-          {recs && (
-            <section className="flex flex-col gap-4">
-              <h3 className="text-xl font-bold">Recommended Solutions</h3>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {recs.recommendations.map((rec, idx) => (
-                  <Card key={idx} className="relative overflow-hidden group">
-                    <div className="absolute top-0 left-0 w-1 h-full bg-primary" />
-                    <CardHeader>
-                      <div className="flex items-center justify-between mb-2">
-                        <Badge variant="outline" className="text-[10px] uppercase tracking-widest">{rec.type}</Badge>
-                        <Zap className="w-4 h-4 text-primary opacity-0 group-hover:opacity-100 transition-opacity" />
-                      </div>
-                      <CardTitle className="text-lg">{rec.name}</CardTitle>
-                    </CardHeader>
-                    <CardContent className="flex flex-col gap-3">
-                      <p className="text-sm text-muted-foreground">{rec.description}</p>
-                      <div className="flex flex-col gap-1">
-                        <span className="text-xs font-bold text-primary">Benefits:</span>
-                        <ul className="text-[10px] text-muted-foreground list-disc pl-3">
-                          {rec.benefits.slice(0, 3).map((b, i) => <li key={i}>{b}</li>)}
-                        </ul>
-                      </div>
-                      <p className="text-[10px] text-destructive font-medium mt-2">{rec.urgencyReason}</p>
-                    </CardContent>
-                  </Card>
-                ))}
-              </div>
-            </section>
-          )}
-
           <div className="flex justify-center mt-4">
-            <Button variant="ghost" onClick={() => { setResults(null); setRecs(null); setFile(null); }}>
-              New Analysis
+            <Button variant="ghost" onClick={() => { setResults(null); setSalesPitch(null); setFile(null); }}>
+              Start New Analysis
             </Button>
           </div>
         </div>
