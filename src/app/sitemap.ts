@@ -1,4 +1,3 @@
-
 import { MetadataRoute } from 'next';
 import { TOP_50_CITIES_PRICING } from '@/lib/pricing-data';
 import { SERVICES } from '@/lib/seo-utils';
@@ -25,7 +24,9 @@ export default function sitemap(): MetadataRoute.Sitemap {
     '/products/smart-panels',
     '/predictive-maintenance',
     '/profile',
-    '/join-network'
+    '/join-network',
+    '/privacy',
+    '/terms'
   ].map(
     (route) => ({
       url: `${baseUrl}${route}`,
