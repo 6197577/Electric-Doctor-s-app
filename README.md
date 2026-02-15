@@ -1,29 +1,48 @@
 
-# Emergency Electric Repair - Implementation Guide
+# Emergency Electric Repair - Production Launchpad
 
-Welcome to the world-class AI-powered electrical care platform. To go live on **www.emergencyelectricrepair.com**, follow these steps:
+This application is ready for deployment to **www.emergencyelectricrepair.com**. Follow this rigorous checklist to ensure a stable and profitable launch.
 
-## 1. Set Up Environment Variables
-Open your `.env` file and provide the following keys:
+## 1. Environment Variables (Critical)
+Configure these in your Firebase App Hosting dashboard or `.env.production`:
 
-- **GOOGLE_GENAI_API_KEY**: Required for AI Diagnostics, EV Load Calculations, and Predictive Maintenance. Obtain from [Google AI Studio](https://a Studio.google.com/).
-- **Stripe Keys**: Required for the $97 Video Consults and Pro Subscriptions. Obtain from the [Stripe Dashboard](https://dashboard.stripe.com/).
-- **NEXT_PUBLIC_GOOGLE_MAPS_API_KEY**: Required for the Live Dispatch Tracking map. Obtain from [Google Cloud Console](https://console.cloud.google.com/).
+- `GOOGLE_GENAI_API_KEY`: Your Gemini 2.5 Flash key.
+- `NEXT_PUBLIC_BASE_URL`: Set to `https://emergencyelectricrepair.com`.
+- `NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY`: Your **Live** Stripe key.
+- `STRIPE_SECRET_KEY`: Your **Live** Stripe secret key.
+- `STRIPE_WEBHOOK_SECRET`: Required to confirm payments and unlock audit packs.
+- `NEXT_PUBLIC_GOOGLE_MAPS_API_KEY`: Required for live dispatch tracking.
 
-## 2. Connect Firebase
-Use the Firebase Studio interface to:
-1. Enable **Google Authentication**.
-2. Provision **Cloud Firestore**.
-3. Deploy the Security Rules (handled automatically by the studio).
+## 2. Stripe Production Setup
+1.  **Switch to Live Mode** in the Stripe Dashboard.
+2.  **Create Products**: Create products for:
+    - $97.00 Emergency Consult
+    - $29.99 EV Readiness Report
+    - $47.00 Single Audit
+    - $97.00 3-Audit Pack
+    - $197.00 10-Audit Pack
+3.  **Update IDs**: Update the checkout logic in `video-consult`, `ev-readiness`, and `audit` pages to use your live Price IDs.
 
-## 3. Custom Domain Configuration
-Once your keys are set:
-1. Point your domain (**www.emergencyelectricrepair.com**) to your App Hosting backend.
-2. Update the `NEXT_PUBLIC_BASE_URL` in `.env` to match your live production URL.
+## 3. Firebase Production Migration
+1.  **Project Choice**: Ensure you are connected to the production Firebase Project.
+2.  **Authentication**: Enable **Google Sign-In** and add `emergencyelectricrepair.com` to the authorized domains.
+3.  **Firestore**: Deploy the generated security rules to protect user audit data and generator logs.
 
-## 4. Testing the Sales Funnel
-- **Video Consult**: Test the Stripe redirect by clicking "Emergency Video Consult" on the home page. Verified at $97 per 15-minute session.
-- **AI Diagnosis**: Upload a photo of an electrical panel to verify the Gemini AI analysis.
-- **Marketplace**: Ensure dynamic pricing is correctly calculating based on the selected city.
+## 4. SEO & Growth
+- **Sitemap**: The app automatically generates a sitemap at `/sitemap.xml` with thousands of local service pages (e.g., `/services/diagnose/new-york`).
+- **Robots**: Verified at `/robots.txt`.
+- **Search Console**: Register the domain with Google Search Console to track indexing of city-specific landing pages.
 
-For support, contact the system administrator.
+## 5. Legal Requirements
+Before Stripe approves your live account, you must:
+1.  Add a **Privacy Policy** page.
+2.  Add **Terms of Service** (specifically detailing the 72-hour cancellation policy).
+3.  Display your business address and contact info.
+
+## 6. Pro Network Onboarding
+The `/join-network` flow is currently a simulation. For production:
+1.  Connect the W-9 upload to **Firebase Storage**.
+2.  Integrate **Stripe Connect** to handle automated payouts to electricians.
+
+---
+*For technical infrastructure support, consult the internal Genkit documentation.*

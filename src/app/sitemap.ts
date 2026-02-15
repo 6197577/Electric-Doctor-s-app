@@ -1,3 +1,4 @@
+
 import { MetadataRoute } from 'next';
 import { TOP_50_CITIES_PRICING } from '@/lib/pricing-data';
 import { SERVICES } from '@/lib/seo-utils';
@@ -7,7 +8,7 @@ import { SERVICES } from '@/lib/seo-utils';
  */
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const baseUrl = 'https://emergencyelectricrepair.com';
+  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://emergencyelectricrepair.com';
 
   // Base routes
   const routes = [
@@ -22,7 +23,9 @@ export default function sitemap(): MetadataRoute.Sitemap {
     '/video-consult', 
     '/tracking',
     '/products/smart-panels',
-    '/predictive-maintenance'
+    '/predictive-maintenance',
+    '/profile',
+    '/join-network'
   ].map(
     (route) => ({
       url: `${baseUrl}${route}`,
