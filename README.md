@@ -1,46 +1,41 @@
 
 # Emergency Electric Repair - Production Launchpad
 
-This application is ready for deployment to your production domain (e.g., **www.emergencyelectricrepair.com**). Follow this rigorous checklist to ensure a stable and profitable launch.
+This application is ready for deployment to your production domain. Follow this rigorous checklist to ensure a stable and profitable launch.
 
 ## 1. Domain Acquisition & Connection
 A custom domain is required for Stripe verification and SEO.
-- **Acquire Domain**: Purchase your domain via Google Domains, Namecheap, or GoDaddy.
-- **Connect to App Hosting**: In the Firebase Console, go to **App Hosting > Settings > Domains** and follow the instructions to update your DNS records.
-- **SSL Certificate**: Firebase App Hosting will automatically provision an SSL certificate once the domain is verified.
+- **Acquire Domain**: Purchase your domain (e.g., via Google Domains or Namecheap).
+- **Connect to App Hosting**: In the Firebase Console, go to **App Hosting > Settings > Domains** and follow instructions to update DNS.
+- **SSL**: Automatically provisioned by Firebase once verified.
 
-## 2. Required API Keys (Enterprise Services)
-Configure these in your Firebase App Hosting dashboard or `.env.production`:
+## 2. Mandatory API Key Inventory (Procurement Guide)
+You must obtain and configure these keys in your environment variables:
 
-- `GOOGLE_GENAI_API_KEY`: Your Gemini 2.5 Flash key for diagnostics.
-- `NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY`: For client-side checkout.
-- `STRIPE_SECRET_KEY`: For server-side payment intent generation.
-- `STRIPE_WEBHOOK_SECRET`: To unlock subscriptions and audit packs upon payment.
-- `NEXT_PUBLIC_GOOGLE_MAPS_API_KEY`: Required for live dispatch tracking on `/tracking`.
-- `TWILIO_ACCOUNT_SID/AUTH_TOKEN`: Recommended for SMS dispatch alerts to electricians.
-- `RESEND_API_KEY`: Recommended for sending professional PDF diagnostic reports via email.
-- `NEXT_PUBLIC_BASE_URL`: Set this to your live domain (e.g., `https://www.emergencyelectricrepair.com`).
+| Service | Key Name | Purpose | Source |
+|---------|----------|---------|--------|
+| **Google AI** | `GOOGLE_GENAI_API_KEY` | Diagnostics & Sales Agents | [Google AI Studio](https://aistudio.google.com/) |
+| **Stripe** | `NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY` | Client-side Checkout | [Stripe Dashboard](https://dashboard.stripe.com/) |
+| **Stripe** | `STRIPE_SECRET_KEY` | Server-side Payments | [Stripe Dashboard](https://dashboard.stripe.com/) |
+| **Google Maps** | `NEXT_PUBLIC_GOOGLE_MAPS_API_KEY` | Live Dispatch Tracking | [Google Cloud Console](https://console.cloud.google.com/) |
 
-## 3. Stripe Production Setup
+## 3. Communication Services (Scaling Ops)
+To fulfill the "Urgent Lead Alert" and "Report Delivery" features promised in the UI:
+- **Twilio**: For SMS dispatch alerts to professionals.
+- **Resend**: For sending professional diagnostic reports to homeowners.
+
+## 4. Stripe Production Setup
 1.  **Switch to Live Mode** in the Stripe Dashboard.
-2.  **Add Business Info**: Provide your domain and Privacy Policy/Terms links (already built in `/privacy` and `/terms`).
-3.  **Create Products**: Create products for:
+2.  **Map Products**: Ensure your Stripe Product IDs match the prices used in the app:
     - $97.00 Emergency Consult
     - $29.99 EV Readiness Report
-    - $47.00 Single Audit
-    - $97.00 3-Audit Pack
-    - $197.00 10-Audit Pack
-4.  **Update IDs**: Map these Product IDs in your configuration.
+    - $47.00 / $97.00 / $197.00 Audit Tiers
+3.  **Webhook**: Configure a webhook pointing to `/api/webhooks/stripe` to handle post-payment logic.
 
-## 4. App Store Deployment (PWA)
+## 5. PWA Deployment
 The app is configured as a **Progressive Web App (PWA)** via `manifest.json`.
-- **iOS/Android**: Instruct users to "Add to Home Screen" for a full-screen, native experience.
-- **Notifications**: Enable Firebase Cloud Messaging (FCM) for "Urgent Lead Alerts" push notifications.
-
-## 5. Firebase Production Migration
-1.  **Authentication**: Enable **Google Sign-In** and add your live domain to authorized domains in the Firebase Auth settings.
-2.  **Firestore**: Deploy security rules to protect user audit data and generator logs.
-3.  **App Check**: Enable App Check to prevent unauthorized use of your API keys.
+- Users can "Add to Home Screen" on iOS/Android for a native app experience.
+- Ensure your custom domain is connected to allow the PWA manifest to trigger.
 
 ---
 *For technical infrastructure support, consult the internal Genkit documentation.*
