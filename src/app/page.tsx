@@ -8,8 +8,6 @@ import { TOP_50_CITIES_PRICING } from "@/lib/pricing-data"
 import Image from "next/image"
 
 export default function Home() {
-  const featuredCities = TOP_50_CITIES_PRICING.slice(0, 12);
-
   return (
     <div className="flex flex-col gap-16 pb-24">
       {/* Hero / Quick Action */}
@@ -50,11 +48,11 @@ export default function Home() {
       <section className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
          <div className="relative aspect-video rounded-3xl overflow-hidden border-2 border-primary/20 orange-glow">
             <Image 
-              src="https://picsum.photos/seed/panel_hero/800/600" 
+              src="https://picsum.photos/seed/elec_hd11/800/600" 
               alt="Smart Electrical Panel Dashboard" 
               fill 
               className="object-cover"
-              data-ai-hint="smart panel dashboard"
+              data-ai-hint="smart panel"
             />
             <div className="absolute inset-0 bg-black/40 flex items-center justify-center">
               <div className="p-6 bg-black/80 backdrop-blur-xl rounded-2xl border border-primary/30 text-center space-y-2">

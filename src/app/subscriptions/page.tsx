@@ -142,7 +142,8 @@ export default function SubscriptionsPage() {
               </CardContent>
               <CardFooter className="flex flex-col gap-2">
                 <Button 
-                  className={`w-full h-12 font-bold ${plan.popular ? "bg-primary text-black" : "variant-outline border-primary text-primary hover:bg-primary/10"}`}
+                  variant={plan.popular ? "default" : "outline"}
+                  className={`w-full h-12 font-bold ${plan.popular ? "bg-primary text-black" : "border-primary text-primary hover:bg-primary/10"}`}
                   onClick={() => handleSubscribe(plan.name)}
                   disabled={loadingPlan !== null}
                 >

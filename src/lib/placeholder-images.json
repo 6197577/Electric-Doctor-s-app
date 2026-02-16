@@ -1,3 +1,76 @@
 {
-  "placeholderImages": []
+  "placeholderImages": [
+    {
+      "id": "hero-bg",
+      "description": "Abstract high-voltage electrical sparks and plasma",
+      "imageUrl": "https://images.unsplash.com/photo-1609348632802-b952f368fc3a?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwzfHxlbGVjdHJpY2FsJTIwc3BhcmtzfGVufDB8fHx8MTc3MTIwOTUwN3ww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "electrical sparks"
+    },
+    {
+      "id": "thermal-scan",
+      "description": "Infrared thermal scan of an electrical panel showing hotspots",
+      "imageUrl": "https://images.unsplash.com/photo-1609743298060-38fa6b7e15fb?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHx0aGVybWFsJTIwaW1hZ2luZ3xlbnwwfHx8fDE3NzEyMDk1MDh8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "thermal imaging"
+    },
+    {
+      "id": "industrial-motor",
+      "description": "Close-up of a large industrial electric motor and control wiring",
+      "imageUrl": "https://images.unsplash.com/photo-1559569283-327b99858782?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw3fHxpbmR1c3RyaWFsJTIwbW90b3J8ZW58MHx8fHwxNzcxMjA5NTA4fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "industrial motor"
+    },
+    {
+      "id": "smart-home-hub",
+      "description": "Modern smart home energy management interface on a tablet",
+      "imageUrl": "https://images.unsplash.com/photo-1558089687-f282ffcbc126?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxMHx8c21hcnQlMjBob21lfGVufDB8fHx8MTc3MTE3MTU3NHww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "smart home"
+    },
+    {
+      "id": "arc-fault-detail",
+      "description": "Macro shot of a scorched electrical outlet showing arc fault damage",
+      "imageUrl": "https://images.unsplash.com/photo-1684073891333-4102e8021f47?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw2fHxidXJudCUyMG91dGxldHxlbnwwfHx8fDE3NzEyMDk1MDl8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "burnt outlet"
+    },
+    {
+      "id": "ev-charging-station",
+      "description": "High-end commercial EV charging plaza with multiple units",
+      "imageUrl": "https://images.unsplash.com/photo-1567409378873-888d6fa7debc?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw2fHxldiUyMGNoYXJnaW5nfGVufDB8fHx8MTc3MTIwOTUwOHww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "ev charging"
+    },
+    {
+      "id": "electrician-toolkit",
+      "description": "Professional electrician toolkit with advanced digital testers",
+      "imageUrl": "https://images.unsplash.com/photo-1661338148448-c12887abcd47?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxlbGVjdHJpY2lhbiUyMHRvb2xzfGVufDB8fHx8MTc3MTIwOTUwOHww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "electrician tools"
+    },
+    {
+      "id": "solar-panel-array",
+      "description": "Large rooftop solar panel installation at sunset",
+      "imageUrl": "https://images.unsplash.com/photo-1497435334941-8c899ee9e8e9?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw1fHxzb2xhciUyMHBhbmVsc3xlbnwwfHx8fDE3NzExODI5OTF8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "solar panels"
+    },
+    {
+      "id": "commercial-switchgear",
+      "description": "Massive industrial electrical switchgear and distribution cabinet",
+      "imageUrl": "https://images.unsplash.com/photo-1566417108845-5ba9c2f9ea1b?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw1fHxlbGVjdHJpY2FsJTIwc3dpdGNoZ2VhcnxlbnwwfHx8fDE3NzEyMDk1MDh8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "electrical switchgear"
+    },
+    {
+      "id": "video-consultation-ui",
+      "description": "Professional Master Electrician explaining panel safety on a video call",
+      "imageUrl": "https://images.unsplash.com/photo-1758691463620-188ca7c1a04f?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwzfHx2aWRlbyUyMGNvbnN1bHRhdGlvbnxlbnwwfHx8fDE3NzEyMDk1MDd8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "video consultation"
+    },
+    {
+      "id": "smart-panel-install",
+      "description": "Clean, modern installation of a SPAN smart electrical panel",
+      "imageUrl": "https://images.unsplash.com/photo-1766853107796-9d79ce6bb5fe?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxMHx8c21hcnQlMjBwYW5lbHxlbnwwfHx8fDE3NzEyMDk1MDh8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "smart panel"
+    },
+    {
+      "id": "electrician-training",
+      "description": "Electrician using a tablet to perform an AI-driven safety audit",
+      "imageUrl": "https://images.unsplash.com/photo-1527698266440-12104e498b76?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw5fHxlbGVjdHJpY2lhbiUyMHRhYmxldHxlbnwwfHx8fDE3NzEyMDk1MDh8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "electrician tablet"
+    }
+  ]
 }
