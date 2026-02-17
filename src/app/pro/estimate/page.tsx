@@ -1,4 +1,3 @@
-
 "use client"
 
 import { useState } from "react"
@@ -50,7 +49,7 @@ export default function ProEstimatePage() {
         plansPhotoDataUri: file || undefined
       })
       setResults(estimate)
-      toast({ title: "Estimate Generated", description: "AI has verified plans and calculated your project breakdown." })
+      toast({ title: "NEC Verification Complete", description: "AI has verified plans against NEC 2023 standards." })
     } catch (error) {
       toast({ title: "Error", description: "Failed to generate estimate. Please try again.", variant: "destructive" })
     } finally {
@@ -62,17 +61,17 @@ export default function ProEstimatePage() {
     <div className="max-w-7xl mx-auto flex flex-col gap-8 pb-12">
       <div className="flex flex-col gap-2">
         <div className="flex items-center gap-2">
-           <Badge className="bg-primary text-black font-black uppercase tracking-widest text-[10px]">Pro Tools</Badge>
-           <h1 className="text-3xl font-bold tracking-tight">AI Electrical Estimator & Plan Verifier</h1>
+           <Badge className="bg-primary text-black font-black uppercase tracking-widest text-[10px]">NEC 2023 Guard</Badge>
+           <h1 className="text-3xl font-bold tracking-tight">AI Plan Verifier & Estimator</h1>
         </div>
-        <p className="text-muted-foreground">Upload blueprints or snap a photo of site plans for instant NEC-compliant verification and cost analysis.</p>
+        <p className="text-muted-foreground">Upload blueprints for automated **NEC Article 220** load verification and material estimation.</p>
       </div>
 
       <div className="grid grid-cols-1 xl:grid-cols-4 gap-8">
         <div className="xl:col-span-1 space-y-6">
           <Card className="border-primary/20 bg-card/50">
             <CardHeader>
-              <CardTitle className="text-lg">Project Data</CardTitle>
+              <CardTitle className="text-lg">Compliance Data</CardTitle>
               <CardDescription>Input description and site plans.</CardDescription>
             </CardHeader>
             <CardContent className="space-y-6">
@@ -120,7 +119,7 @@ export default function ProEstimatePage() {
                 <Label htmlFor="desc">Job Description</Label>
                 <Textarea 
                   id="desc" 
-                  placeholder="e.g., Install a new 240V 50A circuit for an EV charger in a garage. Verify conduit runs on plans."
+                  placeholder="e.g., Install a new 240V 50A circuit for an EV charger. Verify conduit fill per NEC Chapter 9."
                   className="min-h-[150px]"
                   value={description}
                   onChange={(e) => setDescription(e.target.value)}
@@ -132,9 +131,9 @@ export default function ProEstimatePage() {
                 disabled={isAnalyzing}
               >
                 {isAnalyzing ? (
-                  <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> Verifying Plans...</>
+                  <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> Checking NEC Codes...</>
                 ) : (
-                  <><Zap className="mr-2 h-4 w-4" /> Run Verification Scan</>
+                  <><Zap className="mr-2 h-4 w-4" /> Run Compliance Scan</>
                 )}
               </Button>
             </CardContent>
@@ -144,12 +143,12 @@ export default function ProEstimatePage() {
              <CardHeader className="pb-2">
                 <CardTitle className="text-sm flex items-center gap-2">
                   <ShieldCheck className="w-4 h-4 text-primary" />
-                  Compliance Guard
+                  NEC 2023 Guard
                 </CardTitle>
              </CardHeader>
              <CardContent>
                 <p className="text-[10px] text-muted-foreground leading-relaxed">
-                  The AI identifies plan symbols (circuits, outlets, fixtures) and flags NEC Article 220 violations automatically.
+                  The AI automatically flags <strong>NEC Article 220</strong> violations and identifies incorrect symbols or wire gauges from your visual plans.
                 </p>
              </CardContent>
           </Card>
@@ -166,12 +165,12 @@ export default function ProEstimatePage() {
                       <FileSearch className={`w-8 h-8 ${results.planVerification.loadVerified ? 'text-green-500' : 'text-amber-500'}`} />
                     </div>
                     <div>
-                      <h3 className="text-xl font-bold italic tracking-tight">Plan Verification Status</h3>
-                      <p className="text-sm opacity-80">{results.planVerification.loadVerified ? 'Calculations and loads verified as NEC compliant.' : 'Action required: Plan discrepancies detected.'}</p>
+                      <h3 className="text-xl font-bold italic tracking-tight">NEC Compliance Status</h3>
+                      <p className="text-sm opacity-80">{results.planVerification.loadVerified ? 'Load calculations verified per NEC Article 220.' : 'Action required: NEC Article violations detected.'}</p>
                     </div>
                   </div>
                   <Badge variant={results.planVerification.loadVerified ? 'default' : 'secondary'} className="uppercase font-black px-6 py-2">
-                    {results.planVerification.loadVerified ? 'LOAD VERIFIED' : 'ATTENTION REQUIRED'}
+                    {results.planVerification.loadVerified ? 'CODE VERIFIED' : 'CODE CONFLICT'}
                   </Badge>
                 </CardContent>
               </Card>
@@ -182,7 +181,7 @@ export default function ProEstimatePage() {
                   <CardHeader>
                     <CardTitle className="text-sm font-black uppercase tracking-widest flex items-center gap-2">
                       <AlertTriangle className="w-4 h-4 text-red-500" />
-                      Plan Discrepancies
+                      NEC Code Conflicts
                     </CardTitle>
                   </CardHeader>
                   <CardContent>
@@ -196,7 +195,7 @@ export default function ProEstimatePage() {
                         ))}
                       </ul>
                     ) : (
-                      <p className="text-xs italic text-muted-foreground">No discrepancies found between plans and description.</p>
+                      <p className="text-xs italic text-muted-foreground">No NEC discrepancies found in site plans.</p>
                     )}
                   </CardContent>
                 </Card>
@@ -206,7 +205,7 @@ export default function ProEstimatePage() {
                   <CardHeader>
                     <CardTitle className="text-sm font-black uppercase tracking-widest flex items-center gap-2">
                       <ShieldCheck className="w-4 h-4 text-primary" />
-                      Visual Safety Insights
+                      Agency Safety Insights
                     </CardTitle>
                   </CardHeader>
                   <CardContent>
@@ -228,7 +227,7 @@ export default function ProEstimatePage() {
                 </Card>
                 <Card className="border-border">
                   <CardHeader className="p-4 pb-0">
-                    <CardTitle className="text-[10px] uppercase text-muted-foreground">Total Labor</CardTitle>
+                    <CardTitle className="text-[10px] uppercase text-muted-foreground">Labor Hours</CardTitle>
                   </CardHeader>
                   <CardContent className="p-4 pt-1">
                     <p className="text-3xl font-black">{results.laborBreakdown.hours} hrs</p>
@@ -236,18 +235,17 @@ export default function ProEstimatePage() {
                 </Card>
                 <Card className="border-border">
                   <CardHeader className="p-4 pb-0">
-                    <CardTitle className="text-[10px] uppercase text-muted-foreground">Profit Factor</CardTitle>
+                    <CardTitle className="text-[10px] uppercase text-muted-foreground">Agency Factor</CardTitle>
                   </CardHeader>
                   <CardContent className="p-4 pt-1">
                     <p className="text-3xl font-black">{results.overheadAndProfit}%</p>
                   </CardContent>
-                </Card>
-              </div>
+                </div>
 
               <Card>
                 <CardHeader className="flex flex-row items-center justify-between">
                   <div>
-                    <CardTitle>Bill of Materials & Verified Tasks</CardTitle>
+                    <CardTitle>Bill of Materials (BOM)</CardTitle>
                     <CardDescription>Breakdown based on blueprints and scope.</CardDescription>
                   </div>
                   <Button variant="outline" size="sm" className="gap-2">
@@ -286,7 +284,7 @@ export default function ProEstimatePage() {
                   <CardHeader>
                     <CardTitle className="text-sm font-black uppercase tracking-widest flex items-center gap-2">
                       <ClipboardList className="w-4 h-4 text-primary" />
-                      NEC Code References
+                      NEC 2023 References
                     </CardTitle>
                   </CardHeader>
                   <CardContent>
@@ -303,7 +301,7 @@ export default function ProEstimatePage() {
 
                 <Card className="bg-muted/20">
                   <CardHeader>
-                    <CardTitle className="text-sm font-black uppercase tracking-widest">Technical Field Notes</CardTitle>
+                    <CardTitle className="text-sm font-black uppercase tracking-widest">Field Verification Notes</CardTitle>
                   </CardHeader>
                   <CardContent>
                     <p className="text-xs text-muted-foreground italic leading-relaxed">
@@ -326,8 +324,8 @@ export default function ProEstimatePage() {
               </div>
               <div className="relative z-10 flex flex-col items-center">
                 <FileSearch className="w-16 h-16 mb-4 text-muted-foreground" />
-                <CardTitle>Plan Verification Pending</CardTitle>
-                <CardDescription>Upload site plans and input job scope to trigger AI verification and cost estimation.</CardDescription>
+                <CardTitle>Agency Verification Pending</CardTitle>
+                <CardDescription>Upload blueprints to trigger AI-driven **NEC 2023** compliance verification.</CardDescription>
               </div>
             </Card>
           )}

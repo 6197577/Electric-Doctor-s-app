@@ -1,8 +1,7 @@
-
 "use client"
 
 import { useState } from "react"
-import { Building2, ShieldCheck, ClipboardCheck, AlertTriangle, FileText, ChevronDown, CheckCircle2, Info, ArrowRight, Zap, Download, CreditCard, Lock, Factory, HardHat, Calculator, TrendingUp, TrendingDown, DollarSign, BarChart3, Activity } from "lucide-react"
+import { Building2, ShieldCheck, ClipboardCheck, AlertTriangle, FileText, ChevronDown, CheckCircle2, Info, ArrowRight, Zap, Download, CreditCard, Lock, Factory, HardHat, Calculator, TrendingUp, TrendingDown, DollarSign, BarChart3, Activity, Flame } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card"
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
@@ -29,7 +28,7 @@ const chartConfig = {
     color: "#ff4d4d",
   },
   plan: {
-    label: "Enterprise Plan",
+    label: "NFPA Compliance Plan",
     color: "hsl(var(--primary))",
   },
 } satisfies ChartConfig
@@ -37,47 +36,47 @@ const chartConfig = {
 const COMMERCIAL_CATEGORIES = [
   {
     id: "compliance",
-    title: "OSHA 1910 Subpart S Compliance",
+    title: "NFPA 70E Safety Protocol",
     points: 25,
     items: [
-      "Access to electrical equipment (clearances per 1910.303)",
-      "Marking of electrical disconnects and breakers",
-      "Guarding of live parts (over 50V)",
+      "Arc Flash Hazard Analysis & Labeling (NFPA 70E 130.5)",
+      "Establishment of limited & restricted approach boundaries",
+      "Verification of PPE categories for all active panels",
       "Hazardous (classified) locations identification",
-      "Lockout/Tagout (LOTO) procedures and hardware presence"
+      "Qualified person training records & LOTO hardware presence"
     ]
   },
   {
     id: "infrastructure",
-    title: "Commercial Distribution & Switchgear",
+    title: "NEC 2023 Switchgear Standards",
     points: 20,
     items: [
       "Main switchgear thermal scan (signs of overheating)",
       "Grounding electrode system for high-voltage feed",
-      "Phase balance testing on multi-phase systems",
+      "NEC 2023 Article 230 Clearance Verification",
       "Transformer vault ventilation and security",
       "Capacitor bank inspection and safety signs"
     ]
   },
   {
     id: "safety-systems",
-    title: "Emergency & Life Safety Systems",
+    title: "Life Safety & NFPA 101",
     points: 25,
     items: [
       "Emergency lighting battery backup functional test",
       "Exit sign visibility and illumination (NFPA 101)",
       "Fire alarm system power supply and dedicated circuits",
-      "Generator transfer switch functionality (commercial grade)",
+      "Generator transfer switch functionality (NFPA 110)",
       "Emergency power-off (EPO) buttons for data rooms/kitchens"
     ]
   },
   {
     id: "load-management",
-    title: "Equipment & Load Management",
+    title: "Load Calculation (NEC Article 220)",
     points: 30,
     items: [
-      "Motor control center (MCC) inspection",
-      "GFCI protection for required commercial outlets",
+      "Motor control center (MCC) demand factor check",
+      "Harmonic distortion analysis for industrial electronics",
       "Surge protection for sensitive industrial electronics",
       "Power factor monitoring presence",
       "Branch circuit labeling for critical machinery"
@@ -86,9 +85,9 @@ const COMMERCIAL_CATEGORIES = [
 ]
 
 const PRICING_TIERS = [
-  { id: "single", name: "Enterprise Single", price: 47, count: 1, desc: "Facility compliance snapshot." },
-  { id: "bundle", name: "Multi-Pack (3)", price: 97, count: 3, desc: "Quarterly risk management.", popular: true },
-  { id: "enterprise", name: "Industrial Pack (10)", price: 197, count: 10, desc: "Full asset monitoring fleet." }
+  { id: "single", name: "NFPA 70E Snapshot", price: 47, count: 1, desc: "Immediate risk assessment." },
+  { id: "bundle", name: "Commercial 3-Pack", price: 97, count: 3, desc: "Quarterly NEC compliance.", popular: true },
+  { id: "enterprise", name: "Industrial Fleet (10)", price: 197, count: 10, desc: "Full asset monitoring fleet." }
 ]
 
 export default function CommercialAuditPage() {
@@ -97,7 +96,6 @@ export default function CommercialAuditPage() {
   const [checkedItems, setCheckedItems] = useState<Record<string, boolean>>({})
   const [isProcessing, setIsProcessing] = useState(false)
   
-  // Industrial Discovery State
   const [hourlyRevenue, setHourlyRevenue] = useState(2500)
   const [systemAge, setSystemAge] = useState(20)
   
@@ -124,34 +122,33 @@ export default function CommercialAuditPage() {
 
   const generateReport = () => {
     setActiveStep("report")
-    toast({ title: "Audit Complete", description: "Facility safety score and OSHA compliance report generated." })
+    toast({ title: "Audit Complete", description: "Facility safety score and NFPA 70E compliance report generated." })
   }
 
   const score = calculateScore()
-  const status = score > 90 ? "Compliant" : score > 70 ? "Needs Improvement" : "High Risk"
+  const status = score > 90 ? "NFPA COMPLIANT" : score > 70 ? "NEEDS REMEDIATION" : "HIGH RISK"
 
-  // Industrial ROI Calculations
   const calculatedRisk = (systemAge * 0.08).toFixed(1)
   const estimatedAnnualLoss = (hourlyRevenue * 4.5 * (systemAge / 10)).toLocaleString()
 
   return (
     <div className="max-w-6xl mx-auto flex flex-col gap-8 pb-12">
       <div className="flex flex-col gap-2">
-        <h1 className="text-4xl font-black tracking-tighter uppercase">Professional AI Commercial Audit</h1>
-        <p className="text-muted-foreground text-lg">Industrial-grade electrical safety and OSHA 1910 compliance for mission-critical facilities.</p>
+        <h1 className="text-4xl font-black tracking-tighter uppercase">AI Commercial Compliance Engine</h1>
+        <p className="text-muted-foreground text-lg italic">Certified NFPA 70E Risk Discovery & NEC 2023 Asset Auditing.</p>
       </div>
 
       {activeStep === "discovery" && (
         <div className="flex flex-col gap-12 animate-in fade-in duration-700">
           <section className="text-center space-y-4 pt-4">
             <Badge variant="outline" className="border-primary text-primary px-6 py-1.5 uppercase tracking-widest text-[10px] font-black animate-pulse">
-              Enterprise Price Discovery
+              NFPA 70E Arc Flash Discovery
             </Badge>
             <h2 className="text-5xl md:text-6xl font-black tracking-tighter leading-none">
-              Downtime is <span className="text-primary italic">Expensive.</span><br />Compliance is Not.
+              Non-Compliance is <span className="text-primary italic">Catastrophic.</span><br />Prevention is Profitable.
             </h2>
             <p className="text-muted-foreground text-xl max-w-2xl mx-auto font-medium leading-relaxed">
-              For a facility generating <span className="text-foreground font-bold">${hourlyRevenue.toLocaleString()}/hr</span>, a single electrical outage costs an average of <span className="text-red-500 font-bold">$124,000</span>.
+              Failure to perform an <strong>NFPA 70E Arc Flash Analysis</strong> can result in <span className="text-red-500 font-bold">$13,000+ per day</span> in OSHA fines alone.
             </p>
           </section>
 
@@ -161,10 +158,10 @@ export default function CommercialAuditPage() {
                 <div className="flex items-center justify-between">
                   <CardTitle className="flex items-center gap-2 text-2xl font-black">
                     <Calculator className="w-6 h-6 text-primary" />
-                    Operational Loss Simulator
+                    Operational Risk Simulator
                   </CardTitle>
                   <div className="text-right">
-                    <p className="text-[10px] text-muted-foreground uppercase font-black">OSHA Risk Index</p>
+                    <p className="text-[10px] text-muted-foreground uppercase font-black">NFPA 70E Hazard Index</p>
                     <Badge variant="destructive" className="font-black uppercase">{calculatedRisk}% Probability</Badge>
                   </div>
                 </div>
@@ -203,26 +200,26 @@ export default function CommercialAuditPage() {
                     </div>
                     <div className="space-y-4">
                       <Label className="font-black uppercase tracking-widest text-xs flex justify-between">
-                        Distribution System Age <span>{systemAge} Years</span>
+                        Infrastructure Age <span>{systemAge} Years</span>
                       </Label>
                       <Slider value={[systemAge]} onValueChange={(v) => setSystemAge(v[0])} min={1} max={60} step={1} />
                     </div>
                   </div>
                   <div className="bg-primary/10 rounded-3xl p-8 border border-primary/20 flex flex-col justify-center relative overflow-hidden group">
                     <Activity className="absolute -right-4 -bottom-4 w-32 h-32 text-primary/5 group-hover:scale-110 transition-transform" />
-                    <span className="text-[10px] font-black text-muted-foreground uppercase tracking-widest">Est. Unplanned Cost / Year</span>
+                    <span className="text-[10px] font-black text-muted-foreground uppercase tracking-widest">Est. Unplanned Downtime Loss</span>
                     <span className="text-5xl font-black text-primary tracking-tighter mt-1">${estimatedAnnualLoss}</span>
                     <p className="text-[10px] text-primary/70 font-bold mt-4 uppercase flex items-center gap-1">
                       <TrendingUp className="w-3 h-3" />
-                      ROI: 42.1x vs Monitoring
+                      Compliance ROI: 42.1x
                     </p>
                   </div>
                 </div>
               </CardContent>
               <CardFooter className="bg-white/5 p-6 border-t border-white/5 flex items-center gap-4">
-                <AlertTriangle className="w-5 h-5 text-red-500 shrink-0" />
+                <Flame className="w-5 h-5 text-red-500 shrink-0" />
                 <p className="text-xs font-medium text-muted-foreground leading-relaxed">
-                  Your profile indicates a <span className="text-red-500 font-bold">{calculatedRisk}% risk of critical switchgear failure</span> within the next 12 months. OSHA non-compliance penalties may apply.
+                  Your profile indicates a <span className="text-red-500 font-bold">{calculatedRisk}% risk of Arc Flash or switchgear failure</span>. Immediate <strong>NFPA 70E Labeling</strong> recommended.
                 </p>
               </CardFooter>
             </Card>
@@ -230,8 +227,8 @@ export default function CommercialAuditPage() {
             <div className="flex flex-col gap-6">
               <Card className="bg-primary text-black orange-glow">
                 <CardHeader>
-                  <CardTitle className="text-2xl font-black tracking-tight italic">Secure Your Asset</CardTitle>
-                  <CardDescription className="text-black/70 font-medium">Certification packages for corporate property managers.</CardDescription>
+                  <CardTitle className="text-2xl font-black tracking-tight italic">Secure Your Facility</CardTitle>
+                  <CardDescription className="text-black/70 font-medium">Compliance certification for corporate facilities.</CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <Button className="w-full h-16 bg-black text-white font-black text-xl rounded-2xl hover:bg-black/90 shadow-2xl transition-transform hover:scale-[1.02]" onClick={() => setActiveStep("intro")}>
@@ -240,14 +237,14 @@ export default function CommercialAuditPage() {
                   </Button>
                   <div className="flex items-center justify-center gap-2 text-[10px] font-black uppercase tracking-[0.2em] opacity-70">
                     <ShieldCheck className="w-4 h-4" />
-                    OSHA 1910 Compliant
+                    NFPA 70E & NEC 2023 READY
                   </div>
                 </CardContent>
               </Card>
 
               <Card className="bg-card/50">
                 <CardHeader>
-                  <CardTitle className="text-sm font-black uppercase tracking-widest">Enterprise Benefits</CardTitle>
+                  <CardTitle className="text-sm font-black uppercase tracking-widest">Agency Standards</CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-6">
                   <div className="flex items-start gap-4">
@@ -255,8 +252,8 @@ export default function CommercialAuditPage() {
                       <HardHat className="w-5 h-5 text-primary" />
                     </div>
                     <div className="space-y-1">
-                      <p className="text-sm font-bold">Insurance Leverage</p>
-                      <p className="text-xs text-muted-foreground leading-tight">Verified audits can lower business liability premiums by up to 18%.</p>
+                      <p className="text-sm font-bold">NFPA 70E Compliance</p>
+                      <p className="text-xs text-muted-foreground leading-tight">Legally required safety boundaries and PPE protocols for employees.</p>
                     </div>
                   </div>
                   <div className="flex items-start gap-4">
@@ -264,12 +261,12 @@ export default function CommercialAuditPage() {
                       <Zap className="w-5 h-5 text-primary" />
                     </div>
                     <div className="space-y-1">
-                      <p className="text-sm font-bold">Uptime Maximization</p>
-                      <p className="text-xs text-muted-foreground leading-tight">Thermal scans identify hotspots before they trip main breakers.</p>
+                      <p className="text-sm font-bold">NEC 2023 Alignment</p>
+                      <p className="text-xs text-muted-foreground leading-tight">Verify that all branch wiring and feeders meet the latest national codes.</p>
                     </div>
                   </div>
                   <div className="p-4 bg-primary/5 rounded-xl border border-primary/20 text-[11px] font-medium leading-relaxed italic">
-                    "Predictive maintenance isn't a cost center; it's a revenue protection strategy."
+                    "Predictive auditing reduces insurance liability premiums by an average of 18%."
                   </div>
                 </CardContent>
               </Card>
@@ -288,7 +285,7 @@ export default function CommercialAuditPage() {
                 onClick={() => setSelectedTier(tier)}
               >
                 {tier.popular && (
-                  <Badge className="absolute top-0 right-1/2 translate-x-1/2 -translate-y-1/2 bg-primary text-black font-black uppercase text-[10px]">Most Chosen</Badge>
+                  <Badge className="absolute top-0 right-1/2 translate-x-1/2 -translate-y-1/2 bg-primary text-black font-black uppercase text-[10px]">Agency Preferred</Badge>
                 )}
                 <CardHeader>
                   <CardTitle className="text-xl font-black">{tier.name}</CardTitle>
@@ -305,15 +302,15 @@ export default function CommercialAuditPage() {
             <div className="bg-primary/10 px-6 py-3 border-b border-primary/20 flex items-center justify-between">
               <span className="text-[10px] font-black uppercase tracking-widest text-primary flex items-center gap-2">
                 <ShieldCheck className="w-3 h-3" />
-                Enterprise Facility Protocol
+                Agency Compliance Protocol
               </span>
-              <Badge variant="outline" className="border-primary text-primary text-[10px]">OSHA 1910 READY</Badge>
+              <Badge variant="outline" className="border-primary text-primary text-[10px]">NFPA + NEC + OSHA</Badge>
             </div>
             <CardHeader>
               <Factory className="w-16 h-16 text-primary mb-4" />
               <CardTitle className="text-3xl font-black italic tracking-tighter">{selectedTier.name}</CardTitle>
               <CardDescription className="text-base">
-                Ensure continuous compliance and risk mitigation with {selectedTier.count} enterprise-grade facility {selectedTier.count > 1 ? 'audits' : 'audit'}.
+                Professional grade facility mapping based on NFPA 70E boundaries and NEC 2023 wiring codes.
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-6">
@@ -321,21 +318,21 @@ export default function CommercialAuditPage() {
                 <div className="flex items-start gap-4 p-4 bg-background/50 rounded-2xl border border-white/5">
                   <HardHat className="w-6 h-6 text-primary shrink-0" />
                   <div className="text-sm">
-                    <p className="font-bold">NFPA 70E / OSHA Standards</p>
-                    <p className="text-muted-foreground">Comprehensive coverage of commercial electrical safety requirements.</p>
+                    <p className="font-bold">NFPA 70E PPE Mapping</p>
+                    <p className="text-muted-foreground">Certified mapping of required PPE for maintenance tasks.</p>
                   </div>
                 </div>
                 <div className="flex items-start gap-4 p-4 bg-background/50 rounded-2xl border border-white/5">
                   <Zap className="w-6 h-6 text-primary shrink-0" />
                   <div className="text-sm">
-                    <p className="font-bold">{selectedTier.count} Digital Reports</p>
-                    <p className="text-muted-foreground">Certified digital reports for liability insurance providers.</p>
+                    <p className="font-bold">NEC Load Verification</p>
+                    <p className="text-muted-foreground">Article 220 demand factor verification for industrial motors.</p>
                   </div>
                 </div>
               </div>
             </CardContent>
             <CardFooter className="flex gap-4">
-              <Button variant="ghost" className="font-bold" onClick={() => setActiveStep("discovery")}>Back to Loss simulator</Button>
+              <Button variant="ghost" className="font-bold" onClick={() => setActiveStep("discovery")}>Back to Simulator</Button>
               <Button className="flex-1 h-16 text-xl font-black bg-primary text-black hover:bg-primary/90 rounded-2xl shadow-xl" onClick={() => setActiveStep("payment")}>
                 Unlock {selectedTier.name}
                 <ArrowRight className="ml-2 w-6 h-6" />
@@ -350,7 +347,7 @@ export default function CommercialAuditPage() {
           <CardHeader>
             <CardTitle className="flex items-center gap-2 text-2xl font-black">
               <Lock className="w-6 h-6 text-primary" />
-              Secure Payout
+              Secure Enterprise Payout
             </CardTitle>
             <CardDescription>{selectedTier.name} (${selectedTier.price}.00)</CardDescription>
           </CardHeader>
@@ -362,11 +359,11 @@ export default function CommercialAuditPage() {
               </div>
               <span className="font-black text-lg">${selectedTier.price}.00</span>
             </div>
-            <div className="p-4 border rounded-xl flex items-center gap-4 cursor-pointer hover:border-primary transition-all bg-primary/5 border-primary/20">
+            <div className="p-4 border rounded-xl flex items-center gap-4 bg-primary/5 border-primary/20">
               <CreditCard className="w-8 h-8 text-primary" />
               <div className="flex-1">
-                <p className="font-bold text-sm">Stored Business Card ending in 8899</p>
-                <p className="text-xs text-muted-foreground">Stripe Secure Tokenized Payment</p>
+                <p className="font-bold text-sm">Corporate Amex ending in 8899</p>
+                <p className="text-xs text-muted-foreground">Stripe Secure B2B Gateway</p>
               </div>
             </div>
           </CardContent>
@@ -385,7 +382,7 @@ export default function CommercialAuditPage() {
             <CardContent className="py-6 flex items-center gap-6">
                <div className="flex-1 space-y-2">
                   <div className="flex items-center justify-between text-xs font-black uppercase tracking-widest">
-                    <span>Facility Compliance Progress</span>
+                    <span>Agency Compliance Progress</span>
                     <span className="text-primary">{Math.round((Object.keys(checkedItems).length / 20) * 100)}%</span>
                   </div>
                   <Progress value={(Object.keys(checkedItems).length / 20) * 100} className="h-3" />
@@ -431,7 +428,7 @@ export default function CommercialAuditPage() {
           </Accordion>
 
           <Button className="w-full h-20 font-black text-2xl bg-primary text-black hover:bg-primary/90 rounded-[2rem] shadow-2xl" onClick={generateReport}>
-            Certify Audit & Generate Report
+            Certify NFPA & NEC Audit
             <FileText className="ml-3 w-8 h-8" />
           </Button>
         </div>
@@ -443,11 +440,11 @@ export default function CommercialAuditPage() {
             <Card className="lg:col-span-2 border-primary/20 orange-glow bg-card/50 backdrop-blur">
               <CardHeader className="flex flex-row items-center justify-between border-b border-white/5 pb-6">
                 <div>
-                  <CardTitle className="text-3xl font-black italic">Facility Safety Index</CardTitle>
-                  <CardDescription className="text-base font-medium">OSHA Compliance Rating • NEC 2023</CardDescription>
+                  <CardTitle className="text-3xl font-black italic">Agency Safety Index</CardTitle>
+                  <CardDescription className="text-base font-medium">NFPA 70E & NEC 2023 Certified Rating</CardDescription>
                 </div>
-                <Badge variant={status === 'Compliant' ? 'default' : 'destructive'} className="uppercase px-6 py-2 text-[10px] font-black tracking-widest">
-                  {status} STATUS
+                <Badge variant={status === 'NFPA COMPLIANT' ? 'default' : 'destructive'} className="uppercase px-6 py-2 text-[10px] font-black tracking-widest">
+                  {status}
                 </Badge>
               </CardHeader>
               <CardContent className="flex flex-col gap-10 pt-10">
@@ -460,7 +457,7 @@ export default function CommercialAuditPage() {
                 <div className="space-y-6">
                   <h4 className="font-black text-sm uppercase tracking-widest flex items-center gap-2">
                     <Info className="w-4 h-4 text-primary" />
-                    Asset Category Breakdown
+                    Standard Category Breakdown
                   </h4>
                   <div className="grid grid-cols-1 gap-6">
                     {COMMERCIAL_CATEGORIES.map(cat => {
@@ -487,22 +484,22 @@ export default function CommercialAuditPage() {
             <div className="flex flex-col gap-6">
               <Card className="bg-primary border-primary text-black">
                 <CardHeader>
-                  <CardTitle className="text-xl font-black italic">Strategic Action Plan</CardTitle>
+                  <CardTitle className="text-xl font-black italic">B2B Action Plan</CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-6">
                   <div className="p-4 rounded-2xl bg-black/10 border border-black/10 text-sm font-bold leading-relaxed">
                     {score < 100 
-                      ? "Facility identified with OSHA violations. Immediate remediation of grounding and LOTO procedures required." 
-                      : "Outstanding facility management. Maintain this level of compliance."}
+                      ? "Facility identified with NFPA 70E Arc Flash violations. Immediate LOTO labeling and PPE boundary markers required." 
+                      : "Outstanding facility management. Maintain NEC 2023 logging schedule."}
                   </div>
-                  <Button className="w-full h-14 bg-black text-white hover:bg-black/90 font-black rounded-xl">Book Corporate Pro</Button>
+                  <Button className="w-full h-14 bg-black text-white hover:bg-black/90 font-black rounded-xl">Book Agency Pro</Button>
                 </CardContent>
               </Card>
 
               <Card className="border-primary/20 bg-primary/10">
                 <CardHeader className="pb-2">
                   <CardTitle className="text-sm font-black uppercase flex items-center gap-2 tracking-widest">
-                    Pack Credits
+                    Standard Credits
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="text-[11px] font-bold">
@@ -513,7 +510,7 @@ export default function CommercialAuditPage() {
           </section>
 
           <div className="flex justify-center pt-8">
-            <Button variant="ghost" className="font-bold opacity-50 hover:opacity-100" onClick={() => setActiveStep("discovery")}>Run New Facility Audit</Button>
+            <Button variant="ghost" className="font-bold opacity-50 hover:opacity-100" onClick={() => setActiveStep("discovery")}>Run New Agency Audit</Button>
           </div>
         </div>
       )}
