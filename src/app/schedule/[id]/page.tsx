@@ -19,7 +19,8 @@ import {
   Upload,
   Stethoscope,
   X,
-  Plus
+  Plus,
+  CalendarCheck
 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card"
@@ -152,10 +153,16 @@ export default function SchedulePage() {
           </Avatar>
           <div>
             <h1 className="text-3xl font-bold tracking-tight">Schedule {pro.name}</h1>
-            <p className="text-muted-foreground flex items-center gap-1 text-sm">
-              <ShieldCheck className="w-4 h-4 text-primary" />
-              {pro.specialty} • {city} Service
-            </p>
+            <div className="flex items-center gap-3">
+              <p className="text-muted-foreground flex items-center gap-1 text-sm">
+                <ShieldCheck className="w-4 h-4 text-primary" />
+                {pro.specialty} • {city} Service
+              </p>
+              <Badge variant="secondary" className="bg-green-500/10 text-green-500 border-green-500/20 text-[9px] font-black uppercase tracking-widest">
+                <CalendarCheck className="w-3 h-3 mr-1" />
+                Google Calendar Synced
+              </Badge>
+            </div>
           </div>
         </div>
         <div className="text-right">
@@ -169,11 +176,16 @@ export default function SchedulePage() {
           {step === "date" && (
             <Card className="animate-in fade-in slide-in-from-left-4 duration-300">
               <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <CalendarIcon className="w-5 h-5 text-primary" />
-                  Select Service Date
-                </CardTitle>
-                <CardDescription>Choose a day for your on-site visit.</CardDescription>
+                <div className="flex items-center justify-between">
+                  <CardTitle className="flex items-center gap-2">
+                    <CalendarIcon className="w-5 h-5 text-primary" />
+                    Select Service Date
+                  </CardTitle>
+                  <div className="flex items-center gap-1.5 text-[10px] font-black text-muted-foreground uppercase">
+                    <span className="w-2 h-2 rounded-full bg-green-500" /> Live Availability
+                  </div>
+                </div>
+                <CardDescription>Choose a day for your on-site visit. Calendar synced with {pro.name.split(' ')[0]}&apos;s real-time schedule.</CardDescription>
               </CardHeader>
               <CardContent className="flex justify-center p-0 pb-6">
                 <Calendar

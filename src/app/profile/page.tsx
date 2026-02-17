@@ -1,15 +1,31 @@
 "use client"
 
-import { User, Settings, CreditCard, History, Shield, LogOut, Zap, Bell, Crown, Calculator, Briefcase } from "lucide-react"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { User, Settings, CreditCard, History, Shield, LogOut, Zap, Bell, Crown, Calculator, Briefcase, Calendar as CalendarIcon, RefreshCw } from "lucide-react"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Badge } from "@/components/ui/badge"
 import { Switch } from "@/components/ui/switch"
 import { Label } from "@/components/ui/label"
 import Link from "next/link"
+import { useState } from "react"
+import { useToast } from "@/hooks/use-toast"
 
 export default function ProfilePage() {
+  const [isSyncing, setIsSyncing] = useState(false)
+  const { toast } = useToast()
+
+  const handleCalendarSync = () => {
+    setIsSyncing(true)
+    setTimeout(() => {
+      setIsSyncing(false)
+      toast({
+        title: "Google Calendar Connected",
+        description: "Your availability is now synced with Electric Doctor's booking engine.",
+      })
+    }, 2000)
+  }
+
   return (
     <div className="max-w-5xl mx-auto flex flex-col gap-8 pb-12">
       <div className="flex items-center gap-4">
@@ -104,6 +120,40 @@ export default function ProfilePage() {
                 <Link href="/pro/estimate">
                   <Button className="w-full font-bold bg-primary text-black hover:bg-primary/90">Open Project Estimator</Button>
                 </Link>
+             </CardContent>
+           </Card>
+
+           <Card>
+             <CardHeader>
+               <div className="flex items-center justify-between">
+                 <div>
+                   <CardTitle className="flex items-center gap-2">
+                     <CalendarIcon className="w-5 h-5 text-primary" />
+                     Google Calendar Sync
+                   </CardTitle>
+                   <CardDescription>Connect your external calendar to manage availability.</CardDescription>
+                 </div>
+                 <Badge variant="outline" className="border-primary text-primary">OPTIONAL</Badge>
+               </div>
+             </CardHeader>
+             <CardContent>
+                <div className="p-4 rounded-xl border border-dashed bg-muted/20 flex flex-col items-center gap-4 text-center">
+                   <div className="w-12 h-12 rounded-full bg-white/10 flex items-center justify-center">
+                      <CalendarIcon className="w-6 h-6 text-muted-foreground" />
+                   </div>
+                   <div className="space-y-1">
+                      <p className="text-sm font-bold">No external calendar connected</p>
+                      <p className="text-xs text-muted-foreground max-w-xs">Connecting Google Calendar allows customers to book you only when you are truly free.</p>
+                   </div>
+                   <Button 
+                    variant="outline" 
+                    className="font-bold border-primary text-primary hover:bg-primary/10"
+                    onClick={handleCalendarSync}
+                    disabled={isSyncing}
+                   >
+                      {isSyncing ? <RefreshCw className="w-4 h-4 mr-2 animate-spin" /> : "Connect Google Calendar"}
+                   </Button>
+                </div>
              </CardContent>
            </Card>
 
