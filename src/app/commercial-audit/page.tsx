@@ -1,13 +1,38 @@
+
 "use client"
 
 import { useState } from "react"
-import { Building2, ShieldCheck, ClipboardCheck, AlertTriangle, FileText, ChevronDown, CheckCircle2, Info, ArrowRight, Zap, Download, CreditCard, Lock, Factory, HardHat } from "lucide-react"
+import { Building2, ShieldCheck, ClipboardCheck, AlertTriangle, FileText, ChevronDown, CheckCircle2, Info, ArrowRight, Zap, Download, CreditCard, Lock, Factory, HardHat, Calculator, TrendingUp, TrendingDown, DollarSign, BarChart3, Activity } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card"
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
 import { Badge } from "@/components/ui/badge"
 import { Progress } from "@/components/ui/progress"
+import { Slider } from "@/components/ui/slider"
+import { Label } from "@/components/ui/label"
 import { useToast } from "@/hooks/use-toast"
+import { Area, AreaChart, CartesianGrid, XAxis, YAxis } from "recharts"
+import { ChartContainer, ChartTooltip, ChartTooltipContent, type ChartConfig } from "@/components/ui/chart"
+
+const DOWNTIME_DATA = [
+  { month: "M1", loss: 5000, plan: 1500 },
+  { month: "M2", loss: 12000, plan: 1500 },
+  { month: "M3", loss: 85000, plan: 1500 }, // Simulated outage event
+  { month: "M4", loss: 15000, plan: 1500 },
+  { month: "M5", loss: 22000, plan: 1500 },
+  { month: "M6", loss: 140000, plan: 1500 }, // Catastrophic failure
+]
+
+const chartConfig = {
+  loss: {
+    label: "Unplanned Loss ($)",
+    color: "#ff4d4d",
+  },
+  plan: {
+    label: "Enterprise Plan",
+    color: "hsl(var(--primary))",
+  },
+} satisfies ChartConfig
 
 const COMMERCIAL_CATEGORIES = [
   {
@@ -67,10 +92,15 @@ const PRICING_TIERS = [
 ]
 
 export default function CommercialAuditPage() {
-  const [activeStep, setActiveStep] = useState<"intro" | "payment" | "form" | "report">("intro")
+  const [activeStep, setActiveStep] = useState<"discovery" | "intro" | "payment" | "form" | "report">("discovery")
   const [selectedTier, setSelectedTier] = useState(PRICING_TIERS[1])
   const [checkedItems, setCheckedItems] = useState<Record<string, boolean>>({})
   const [isProcessing, setIsProcessing] = useState(false)
+  
+  // Industrial Discovery State
+  const [hourlyRevenue, setHourlyRevenue] = useState(2500)
+  const [systemAge, setSystemAge] = useState(20)
+  
   const { toast } = useToast()
 
   const toggleItem = (category: string, index: number) => {
@@ -100,15 +130,156 @@ export default function CommercialAuditPage() {
   const score = calculateScore()
   const status = score > 90 ? "Compliant" : score > 70 ? "Needs Improvement" : "High Risk"
 
+  // Industrial ROI Calculations
+  const calculatedRisk = (systemAge * 0.08).toFixed(1)
+  const estimatedAnnualLoss = (hourlyRevenue * 4.5 * (systemAge / 10)).toLocaleString()
+
   return (
-    <div className="max-w-5xl mx-auto flex flex-col gap-8 pb-12">
+    <div className="max-w-6xl mx-auto flex flex-col gap-8 pb-12">
       <div className="flex flex-col gap-2">
         <h1 className="text-4xl font-black tracking-tighter uppercase">Professional AI Commercial Audit</h1>
         <p className="text-muted-foreground text-lg">Industrial-grade electrical safety and OSHA 1910 compliance for mission-critical facilities.</p>
       </div>
 
+      {activeStep === "discovery" && (
+        <div className="flex flex-col gap-12 animate-in fade-in duration-700">
+          <section className="text-center space-y-4 pt-4">
+            <Badge variant="outline" className="border-primary text-primary px-6 py-1.5 uppercase tracking-widest text-[10px] font-black animate-pulse">
+              Enterprise Price Discovery
+            </Badge>
+            <h2 className="text-5xl md:text-6xl font-black tracking-tighter leading-none">
+              Downtime is <span className="text-primary italic">Expensive.</span><br />Compliance is Not.
+            </h2>
+            <p className="text-muted-foreground text-xl max-w-2xl mx-auto font-medium leading-relaxed">
+              For a facility generating <span className="text-foreground font-bold">${hourlyRevenue.toLocaleString()}/hr</span>, a single electrical outage costs an average of <span className="text-red-500 font-bold">$124,000</span>.
+            </p>
+          </section>
+
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <Card className="lg:col-span-2 border-primary/20 bg-card/50 backdrop-blur-xl orange-glow">
+              <CardHeader className="border-b border-white/5 pb-6">
+                <div className="flex items-center justify-between">
+                  <CardTitle className="flex items-center gap-2 text-2xl font-black">
+                    <Calculator className="w-6 h-6 text-primary" />
+                    Operational Loss Simulator
+                  </CardTitle>
+                  <div className="text-right">
+                    <p className="text-[10px] text-muted-foreground uppercase font-black">OSHA Risk Index</p>
+                    <Badge variant="destructive" className="font-black uppercase">{calculatedRisk}% Probability</Badge>
+                  </div>
+                </div>
+              </CardHeader>
+              <CardContent className="pt-8 space-y-12">
+                <div className="h-[300px] w-full">
+                  <ChartContainer config={chartConfig} className="h-full w-full">
+                    <AreaChart data={DOWNTIME_DATA}>
+                      <defs>
+                        <linearGradient id="colorLoss" x1="0" y1="0" x2="0" y2="1">
+                          <stop offset="5%" stopColor="#ff4d4d" stopOpacity={0.3}/>
+                          <stop offset="95%" stopColor="#ff4d4d" stopOpacity={0}/>
+                        </linearGradient>
+                        <linearGradient id="colorPlan" x1="0" y1="0" x2="0" y2="1">
+                          <stop offset="5%" stopColor="hsl(var(--primary))" stopOpacity={0.3}/>
+                          <stop offset="95%" stopColor="hsl(var(--primary))" stopOpacity={0}/>
+                        </linearGradient>
+                      </defs>
+                      <CartesianGrid strokeDasharray="3 3" opacity={0.05} vertical={false} />
+                      <XAxis dataKey="month" fontSize={10} axisLine={false} tickLine={false} />
+                      <YAxis fontSize={10} axisLine={false} tickLine={false} tickFormatter={(v) => `$${v/1000}k`} />
+                      <ChartTooltip content={<ChartTooltipContent />} />
+                      <Area type="monotone" dataKey="loss" stroke="#ff4d4d" fillOpacity={1} fill="url(#colorLoss)" strokeWidth={3} />
+                      <Area type="monotone" dataKey="plan" stroke="hsl(var(--primary))" fillOpacity={1} fill="url(#colorPlan)" strokeWidth={3} />
+                    </AreaChart>
+                  </ChartContainer>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
+                  <div className="space-y-8">
+                    <div className="space-y-4">
+                      <Label className="font-black uppercase tracking-widest text-xs flex justify-between">
+                        Hourly OpEx/Revenue <span>${hourlyRevenue.toLocaleString()}</span>
+                      </Label>
+                      <Slider value={[hourlyRevenue]} onValueChange={(v) => setHourlyRevenue(v[0])} min={500} max={50000} step={100} />
+                    </div>
+                    <div className="space-y-4">
+                      <Label className="font-black uppercase tracking-widest text-xs flex justify-between">
+                        Distribution System Age <span>{systemAge} Years</span>
+                      </Label>
+                      <Slider value={[systemAge]} onValueChange={(v) => setSystemAge(v[0])} min={1} max={60} step={1} />
+                    </div>
+                  </div>
+                  <div className="bg-primary/10 rounded-3xl p-8 border border-primary/20 flex flex-col justify-center relative overflow-hidden group">
+                    <Activity className="absolute -right-4 -bottom-4 w-32 h-32 text-primary/5 group-hover:scale-110 transition-transform" />
+                    <span className="text-[10px] font-black text-muted-foreground uppercase tracking-widest">Est. Unplanned Cost / Year</span>
+                    <span className="text-5xl font-black text-primary tracking-tighter mt-1">${estimatedAnnualLoss}</span>
+                    <p className="text-[10px] text-primary/70 font-bold mt-4 uppercase flex items-center gap-1">
+                      <TrendingUp className="w-3 h-3" />
+                      ROI: 42.1x vs Monitoring
+                    </p>
+                  </div>
+                </div>
+              </CardContent>
+              <CardFooter className="bg-white/5 p-6 border-t border-white/5 flex items-center gap-4">
+                <AlertTriangle className="w-5 h-5 text-red-500 shrink-0" />
+                <p className="text-xs font-medium text-muted-foreground leading-relaxed">
+                  Your profile indicates a <span className="text-red-500 font-bold">{calculatedRisk}% risk of critical switchgear failure</span> within the next 12 months. OSHA non-compliance penalties may apply.
+                </p>
+              </CardFooter>
+            </Card>
+
+            <div className="flex flex-col gap-6">
+              <Card className="bg-primary text-black orange-glow">
+                <CardHeader>
+                  <CardTitle className="text-2xl font-black tracking-tight italic">Secure Your Asset</CardTitle>
+                  <CardDescription className="text-black/70 font-medium">Certification packages for corporate property managers.</CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <Button className="w-full h-16 bg-black text-white font-black text-xl rounded-2xl hover:bg-black/90 shadow-2xl transition-transform hover:scale-[1.02]" onClick={() => setActiveStep("intro")}>
+                    Run Facility Audit
+                    <ArrowRight className="ml-2 w-6 h-6" />
+                  </Button>
+                  <div className="flex items-center justify-center gap-2 text-[10px] font-black uppercase tracking-[0.2em] opacity-70">
+                    <ShieldCheck className="w-4 h-4" />
+                    OSHA 1910 Compliant
+                  </div>
+                </CardContent>
+              </Card>
+
+              <Card className="bg-card/50">
+                <CardHeader>
+                  <CardTitle className="text-sm font-black uppercase tracking-widest">Enterprise Benefits</CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-6">
+                  <div className="flex items-start gap-4">
+                    <div className="w-10 h-10 rounded-xl bg-muted flex items-center justify-center shrink-0">
+                      <HardHat className="w-5 h-5 text-primary" />
+                    </div>
+                    <div className="space-y-1">
+                      <p className="text-sm font-bold">Insurance Leverage</p>
+                      <p className="text-xs text-muted-foreground leading-tight">Verified audits can lower business liability premiums by up to 18%.</p>
+                    </div>
+                  </div>
+                  <div className="flex items-start gap-4">
+                    <div className="w-10 h-10 rounded-xl bg-muted flex items-center justify-center shrink-0">
+                      <Zap className="w-5 h-5 text-primary" />
+                    </div>
+                    <div className="space-y-1">
+                      <p className="text-sm font-bold">Uptime Maximization</p>
+                      <p className="text-xs text-muted-foreground leading-tight">Thermal scans identify hotspots before they trip main breakers.</p>
+                    </div>
+                  </div>
+                  <div className="p-4 bg-primary/5 rounded-xl border border-primary/20 text-[11px] font-medium leading-relaxed italic">
+                    "Predictive maintenance isn't a cost center; it's a revenue protection strategy."
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+          </div>
+        </div>
+      )}
+
       {activeStep === "intro" && (
-        <div className="flex flex-col gap-8">
+        <div className="flex flex-col gap-8 animate-in slide-in-from-right-4 duration-500">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {PRICING_TIERS.map((tier) => (
               <Card 
@@ -163,8 +334,9 @@ export default function CommercialAuditPage() {
                 </div>
               </div>
             </CardContent>
-            <CardFooter>
-              <Button className="w-full h-16 text-xl font-black bg-primary text-black hover:bg-primary/90 rounded-2xl shadow-xl" onClick={() => setActiveStep("payment")}>
+            <CardFooter className="flex gap-4">
+              <Button variant="ghost" className="font-bold" onClick={() => setActiveStep("discovery")}>Back to Loss simulator</Button>
+              <Button className="flex-1 h-16 text-xl font-black bg-primary text-black hover:bg-primary/90 rounded-2xl shadow-xl" onClick={() => setActiveStep("payment")}>
                 Unlock {selectedTier.name}
                 <ArrowRight className="ml-2 w-6 h-6" />
               </Button>
@@ -341,7 +513,7 @@ export default function CommercialAuditPage() {
           </section>
 
           <div className="flex justify-center pt-8">
-            <Button variant="ghost" className="font-bold opacity-50 hover:opacity-100" onClick={() => setActiveStep("intro")}>Run New Facility Audit</Button>
+            <Button variant="ghost" className="font-bold opacity-50 hover:opacity-100" onClick={() => setActiveStep("discovery")}>Run New Facility Audit</Button>
           </div>
         </div>
       )}
