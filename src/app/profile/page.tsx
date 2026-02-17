@@ -15,11 +15,14 @@ import { Progress } from "@/components/ui/progress"
 
 export default function ProfilePage() {
   const [isSyncing, setIsSyncing] = useState(false)
-  const [userPlan, setUserPlan] = useState<"pay-as-you-go" | "monthly-elite">("pay-as-you-go") // Simulated state
+  const [userPlan, setUserPlan] = useState<"pay-as-you-go" | "monthly-elite">("pay-as-you-go") 
+  const [hasCalendarAddon, setHasCalendarAddon] = useState(false)
   const { toast } = useToast()
 
+  const canUseCalendar = userPlan === "monthly-elite" || hasCalendarAddon
+
   const handleCalendarSync = () => {
-    if (userPlan !== "monthly-elite") return;
+    if (!canUseCalendar) return;
     
     setIsSyncing(true)
     setTimeout(() => {
@@ -29,6 +32,15 @@ export default function ProfilePage() {
         description: "Your availability is now synced with Electric Doctor's booking engine.",
       })
     }, 2000)
+  }
+
+  const handleUnlockAddon = () => {
+    toast({
+      title: "Redirecting to Stripe",
+      description: "Opening secure checkout for Pro-Sync Add-on ($49/mo).",
+    })
+    // Simulate activation for demo purposes
+    setTimeout(() => setHasCalendarAddon(true), 2000)
   }
 
   return (
@@ -99,9 +111,14 @@ export default function ProfilePage() {
                   </div>
                   <Progress value={userPlan === 'monthly-elite' ? 100 : 45} className="h-1.5" />
                </div>
-               <p className="text-[10px] text-muted-foreground leading-relaxed">
-                 You are currently on the <b>{userPlan === 'monthly-elite' ? 'Monthly Elite ($499/mo)' : 'Pay As You Go'}</b> lead model.
-               </p>
+               <div className="space-y-1">
+                  <p className="text-[10px] text-muted-foreground leading-relaxed">
+                    Plan: <b>{userPlan === 'monthly-elite' ? 'Monthly Elite ($499/mo)' : 'Pay As You Go'}</b>
+                  </p>
+                  {hasCalendarAddon && userPlan !== 'monthly-elite' && (
+                    <Badge variant="outline" className="text-[9px] border-green-500 text-green-500 uppercase h-4">Pro-Sync Add-on Active</Badge>
+                  )}
+               </div>
                <Button 
                 size="sm" 
                 variant="outline" 
@@ -162,7 +179,7 @@ export default function ProfilePage() {
            </Card>
 
            {/* Calendar Sync - Plan Restricted */}
-           <Card className={userPlan === 'monthly-elite' ? 'border-primary/20' : 'bg-muted/10 opacity-80'}>
+           <Card className={canUseCalendar ? 'border-primary/20' : 'bg-muted/10'}>
              <CardHeader>
                <div className="flex items-center justify-between">
                  <div>
@@ -171,30 +188,40 @@ export default function ProfilePage() {
                      Google Calendar Sync
                    </CardTitle>
                    <CardDescription>
-                     {userPlan === 'monthly-elite' 
+                     {canUseCalendar 
                        ? "Connect your external calendar to manage availability."
-                       : "Unlock real-time sync with your Pro Elite Monthly plan."}
+                       : "Automate your bookings with our Pro-Sync plugin."}
                    </CardDescription>
                  </div>
-                 <Badge variant={userPlan === 'monthly-elite' ? 'outline' : 'destructive'} className={userPlan === 'monthly-elite' ? 'border-primary text-primary' : ''}>
-                   {userPlan === 'monthly-elite' ? 'ELITE FEATURE' : 'LOCKED'}
+                 <Badge variant={canUseCalendar ? 'outline' : 'destructive'} className={canUseCalendar ? 'border-primary text-primary' : ''}>
+                   {userPlan === 'monthly-elite' ? 'ELITE INCLUDED' : hasCalendarAddon ? 'ADD-ON ACTIVE' : 'LOCKED'}
                  </Badge>
                </div>
              </CardHeader>
              <CardContent>
                 <div className="p-4 rounded-xl border border-dashed bg-muted/20 flex flex-col items-center gap-4 text-center relative">
-                   {userPlan !== 'monthly-elite' && (
-                     <div className="absolute inset-0 z-10 bg-background/40 backdrop-blur-[2px] flex flex-col items-center justify-center rounded-xl p-4">
+                   {!canUseCalendar && (
+                     <div className="absolute inset-0 z-10 bg-background/60 backdrop-blur-[2px] flex flex-col items-center justify-center rounded-xl p-4">
                         <Lock className="w-8 h-8 text-primary mb-2" />
-                        <p className="font-black text-sm uppercase tracking-widest mb-1">Premium Integration</p>
-                        <p className="text-[10px] text-muted-foreground mb-4">Elite Monthly subscribers only.</p>
-                        <Button 
-                          className="font-black h-10 px-6 bg-primary text-black hover:bg-primary/90 rounded-lg flex gap-2"
-                          onClick={() => setUserPlan('monthly-elite')}
-                        >
-                          Upgrade to Unlock
-                          <ArrowUpRight className="w-4 h-4" />
-                        </Button>
+                        <p className="font-black text-sm uppercase tracking-widest mb-1">Automation Restricted</p>
+                        <p className="text-[10px] text-muted-foreground mb-4 max-w-[200px]">Unlock automated scheduling for $49/mo or upgrade to Pro Elite.</p>
+                        <div className="flex flex-col w-full gap-2 px-8">
+                          <Button 
+                            size="sm"
+                            className="font-black h-10 bg-primary text-black hover:bg-primary/90 rounded-lg w-full"
+                            onClick={handleUnlockAddon}
+                          >
+                            Unlock Plugin ($49/mo)
+                          </Button>
+                          <Button 
+                            variant="ghost"
+                            size="sm"
+                            className="font-black h-10 text-xs opacity-70 w-full"
+                            onClick={() => setUserPlan('monthly-elite')}
+                          >
+                            Upgrade to Elite ($499/mo)
+                          </Button>
+                        </div>
                      </div>
                    )}
                    <div className="w-12 h-12 rounded-full bg-white/10 flex items-center justify-center">
@@ -208,7 +235,7 @@ export default function ProfilePage() {
                     variant="outline" 
                     className="font-bold border-primary text-primary hover:bg-primary/10"
                     onClick={handleCalendarSync}
-                    disabled={isSyncing || userPlan !== 'monthly-elite'}
+                    disabled={isSyncing || !canUseCalendar}
                    >
                       {isSyncing ? <RefreshCw className="w-4 h-4 mr-2 animate-spin" /> : "Connect Google Calendar"}
                    </Button>

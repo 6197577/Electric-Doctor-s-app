@@ -282,14 +282,17 @@ export default function JoinNetworkPage() {
           <CardHeader>
             <Target className="w-5 h-5 text-primary" />
             <CardTitle>Monetization & Tool Access</CardTitle>
-            <CardDescription>Select a billing model. Monthly Elite unlocks the exclusive Google Calendar Sync tool.</CardDescription>
+            <CardDescription>Select a billing model. Monthly Elite includes the Calendar Sync tool ($49/mo value).</CardDescription>
           </CardHeader>
           <CardContent className="space-y-8">
             <div className="space-y-6">
               <div className="bg-muted/10 border rounded-xl p-4 space-y-4">
-                <div className="flex items-center gap-2 text-sm font-bold">
-                  <BarChart3 className="w-4 h-4 text-primary" />
-                  Lead Cost Comparison
+                <div className="flex items-center justify-between text-sm font-bold">
+                  <div className="flex items-center gap-2">
+                    <BarChart3 className="w-4 h-4 text-primary" />
+                    Lead Cost Comparison
+                  </div>
+                  <Badge variant="outline" className="text-[10px] uppercase border-primary text-primary">Calendar Plugin: $49/mo Add-on</Badge>
                 </div>
                 <ChartContainer config={chartConfig} className="h-[200px] w-full">
                   <BarChart data={chartData}>
@@ -317,10 +320,10 @@ export default function JoinNetworkPage() {
                     <Badge className="bg-green-500 text-black font-black uppercase tracking-tighter">BEST FOR SCALE</Badge>
                   </div>
                   <div className="space-y-3">
-                    <p className="text-xs text-muted-foreground leading-relaxed"><strong>$499/mo Flat-Rate.</strong> Unlimited leads, unlimited scans, and the <strong>Google Calendar Sync Plugin.</strong></p>
+                    <p className="text-xs text-muted-foreground leading-relaxed"><strong>$499/mo Flat-Rate.</strong> Unlimited leads, unlimited scans, and the <strong>Google Calendar Sync Plugin INCLUDED.</strong></p>
                     <div className="flex items-center gap-2 text-[10px] font-bold text-green-500">
                       <CalendarDays className="w-3 h-3" />
-                      CALENDAR PLUGIN UNLOCKED
+                      FULL TOOL SUITE UNLOCKED
                     </div>
                   </div>
                 </div>
@@ -333,7 +336,7 @@ export default function JoinNetworkPage() {
                       <Label htmlFor="pre-paid" className="font-bold cursor-pointer">Pre-paid Leads</Label>
                     </div>
                     <div className="space-y-2">
-                      <p className="text-xs text-muted-foreground leading-relaxed">$22/lead. No monthly fee. (Calendar Plugin Locked)</p>
+                      <p className="text-xs text-muted-foreground leading-relaxed">$22/lead. No monthly fee. (Calendar Plugin: $49/mo Add-on)</p>
                     </div>
                   </div>
                   <div className={`p-4 border rounded-xl cursor-pointer transition-all ${formData.leadModel === 'pay-as-you-go' ? 'border-primary bg-primary/5' : 'hover:border-muted-foreground/30'}`} onClick={() => updateField('leadModel', 'pay-as-you-go')}>
@@ -342,7 +345,7 @@ export default function JoinNetworkPage() {
                       <Label htmlFor="pay-as-you-go" className="font-bold cursor-pointer">Pay As You Go</Label>
                     </div>
                     <div className="space-y-2">
-                      <p className="text-xs text-muted-foreground leading-relaxed">$35/lead. No monthly fee. (Calendar Plugin Locked)</p>
+                      <p className="text-xs text-muted-foreground leading-relaxed">$35/lead. No monthly fee. (Calendar Plugin: $49/mo Add-on)</p>
                     </div>
                   </div>
                 </div>
@@ -426,7 +429,7 @@ export default function JoinNetworkPage() {
               <p className="text-sm text-muted-foreground leading-relaxed">
                 {formData.leadModel === 'monthly-elite' 
                   ? "Unlimited leads enabled. Your Google Calendar Sync plugin is ready for activation in your profile."
-                  : "Lead access enabled. Upgrade to Elite Monthly anytime to unlock the Google Calendar plugin."}
+                  : "Lead access enabled. You can add the Google Calendar plugin ($49/mo) anytime in your profile."}
               </p>
             </div>
             <Link href="/profile">
