@@ -52,8 +52,12 @@ export default function PrivacyPage() {
         <section className="space-y-4">
           <h2 className="text-xl font-bold text-foreground">5. Contact Us</h2>
           <p>
-            If you have questions about this policy or wish to request data deletion, please contact our Data Protection Officer at privacy@emergencyelectricrepair.com.
+            If you have questions about this policy or wish to request data deletion, please contact our Data Protection Officer at:
           </p>
+          <ul className="list-none space-y-1">
+            <li><strong>Email:</strong> privacy@emergencyelectricrepair.com</li>
+            <li><strong>Phone:</strong> 304-410-9208</li>
+          </ul>
         </section>
       </div>
     </div>

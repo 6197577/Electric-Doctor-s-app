@@ -56,6 +56,17 @@ export default function TermsPage() {
             These terms are governed by the laws of the State of New York. Any disputes shall be resolved through binding arbitration in the City of New York.
           </p>
         </section>
+
+        <section className="space-y-4 pt-8 border-t">
+          <h2 className="text-xl font-bold text-foreground">6. Contact Information</h2>
+          <p>
+            For legal inquiries or support, please contact us at:
+          </p>
+          <ul className="list-none space-y-1">
+            <li><strong>Phone:</strong> 304-410-9208</li>
+            <li><strong>Email:</strong> support@emergencyelectricrepair.com</li>
+          </ul>
+        </section>
       </div>
     </div>
   )
