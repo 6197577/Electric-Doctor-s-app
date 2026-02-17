@@ -9,6 +9,11 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/
 import { Badge } from "@/components/ui/badge"
 import { Progress } from "@/components/ui/progress"
 import { useToast } from "@/hooks/use-toast"
+import { collection, addDoc, serverTimestamp } from "firebase/firestore"
+import { useFirestore, useUser } from "@/firebase"
+import { errorEmitter } from '@/firebase/error-emitter'
+import { FirestorePermissionError } from '@/firebase/errors'
+import { format } from "date-fns"
 
 const AUDIT_CATEGORIES = [
   {
@@ -78,6 +83,8 @@ const PRICING_TIERS = [
 ]
 
 export default function AuditPage() {
+  const { user } = useUser()
+  const db = useFirestore()
   const [activeStep, setActiveStep] = useState<"intro" | "payment" | "form" | "report">("intro")
   const [selectedTier, setSelectedTier] = useState(PRICING_TIERS[1])
   const [checkedItems, setCheckedItems] = useState<Record<string, boolean>>({})
@@ -104,6 +111,29 @@ export default function AuditPage() {
   }
 
   const generateReport = () => {
+    const score = calculateScore()
+    const status = score > 85 ? "Safe" : score > 60 ? "Caution" : "Hazardous"
+
+    // Persist to Firestore
+    if (user && db) {
+      const auditData = {
+        date: format(new Date(), 'yyyy-MM-dd'),
+        type: 'residential',
+        overallScore: score,
+        status: status,
+        checkedItems: checkedItems,
+        createdAt: serverTimestamp()
+      }
+      const colRef = collection(db, 'users', user.uid, 'audits')
+      addDoc(colRef, auditData).catch(async () => {
+        errorEmitter.emit('permission-error', new FirestorePermissionError({
+          path: colRef.path,
+          operation: 'create',
+          requestResourceData: auditData
+        }));
+      })
+    }
+
     setActiveStep("report")
     toast({ title: "Audit Complete", description: "Your safety score and report have been generated." })
   }
@@ -124,7 +154,7 @@ export default function AuditPage() {
             {PRICING_TIERS.map((tier) => (
               <Card 
                 key={tier.id} 
-                className={`cursor-pointer transition-all border-2 ${selectedTier.id === tier.id ? "border-primary bg-primary/5" : "border-border hover:border-primary/50"}`}
+                className={`cursor-pointer transition-all border-2 relative overflow-hidden ${selectedTier.id === tier.id ? "border-primary bg-primary/5" : "border-border hover:border-primary/50"}`}
                 onClick={() => setSelectedTier(tier)}
               >
                 {tier.popular && (

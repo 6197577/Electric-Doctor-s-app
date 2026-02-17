@@ -11,34 +11,38 @@
         "serviceType": { "type": "string", "enum": ["Oil Change", "Filter Replacement", "Battery Check", "Spark Plug Service", "General Inspection", "Repair"] },
         "hoursRun": { "type": "number", "description": "Total engine hours at time of service." },
         "performedBy": { "type": "string" },
-        "notes": { "type": "string" }
+        "notes": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" }
       },
       "required": ["date", "serviceType", "hoursRun"]
     },
     "ElectricalAudit": {
-      "title": "100-Point Electrical Audit",
-      "description": "A comprehensive electrical safety audit based on NEC standards.",
+      "title": "Agency Electrical Audit",
+      "description": "A comprehensive electrical safety audit (NEC/NFPA).",
       "type": "object",
       "properties": {
         "id": { "type": "string" },
         "date": { "type": "string", "format": "date" },
-        "auditorName": { "type": "string" },
-        "overallScore": { "type": "number", "description": "Score out of 100." },
-        "status": { "type": "string", "enum": ["Safe", "Caution", "Hazardous"] },
-        "categories": {
-          "type": "object",
-          "properties": {
-            "serviceEntrance": { "type": "number" },
-            "grounding": { "type": "number" },
-            "mainPanel": { "type": "number" },
-            "branchWiring": { "type": "number" },
-            "gfciAfci": { "type": "number" },
-            "devices": { "type": "number" },
-            "safetyDevices": { "type": "number" }
-          }
-        },
-        "findings": { "type": "array", "items": { "type": "string" } },
-        "recommendations": { "type": "array", "items": { "type": "string" } }
+        "type": { "type": "string", "enum": ["residential", "commercial"] },
+        "overallScore": { "type": "number" },
+        "status": { "type": "string" },
+        "checkedItems": { "type": "object", "additionalProperties": { "type": "boolean" } },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["type", "overallScore", "status"]
+    },
+    "DiagnosisRecord": {
+      "title": "AI Diagnosis Record",
+      "description": "A record of an AI-powered electrical issue diagnosis.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "diagnosis": { "type": "string" },
+        "urgency": { "type": "string" },
+        "description": { "type": "string" },
+        "findings": { "type": "array", "items": { "type": "object" } },
+        "recommendations": { "type": "array", "items": { "type": "string" } },
+        "createdAt": { "type": "string", "format": "date-time" }
       }
     }
   },
@@ -53,6 +57,10 @@
     "/users/{userId}/audits/{auditId}": {
       "schema": "#/entities/ElectricalAudit",
       "description": "Historical electrical audits performed for a user."
+    },
+    "/users/{userId}/diagnoses/{id}": {
+      "schema": "#/entities/DiagnosisRecord",
+      "description": "Historical AI diagnoses generated for a user."
     }
   }
 }

@@ -1,20 +1,25 @@
+
 "use client"
 
 import { useState } from "react"
 import { Camera, Upload, AlertTriangle, CheckCircle, Zap, Loader2, ArrowRight, DollarSign, TrendingDown } from "lucide-react"
 import { aiDiagnosticAssistant, AiDiagnosticAssistantOutput } from "@/ai/flows/ai-diagnostic-assistant"
-import { smartRecommendations, SmartRecommendationsOutput } from "@/ai/flows/smart-recommendations"
 import { runSalesCloser, SalesCloserOutput } from "@/ai/flows/ai-sales-closer"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card"
 import { Textarea } from "@/components/ui/textarea"
 import { Badge } from "@/components/ui/badge"
-import { Progress } from "@/components/ui/progress"
 import { useToast } from "@/hooks/use-toast"
 import Image from "next/image"
 import Link from "next/link"
+import { collection, addDoc, serverTimestamp } from "firebase/firestore"
+import { useFirestore, useUser } from "@/firebase"
+import { errorEmitter } from '@/firebase/error-emitter'
+import { FirestorePermissionError } from '@/firebase/errors'
 
 export default function DiagnosePage() {
+  const { user } = useUser()
+  const db = useFirestore()
   const [file, setFile] = useState<string | null>(null)
   const [description, setDescription] = useState("")
   const [isAnalyzing, setIsAnalyzing] = useState(false)
@@ -52,6 +57,26 @@ export default function DiagnosePage() {
         urgency: diagnosis.urgencyLevel
       })
       setSalesPitch(sales)
+
+      // Persistent Save to Database
+      if (user && db) {
+        const diagData = {
+          diagnosis: diagnosis.overallDiagnosis,
+          urgency: diagnosis.urgencyLevel,
+          description: description,
+          findings: diagnosis.identifiedParts,
+          recommendations: diagnosis.safetyRecommendations,
+          createdAt: serverTimestamp()
+        }
+        const colRef = collection(db, 'users', user.uid, 'diagnoses')
+        addDoc(colRef, diagData).catch(async () => {
+          errorEmitter.emit('permission-error', new FirestorePermissionError({
+            path: colRef.path,
+            operation: 'create',
+            requestResourceData: diagData
+          }));
+        })
+      }
     } catch (error) {
       toast({ title: "Error", description: "Analysis failed. Please try again.", variant: "destructive" })
     } finally {
@@ -113,8 +138,9 @@ export default function DiagnosePage() {
                   value={description}
                   onChange={(e) => setDescription(e.target.value)}
                 />
+                {!user && <p className="text-[10px] text-amber-500 font-bold mb-4 uppercase">Sign in to save this diagnosis to your history</p>}
                 <Button 
-                  className="w-full mt-6 font-bold" 
+                  className="w-full mt-2 font-bold" 
                   size="lg"
                   disabled={!file || isAnalyzing}
                   onClick={startAnalysis}
@@ -137,7 +163,6 @@ export default function DiagnosePage() {
         </div>
       ) : (
         <div className="flex flex-col gap-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
-          {/* Analysis Results */}
           <section className="grid grid-cols-1 lg:grid-cols-3 gap-6">
             <Card className="lg:col-span-2 border-primary/20 bg-card/50 backdrop-blur-sm">
               <CardHeader className="flex flex-row items-center justify-between space-y-0">

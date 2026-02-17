@@ -1,3 +1,4 @@
+
 "use client"
 
 import { useState } from "react"
@@ -12,14 +13,19 @@ import { Label } from "@/components/ui/label"
 import { useToast } from "@/hooks/use-toast"
 import { Area, AreaChart, CartesianGrid, XAxis, YAxis } from "recharts"
 import { ChartContainer, ChartTooltip, ChartTooltipContent, type ChartConfig } from "@/components/ui/chart"
+import { collection, addDoc, serverTimestamp } from "firebase/firestore"
+import { useFirestore, useUser } from "@/firebase"
+import { errorEmitter } from '@/firebase/error-emitter'
+import { FirestorePermissionError } from '@/firebase/errors'
+import { format } from "date-fns"
 
 const DOWNTIME_DATA = [
   { month: "M1", loss: 5000, plan: 1500 },
   { month: "M2", loss: 12000, plan: 1500 },
-  { month: "M3", loss: 85000, plan: 1500 }, // Simulated outage event
+  { month: "M3", loss: 85000, plan: 1500 },
   { month: "M4", loss: 15000, plan: 1500 },
   { month: "M5", loss: 22000, plan: 1500 },
-  { month: "M6", loss: 140000, plan: 1500 }, // Catastrophic failure
+  { month: "M6", loss: 140000, plan: 1500 },
 ]
 
 const chartConfig = {
@@ -91,6 +97,8 @@ const PRICING_TIERS = [
 ]
 
 export default function CommercialAuditPage() {
+  const { user } = useUser()
+  const db = useFirestore()
   const [activeStep, setActiveStep] = useState<"discovery" | "intro" | "payment" | "form" | "report">("discovery")
   const [selectedTier, setSelectedTier] = useState(PRICING_TIERS[1])
   const [checkedItems, setCheckedItems] = useState<Record<string, boolean>>({})
@@ -121,6 +129,29 @@ export default function CommercialAuditPage() {
   }
 
   const generateReport = () => {
+    const score = calculateScore()
+    const status = score > 90 ? "NFPA COMPLIANT" : score > 70 ? "NEEDS REMEDIATION" : "HIGH RISK"
+
+    // Persist to Firestore
+    if (user && db) {
+      const auditData = {
+        date: format(new Date(), 'yyyy-MM-dd'),
+        type: 'commercial',
+        overallScore: score,
+        status: status,
+        checkedItems: checkedItems,
+        createdAt: serverTimestamp()
+      }
+      const colRef = collection(db, 'users', user.uid, 'audits')
+      addDoc(colRef, auditData).catch(async () => {
+        errorEmitter.emit('permission-error', new FirestorePermissionError({
+          path: colRef.path,
+          operation: 'create',
+          requestResourceData: auditData
+        }));
+      })
+    }
+
     setActiveStep("report")
     toast({ title: "Audit Complete", description: "Facility safety score and NFPA 70E compliance report generated." })
   }
