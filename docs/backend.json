@@ -1,15 +1,28 @@
 
 {
   "entities": {
+    "Property": {
+      "title": "Property Asset",
+      "description": "A physical location or facility being tracked.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "nickname": { "type": "string", "description": "e.g. 'Main Home', 'Downtown Office'" },
+        "address": { "type": "string" },
+        "propertyType": { "type": "string", "enum": ["Residential", "Commercial", "Industrial"] },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["nickname", "address", "propertyType"]
+    },
     "GeneratorLog": {
       "title": "Generator Maintenance Log",
-      "description": "A record of maintenance performed on a home generator.",
+      "description": "A record of maintenance performed on a specific property's generator.",
       "type": "object",
       "properties": {
         "id": { "type": "string" },
         "date": { "type": "string", "format": "date" },
         "serviceType": { "type": "string", "enum": ["Oil Change", "Filter Replacement", "Battery Check", "Spark Plug Service", "General Inspection", "Repair"] },
-        "hoursRun": { "type": "number", "description": "Total engine hours at time of service." },
+        "hoursRun": { "type": "number" },
         "performedBy": { "type": "string" },
         "notes": { "type": "string" },
         "createdAt": { "type": "string", "format": "date-time" }
@@ -17,8 +30,8 @@
       "required": ["date", "serviceType", "hoursRun"]
     },
     "ElectricalAudit": {
-      "title": "Agency Electrical Audit",
-      "description": "A comprehensive electrical safety audit (NEC/NFPA).",
+      "title": "Electrical Audit",
+      "description": "A safety audit record tied to a property.",
       "type": "object",
       "properties": {
         "id": { "type": "string" },
@@ -26,22 +39,17 @@
         "type": { "type": "string", "enum": ["residential", "commercial"] },
         "overallScore": { "type": "number" },
         "status": { "type": "string" },
-        "checkedItems": { "type": "object", "additionalProperties": { "type": "boolean" } },
         "createdAt": { "type": "string", "format": "date-time" }
-      },
-      "required": ["type", "overallScore", "status"]
+      }
     },
     "DiagnosisRecord": {
       "title": "AI Diagnosis Record",
-      "description": "A record of an AI-powered electrical issue diagnosis.",
+      "description": "An AI-powered diagnosis tied to a property.",
       "type": "object",
       "properties": {
         "id": { "type": "string" },
         "diagnosis": { "type": "string" },
         "urgency": { "type": "string" },
-        "description": { "type": "string" },
-        "findings": { "type": "array", "items": { "type": "object" } },
-        "recommendations": { "type": "array", "items": { "type": "string" } },
         "createdAt": { "type": "string", "format": "date-time" }
       }
     }
@@ -50,17 +58,21 @@
     "providers": ["google.com"]
   },
   "firestore": {
-    "/users/{userId}/generatorLogs/{logId}": {
+    "/users/{userId}/properties/{propertyId}": {
+      "schema": "#/entities/Property",
+      "description": "Individual assets owned by the user."
+    },
+    "/users/{userId}/properties/{propertyId}/generatorLogs/{logId}": {
       "schema": "#/entities/GeneratorLog",
-      "description": "Collection of maintenance logs for a specific user's generator."
+      "description": "Logs for a specific generator at a property."
     },
-    "/users/{userId}/audits/{auditId}": {
+    "/users/{userId}/properties/{propertyId}/audits/{auditId}": {
       "schema": "#/entities/ElectricalAudit",
-      "description": "Historical electrical audits performed for a user."
+      "description": "Historical audits for a property."
     },
-    "/users/{userId}/diagnoses/{id}": {
+    "/users/{userId}/properties/{propertyId}/diagnoses/{id}": {
       "schema": "#/entities/DiagnosisRecord",
-      "description": "Historical AI diagnoses generated for a user."
+      "description": "AI diagnoses for a property."
     }
   }
 }

@@ -1,7 +1,8 @@
+
 'use client';
 
-import { useState, useEffect } from "react"
-import { ClipboardList, Plus, History, Settings, Zap, Trash2, Calendar, Clock, Loader2 } from "lucide-react"
+import { useState } from "react"
+import { ClipboardList, Plus, History, Settings, Zap, Trash2, Calendar, Clock, Loader2, Building2 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
@@ -16,6 +17,7 @@ import { collection, addDoc, deleteDoc, doc, serverTimestamp, query, orderBy } f
 import { useFirestore, useUser, useCollection } from "@/firebase"
 import { errorEmitter } from '@/firebase/error-emitter'
 import { FirestorePermissionError } from '@/firebase/errors'
+import Link from "next/link"
 
 export default function GeneratorLogsPage() {
   const { user } = useUser()
@@ -23,6 +25,7 @@ export default function GeneratorLogsPage() {
   const { toast } = useToast()
   
   const [isAdding, setIsAdding] = useState(false)
+  const [selectedPropertyId, setSelectedPropertyId] = useState<string | null>(null)
   const [formData, setFormData] = useState({
     date: format(new Date(), 'yyyy-MM-dd'),
     serviceType: "General Inspection",
@@ -31,9 +34,13 @@ export default function GeneratorLogsPage() {
     notes: ""
   })
 
-  // Real-time Firestore Query
-  const logsQuery = user && db ? query(
-    collection(db, 'users', user.uid, 'generatorLogs'),
+  // Fetch properties to allow selection
+  const propsQuery = user && db ? query(collection(db, 'users', user.uid, 'properties')) : null
+  const { data: properties, loading: propsLoading } = useCollection(propsQuery)
+
+  // Real-time Firestore Query for logs tied to selected property
+  const logsQuery = user && db && selectedPropertyId ? query(
+    collection(db, 'users', user.uid, 'properties', selectedPropertyId, 'generatorLogs'),
     orderBy('date', 'desc')
   ) : null;
 
@@ -41,8 +48,8 @@ export default function GeneratorLogsPage() {
 
   const handleAddLog = (e: React.FormEvent) => {
     e.preventDefault()
-    if (!user || !db) {
-      toast({ title: "Auth Required", description: "Please sign in to save logs.", variant: "destructive" })
+    if (!user || !db || !selectedPropertyId) {
+      toast({ title: "Selection Required", description: "Please pick a property first.", variant: "destructive" })
       return
     }
 
@@ -52,9 +59,8 @@ export default function GeneratorLogsPage() {
       createdAt: serverTimestamp(),
     }
 
-    const colRef = collection(db, 'users', user.uid, 'generatorLogs')
+    const colRef = collection(db, 'users', user.uid, 'properties', selectedPropertyId, 'generatorLogs')
     
-    // Non-blocking mutation with rich error handling
     addDoc(colRef, logData)
       .then(() => {
         setIsAdding(false)
@@ -65,30 +71,14 @@ export default function GeneratorLogsPage() {
           performedBy: "",
           notes: ""
         })
-        toast({ title: "Log Entry Saved", description: "Maintenance record added to cloud." })
+        toast({ title: "Log Entry Saved", description: "Maintenance record added to property history." })
       })
       .catch(async (error) => {
-        const permissionError = new FirestorePermissionError({
+        errorEmitter.emit('permission-error', new FirestorePermissionError({
           path: colRef.path,
           operation: 'create',
           requestResourceData: logData,
-        });
-        errorEmitter.emit('permission-error', permissionError);
-      })
-  }
-
-  const handleDelete = (logId: string) => {
-    if (!user || !db) return
-    const docRef = doc(db, 'users', user.uid, 'generatorLogs', logId)
-    
-    deleteDoc(docRef)
-      .then(() => toast({ title: "Log Deleted", variant: "destructive" }))
-      .catch(async () => {
-        const permissionError = new FirestorePermissionError({
-          path: docRef.path,
-          operation: 'delete',
-        });
-        errorEmitter.emit('permission-error', permissionError);
+        }));
       })
   }
 
@@ -97,20 +87,45 @@ export default function GeneratorLogsPage() {
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div className="flex flex-col gap-2">
           <h1 className="text-3xl font-bold tracking-tight">Generator Logbook</h1>
-          <p className="text-muted-foreground">Keep your backup power reliable with a digital maintenance history.</p>
+          <p className="text-muted-foreground">Tie maintenance history to specific properties and assets.</p>
         </div>
-        <Button onClick={() => setIsAdding(!isAdding)} className="font-bold">
-          {isAdding ? "Cancel" : "Add Log Entry"}
-          {!isAdding && <Plus className="ml-2 w-4 h-4" />}
-        </Button>
+        <div className="flex items-center gap-2">
+          <Link href="/properties">
+            <Button variant="outline" size="sm" className="font-bold border-primary/20 text-primary">Manage Properties</Button>
+          </Link>
+          <Button onClick={() => setIsAdding(!isAdding)} className="font-bold">
+            {isAdding ? "Cancel" : "Add Log Entry"}
+            {!isAdding && <Plus className="ml-2 w-4 h-4" />}
+          </Button>
+        </div>
       </div>
 
-      {isAdding && (
+      <div className="space-y-2">
+        <Label>Select Active Property</Label>
+        <Select value={selectedPropertyId || ""} onValueChange={setSelectedPropertyId}>
+          <SelectTrigger className="h-12 border-primary/30 bg-card">
+            <SelectValue placeholder={propsLoading ? "Loading properties..." : "Pick a property to view logs"} />
+          </SelectTrigger>
+          <SelectContent>
+            {properties && properties.length > 0 ? (
+              properties.map((p: any) => (
+                <SelectItem key={p.id} value={p.id}>{p.nickname} ({p.address})</SelectItem>
+              ))
+            ) : (
+              <div className="p-4 text-center text-xs italic">
+                No properties found. <Link href="/properties" className="text-primary underline">Add one first.</Link>
+              </div>
+            )}
+          </SelectContent>
+        </Select>
+      </div>
+
+      {isAdding && selectedPropertyId && (
         <Card className="border-primary/20 animate-in slide-in-from-top-4 duration-300">
           <form onSubmit={handleAddLog}>
             <CardHeader>
               <CardTitle>New Maintenance Entry</CardTitle>
-              <CardDescription>Enter details about the work performed on your generator.</CardDescription>
+              <CardDescription>Enter details about the work performed at {properties?.find((p:any) => p.id === selectedPropertyId)?.nickname}.</CardDescription>
             </CardHeader>
             <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="space-y-2">
@@ -176,38 +191,32 @@ export default function GeneratorLogsPage() {
         </Card>
       )}
 
-      {loading ? (
+      {loading && selectedPropertyId ? (
         <div className="flex justify-center py-20">
           <Loader2 className="w-8 h-8 animate-spin text-primary" />
         </div>
       ) : (
         <div className="grid grid-cols-1 gap-4">
-          {!logs || logs.length === 0 ? (
+          {!selectedPropertyId ? (
+            <div className="text-center py-20 bg-muted/10 rounded-2xl border border-dashed flex flex-col items-center justify-center gap-4">
+               <Building2 className="w-12 h-12 text-muted-foreground opacity-20" />
+               <p className="text-muted-foreground italic">Select a property from the dropdown above to view its maintenance history.</p>
+            </div>
+          ) : !logs || logs.length === 0 ? (
             <div className="text-center py-20 bg-muted/20 rounded-2xl border border-dashed flex flex-col items-center justify-center gap-6">
-              <div className="relative w-48 h-32 opacity-20 grayscale">
-                <Image 
-                  src="https://picsum.photos/seed/elec_hd3/400/300" 
-                  alt="Empty logs" 
-                  fill 
-                  className="object-cover rounded-xl"
-                  data-ai-hint="industrial motor"
-                />
-              </div>
-              <div className="space-y-2">
-                <ClipboardList className="w-10 h-10 text-muted-foreground mx-auto" />
-                <p className="text-muted-foreground font-medium">No maintenance logs found. Start by adding your first entry.</p>
-              </div>
+              <ClipboardList className="w-10 h-10 text-muted-foreground mx-auto opacity-30" />
+              <p className="text-muted-foreground font-medium">No logs for this property yet.</p>
             </div>
           ) : (
-            logs.map((log) => (
+            logs.map((log: any) => (
               <Card key={log.id} className="hover:border-primary/30 transition-colors">
                 <CardHeader className="flex flex-row items-start justify-between pb-2">
                   <div className="flex flex-col gap-1">
                     <div className="flex items-center gap-2">
-                      <Badge variant="secondary" className="bg-primary/10 text-primary border-primary/20">
+                      <Badge variant="secondary" className="bg-primary/10 text-primary border-primary/20 uppercase text-[9px] font-black">
                         {log.serviceType}
                       </Badge>
-                      <span className="text-sm font-medium text-muted-foreground flex items-center gap-1">
+                      <span className="text-xs font-medium text-muted-foreground flex items-center gap-1">
                         <Calendar className="w-3 h-3" /> {log.date}
                       </span>
                     </div>
@@ -216,15 +225,12 @@ export default function GeneratorLogsPage() {
                       {log.hoursRun} Hours
                     </CardTitle>
                   </div>
-                  <Button variant="ghost" size="icon" onClick={() => handleDelete(log.id)} className="text-destructive hover:bg-destructive/10">
-                    <Trash2 className="w-4 h-4" />
-                  </Button>
                 </CardHeader>
                 <CardContent>
                   <p className="text-sm text-muted-foreground mb-3">{log.notes}</p>
-                  <div className="flex items-center justify-between text-[10px] uppercase tracking-wider text-muted-foreground">
-                    <span>Performed by: <span className="text-foreground font-bold">{log.performedBy || "N/A"}</span></span>
-                    <span className="text-primary font-bold">Log ID: #{log.id.slice(0, 6)}</span>
+                  <div className="flex items-center justify-between text-[9px] uppercase tracking-wider text-muted-foreground font-bold">
+                    <span>Performed by: <span className="text-foreground">{log.performedBy || "N/A"}</span></span>
+                    <span className="text-primary">#{log.id.slice(0, 6)}</span>
                   </div>
                 </CardContent>
               </Card>
