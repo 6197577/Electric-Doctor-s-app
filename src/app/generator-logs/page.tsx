@@ -1,8 +1,7 @@
-
-"use client"
+'use client';
 
 import { useState, useEffect } from "react"
-import { ClipboardList, Plus, History, Settings, Zap, Trash2, Calendar, Clock } from "lucide-react"
+import { ClipboardList, Plus, History, Settings, Zap, Trash2, Calendar, Clock, Loader2 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
@@ -13,54 +12,84 @@ import { Badge } from "@/components/ui/badge"
 import { useToast } from "@/hooks/use-toast"
 import { format } from "date-fns"
 import Image from "next/image"
-
-// Mock data for initial state
-const INITIAL_LOGS = [
-  { id: "1", date: "2024-02-15", serviceType: "Oil Change", hoursRun: 124, performedBy: "Self", notes: "Used 5W-30 Synthetic. Filter replaced." },
-  { id: "2", date: "2023-11-20", serviceType: "Battery Check", hoursRun: 118, performedBy: "Self", notes: "Voltage test passed. Terminals cleaned." }
-]
+import { collection, addDoc, deleteDoc, doc, serverTimestamp, query, orderBy } from "firebase/firestore"
+import { useFirestore, useUser, useCollection } from "@/firebase"
+import { errorEmitter } from '@/firebase/error-emitter'
+import { FirestorePermissionError } from '@/firebase/errors'
 
 export default function GeneratorLogsPage() {
-  const [logs, setLogs] = useState(INITIAL_LOGS)
+  const { user } = useUser()
+  const db = useFirestore()
+  const { toast } = useToast()
+  
   const [isAdding, setIsAdding] = useState(false)
   const [formData, setFormData] = useState({
-    date: "", // Initialized empty for hydration safety
+    date: format(new Date(), 'yyyy-MM-dd'),
     serviceType: "General Inspection",
     hoursRun: "",
     performedBy: "",
     notes: ""
   })
-  const { toast } = useToast()
 
-  useEffect(() => {
-    setFormData(prev => ({
-      ...prev,
-      date: format(new Date(), 'yyyy-MM-dd')
-    }))
-  }, [])
+  // Real-time Firestore Query
+  const logsQuery = user && db ? query(
+    collection(db, 'users', user.uid, 'generatorLogs'),
+    orderBy('date', 'desc')
+  ) : null;
+
+  const { data: logs, loading } = useCollection(logsQuery);
 
   const handleAddLog = (e: React.FormEvent) => {
     e.preventDefault()
-    const newLog = {
-      id: Math.random().toString(36).substr(2, 9),
-      ...formData,
-      hoursRun: Number(formData.hoursRun)
+    if (!user || !db) {
+      toast({ title: "Auth Required", description: "Please sign in to save logs.", variant: "destructive" })
+      return
     }
-    setLogs([newLog, ...logs])
-    setIsAdding(false)
-    setFormData({
-      date: format(new Date(), 'yyyy-MM-dd'),
-      serviceType: "General Inspection",
-      hoursRun: "",
-      performedBy: "",
-      notes: ""
-    })
-    toast({ title: "Log Entry Saved", description: "Maintenance record has been added successfully." })
+
+    const logData = {
+      ...formData,
+      hoursRun: Number(formData.hoursRun),
+      createdAt: serverTimestamp(),
+    }
+
+    const colRef = collection(db, 'users', user.uid, 'generatorLogs')
+    
+    // Non-blocking mutation with rich error handling
+    addDoc(colRef, logData)
+      .then(() => {
+        setIsAdding(false)
+        setFormData({
+          date: format(new Date(), 'yyyy-MM-dd'),
+          serviceType: "General Inspection",
+          hoursRun: "",
+          performedBy: "",
+          notes: ""
+        })
+        toast({ title: "Log Entry Saved", description: "Maintenance record added to cloud." })
+      })
+      .catch(async (error) => {
+        const permissionError = new FirestorePermissionError({
+          path: colRef.path,
+          operation: 'create',
+          requestResourceData: logData,
+        });
+        errorEmitter.emit('permission-error', permissionError);
+      })
   }
 
-  const deleteLog = (id: string) => {
-    setLogs(logs.filter(l => l.id !== id))
-    toast({ title: "Log Deleted", variant: "destructive" })
+  const handleDelete = (logId: string) => {
+    if (!user || !db) return
+    const docRef = doc(db, 'users', user.uid, 'generatorLogs', logId)
+    
+    deleteDoc(docRef)
+      .then(() => toast({ title: "Log Deleted", variant: "destructive" }))
+      .catch(async () => {
+        const permissionError = new FirestorePermissionError({
+          path: docRef.path,
+          operation: 'delete',
+        });
+        errorEmitter.emit('permission-error', permissionError);
+      })
   }
 
   return (
@@ -147,56 +176,62 @@ export default function GeneratorLogsPage() {
         </Card>
       )}
 
-      <div className="grid grid-cols-1 gap-4">
-        {logs.length === 0 ? (
-          <div className="text-center py-20 bg-muted/20 rounded-2xl border border-dashed flex flex-col items-center justify-center gap-6">
-            <div className="relative w-48 h-32 opacity-20 grayscale">
-              <Image 
-                src="https://picsum.photos/seed/elec_hd3/400/300" 
-                alt="Empty logs" 
-                fill 
-                className="object-cover rounded-xl"
-                data-ai-hint="industrial motor"
-              />
+      {loading ? (
+        <div className="flex justify-center py-20">
+          <Loader2 className="w-8 h-8 animate-spin text-primary" />
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 gap-4">
+          {!logs || logs.length === 0 ? (
+            <div className="text-center py-20 bg-muted/20 rounded-2xl border border-dashed flex flex-col items-center justify-center gap-6">
+              <div className="relative w-48 h-32 opacity-20 grayscale">
+                <Image 
+                  src="https://picsum.photos/seed/elec_hd3/400/300" 
+                  alt="Empty logs" 
+                  fill 
+                  className="object-cover rounded-xl"
+                  data-ai-hint="industrial motor"
+                />
+              </div>
+              <div className="space-y-2">
+                <ClipboardList className="w-10 h-10 text-muted-foreground mx-auto" />
+                <p className="text-muted-foreground font-medium">No maintenance logs found. Start by adding your first entry.</p>
+              </div>
             </div>
-            <div className="space-y-2">
-              <ClipboardList className="w-10 h-10 text-muted-foreground mx-auto" />
-              <p className="text-muted-foreground font-medium">No maintenance logs found. Start by adding your first entry.</p>
-            </div>
-          </div>
-        ) : (
-          logs.map((log) => (
-            <Card key={log.id} className="hover:border-primary/30 transition-colors">
-              <CardHeader className="flex flex-row items-start justify-between pb-2">
-                <div className="flex flex-col gap-1">
-                  <div className="flex items-center gap-2">
-                    <Badge variant="secondary" className="bg-primary/10 text-primary border-primary/20">
-                      {log.serviceType}
-                    </Badge>
-                    <span className="text-sm font-medium text-muted-foreground flex items-center gap-1">
-                      <Calendar className="w-3 h-3" /> {format(new Date(log.date), 'MMM d, yyyy')}
-                    </span>
+          ) : (
+            logs.map((log) => (
+              <Card key={log.id} className="hover:border-primary/30 transition-colors">
+                <CardHeader className="flex flex-row items-start justify-between pb-2">
+                  <div className="flex flex-col gap-1">
+                    <div className="flex items-center gap-2">
+                      <Badge variant="secondary" className="bg-primary/10 text-primary border-primary/20">
+                        {log.serviceType}
+                      </Badge>
+                      <span className="text-sm font-medium text-muted-foreground flex items-center gap-1">
+                        <Calendar className="w-3 h-3" /> {log.date}
+                      </span>
+                    </div>
+                    <CardTitle className="text-lg mt-1 flex items-center gap-2">
+                      <Clock className="w-4 h-4 text-muted-foreground" />
+                      {log.hoursRun} Hours
+                    </CardTitle>
                   </div>
-                  <CardTitle className="text-lg mt-1 flex items-center gap-2">
-                    <Clock className="w-4 h-4 text-muted-foreground" />
-                    {log.hoursRun} Hours
-                  </CardTitle>
-                </div>
-                <Button variant="ghost" size="icon" onClick={() => deleteLog(log.id)} className="text-destructive hover:bg-destructive/10">
-                  <Trash2 className="w-4 h-4" />
-                </Button>
-              </CardHeader>
-              <CardContent>
-                <p className="text-sm text-muted-foreground mb-3">{log.notes}</p>
-                <div className="flex items-center justify-between text-[10px] uppercase tracking-wider text-muted-foreground">
-                  <span>Performed by: <span className="text-foreground font-bold">{log.performedBy || "N/A"}</span></span>
-                  <span className="text-primary font-bold">Log ID: #{log.id}</span>
-                </div>
-              </CardContent>
-            </Card>
-          ))
-        )}
-      </div>
+                  <Button variant="ghost" size="icon" onClick={() => handleDelete(log.id)} className="text-destructive hover:bg-destructive/10">
+                    <Trash2 className="w-4 h-4" />
+                  </Button>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-sm text-muted-foreground mb-3">{log.notes}</p>
+                  <div className="flex items-center justify-between text-[10px] uppercase tracking-wider text-muted-foreground">
+                    <span>Performed by: <span className="text-foreground font-bold">{log.performedBy || "N/A"}</span></span>
+                    <span className="text-primary font-bold">Log ID: #{log.id.slice(0, 6)}</span>
+                  </div>
+                </CardContent>
+              </Card>
+            ))
+          )}
+        </div>
+      )}
     </div>
   )
 }

@@ -1,4 +1,3 @@
-
 # Electric Doctor's - Firebase Launch Roadmap
 
 Follow this sequence to launch your app using the unified Firebase + GitHub stack. This is the most efficient workflow for a 2-person team.
@@ -25,7 +24,7 @@ Follow this sequence to launch your app using the unified Firebase + GitHub stac
 ## Phase 3: Firebase App Hosting (The Automatic Deployment)
 This is how you connect GitHub to Firebase for "push-to-deploy" functionality:
 1. In the Firebase Sidebar, navigate to **App Hosting**.
-2. Click **Get Started** and select your GitHub account (you may need to authorize the Firebase App).
+2. Click **Get Started** and select your GitHub account.
 3. Select your repository and choose the `main` branch.
 4. **App Settings**: Firebase will auto-detect Next.js. Keep the default settings.
 5. Click **Finish and Deploy**. Firebase will now watch your GitHub repo for changes.
