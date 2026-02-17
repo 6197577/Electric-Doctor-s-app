@@ -2,7 +2,7 @@
 "use client"
 
 import { useState } from "react"
-import { Building2, Plus, MapPin, Trash2, Home as HomeIcon, Factory, ShieldAlert, Zap, Loader2 } from "lucide-react"
+import { Building2, Plus, MapPin, Trash2, Home as HomeIcon, Factory, ShieldAlert, Zap, Loader2, Mail, Phone } from "lucide-react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -23,7 +23,9 @@ export default function PropertiesPage() {
   const [formData, setFormData] = useState({
     nickname: "",
     address: "",
-    propertyType: "Residential"
+    propertyType: "Residential",
+    contactEmail: "",
+    contactPhone: ""
   })
 
   // Simulated check for role (In production, use custom claims)
@@ -59,7 +61,13 @@ export default function PropertiesPage() {
     addDoc(colRef, propData)
       .then(() => {
         setIsAdding(false)
-        setFormData({ nickname: "", address: "", propertyType: "Residential" })
+        setFormData({ 
+          nickname: "", 
+          address: "", 
+          propertyType: "Residential",
+          contactEmail: "",
+          contactPhone: ""
+        })
         toast({ title: "Property Added", description: `${formData.nickname} is now being tracked.` })
       })
       .catch((err) => {
@@ -121,7 +129,7 @@ export default function PropertiesPage() {
           <form onSubmit={handleAddProperty}>
             <CardHeader>
               <CardTitle>Register Asset</CardTitle>
-              <CardDescription>Enter the nickname and location for your property.</CardDescription>
+              <CardDescription>Enter the location and primary contact information for your property.</CardDescription>
             </CardHeader>
             <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="space-y-2">
@@ -157,6 +165,26 @@ export default function PropertiesPage() {
                   required 
                 />
               </div>
+              <div className="space-y-2">
+                <Label htmlFor="email">Contact Email</Label>
+                <Input 
+                  id="email" 
+                  type="email"
+                  placeholder="owner@example.com" 
+                  value={formData.contactEmail} 
+                  onChange={e => setFormData({...formData, contactEmail: e.target.value})} 
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="phone">Contact Phone</Label>
+                <Input 
+                  id="phone" 
+                  type="tel"
+                  placeholder="(555) 000-0000" 
+                  value={formData.contactPhone} 
+                  onChange={e => setFormData({...formData, contactPhone: e.target.value})} 
+                />
+              </div>
             </CardContent>
             <CardFooter>
               <Button type="submit" className="w-full font-bold">Save Property</Button>
@@ -188,11 +216,27 @@ export default function PropertiesPage() {
                     <Trash2 className="w-4 h-4" />
                   </Button>
                 </CardHeader>
-                <CardContent className="pt-4">
+                <CardContent className="pt-4 space-y-3">
                   <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                    <MapPin className="w-4 h-4" />
-                    {prop.address}
+                    <MapPin className="w-4 h-4 shrink-0" />
+                    <span className="truncate">{prop.address}</span>
                   </div>
+                  {(prop.contactEmail || prop.contactPhone) && (
+                    <div className="pt-2 border-t border-white/5 grid grid-cols-1 gap-2">
+                      {prop.contactEmail && (
+                        <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                          <Mail className="w-3 h-3" />
+                          <span>{prop.contactEmail}</span>
+                        </div>
+                      )}
+                      {prop.contactPhone && (
+                        <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                          <Phone className="w-3 h-3" />
+                          <span>{prop.contactPhone}</span>
+                        </div>
+                      )}
+                    </div>
+                  )}
                 </CardContent>
                 <CardFooter className="bg-muted/30 pt-4 flex gap-2">
                    <Button variant="link" className="p-0 text-xs text-primary h-auto font-bold uppercase tracking-widest">

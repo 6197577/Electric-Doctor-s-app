@@ -10,6 +10,8 @@
         "nickname": { "type": "string", "description": "e.g. 'Main Home', 'Downtown Office'" },
         "address": { "type": "string" },
         "propertyType": { "type": "string", "enum": ["Residential", "Commercial", "Industrial"] },
+        "contactEmail": { "type": "string", "format": "email" },
+        "contactPhone": { "type": "string" },
         "createdAt": { "type": "string", "format": "date-time" }
       },
       "required": ["nickname", "address", "propertyType"]
