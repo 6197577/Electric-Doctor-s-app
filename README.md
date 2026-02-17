@@ -1,18 +1,17 @@
 # Electric Doctor's - Firebase Launch Roadmap
 
-Follow this sequence to launch your app using the unified Firebase + GitHub stack. This is the most efficient workflow for a 2-person team.
+Follow this sequence to launch your app using the unified Firebase + GitHub stack. This is the most efficient workflow for your team.
 
 ## Phase 1: Source Control (GitHub)
-Since I (the AI) cannot run terminal commands, you need to run these in your local environment or the Studio terminal:
+Run these commands in your local terminal to push your code to your repository:
 
-1. Create a new **Private** repository on [GitHub](https://github.com).
-2. Initialize and push your code:
+1. **Initialize and push code**:
    ```bash
    git init
+   git remote add origin https://github.com/6197577/Electric-Doctor-s-app.git
    git add .
    git commit -m "Initial production-ready build"
    git branch -M main
-   git remote add origin https://github.com/YOUR_USERNAME/YOUR_REPO_NAME.git
    git push -u origin main
    ```
 
@@ -25,13 +24,14 @@ Since I (the AI) cannot run terminal commands, you need to run these in your loc
    - Refer to `docs/backend.json` for data structures.
 
 ## Phase 3: Firebase App Hosting (The "Connect" Step)
-This is where you link GitHub to Firebase for "push-to-deploy" functionality:
+This is where you link your GitHub repo to Firebase for "push-to-deploy" functionality:
 1. In the Firebase Sidebar, navigate to **Build > App Hosting**.
 2. Click **Get Started** and connect your GitHub account.
-3. Select your repository and the `main` branch.
-4. **Root Directory**: Keep as `/`.
-5. **App Settings**: Firebase will auto-detect Next.js. Keep defaults.
-6. Click **Finish and Deploy**. Firebase now watches your GitHub for every change.
+3. Select the repository: `6197577/Electric-Doctor-s-app`.
+4. Select the `main` branch.
+5. **Root Directory**: Keep as `/`.
+6. **App Settings**: Firebase will auto-detect Next.js. Keep defaults.
+7. Click **Finish and Deploy**. Firebase now watches your GitHub for every change.
 
 ## Phase 4: Production Keys
 Once the App Hosting backend is created, go to **Settings > Environment Variables** in the App Hosting dashboard and add:
