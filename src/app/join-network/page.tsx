@@ -17,7 +17,8 @@ import {
   Target,
   Lock,
   BarChart3,
-  ScanEye
+  ScanEye,
+  CalendarDays
 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
@@ -28,15 +29,15 @@ import { useToast } from "@/hooks/use-toast"
 import { Badge } from "@/components/ui/badge"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import Link from "next/link"
-import { Bar, BarChart, CartesianGrid, XAxis, YAxis, ResponsiveContainer } from "recharts"
+import { Bar, BarChart, CartesianGrid, XAxis, YAxis } from "recharts"
 import { ChartContainer, ChartTooltip, ChartTooltipContent, type ChartConfig } from "@/components/ui/chart"
 
 type Step = 1 | 2 | 3 | 4 | 5
 
 const chartData = [
   { model: "Pay As You Go", cost: 35, fill: "var(--color-paygo)" },
-  { model: "Pre-paid (10)", cost: 28, fill: "var(--color-prepaid10)" },
-  { model: "Pre-paid (50)", cost: 22, fill: "var(--color-prepaid50)" },
+  { model: "Pre-paid (50)", cost: 22, fill: "var(--color-prepaid)" },
+  { model: "Monthly Elite", cost: 0, fill: "var(--color-elite)" },
 ]
 
 const chartConfig = {
@@ -47,13 +48,13 @@ const chartConfig = {
     label: "Pay As You Go",
     color: "hsl(var(--muted))",
   },
-  prepaid10: {
-    label: "Pre-paid (10)",
-    color: "hsl(var(--primary))",
-  },
-  prepaid50: {
+  prepaid: {
     label: "Pre-paid (50)",
     color: "hsl(var(--primary))",
+  },
+  elite: {
+    label: "Monthly Flat-Rate",
+    color: "#22c55e",
   },
 } satisfies ChartConfig
 
@@ -280,13 +281,11 @@ export default function JoinNetworkPage() {
         <Card className="animate-in fade-in slide-in-from-right-4 duration-300">
           <CardHeader>
             <Target className="w-5 h-5 text-primary" />
-            <CardTitle>Lead Billing & AI Access</CardTitle>
-            <CardDescription>Choose how you want to receive leads and your AI diagnostic quota.</CardDescription>
+            <CardTitle>Monetization & Tool Access</CardTitle>
+            <CardDescription>Select a billing model. Monthly Elite unlocks the exclusive Google Calendar Sync tool.</CardDescription>
           </CardHeader>
           <CardContent className="space-y-8">
             <div className="space-y-6">
-              <Label className="text-base font-bold">Select Lead Model</Label>
-              
               <div className="bg-muted/10 border rounded-xl p-4 space-y-4">
                 <div className="flex items-center gap-2 text-sm font-bold">
                   <BarChart3 className="w-4 h-4 text-primary" />
@@ -295,55 +294,55 @@ export default function JoinNetworkPage() {
                 <ChartContainer config={chartConfig} className="h-[200px] w-full">
                   <BarChart data={chartData}>
                     <CartesianGrid vertical={false} strokeDasharray="3 3" opacity={0.1} />
-                    <XAxis
-                      dataKey="model"
-                      tickLine={false}
-                      tickMargin={10}
-                      axisLine={false}
-                    />
-                    <YAxis 
-                      tickLine={false}
-                      axisLine={false}
-                      tickFormatter={(value) => `$${value}`}
-                    />
+                    <XAxis dataKey="model" tickLine={false} tickMargin={10} axisLine={false} fontSize={10} />
+                    <YAxis tickLine={false} axisLine={false} tickFormatter={(value) => `$${value}`} fontSize={10} />
                     <ChartTooltip content={<ChartTooltipContent />} />
-                    <Bar
-                      dataKey="cost"
-                      radius={[4, 4, 0, 0]}
-                    />
+                    <Bar dataKey="cost" radius={[4, 4, 0, 0]} />
                   </BarChart>
                 </ChartContainer>
-                <p className="text-[10px] text-muted-foreground text-center">Save up to 37% per lead with Pre-paid (50) credits.</p>
               </div>
 
               <RadioGroup 
                 value={formData.leadModel} 
                 onValueChange={v => updateField('leadModel', v)}
-                className="grid grid-cols-1 md:grid-cols-2 gap-4"
+                className="grid grid-cols-1 gap-4"
               >
-                <div className={`p-4 border rounded-xl cursor-pointer transition-all ${formData.leadModel === 'pre-paid' ? 'border-primary bg-primary/5' : 'hover:border-muted-foreground/30'}`} onClick={() => updateField('leadModel', 'pre-paid')}>
-                  <div className="flex items-center gap-3 mb-2">
-                    <RadioGroupItem value="pre-paid" id="pre-paid" />
-                    <Label htmlFor="pre-paid" className="font-bold cursor-pointer">Pre-paid Leads</Label>
+                {/* Monthly Flat Rate */}
+                <div className={`p-4 border rounded-xl cursor-pointer transition-all ${formData.leadModel === 'monthly-elite' ? 'border-green-500 bg-green-500/5' : 'hover:border-muted-foreground/30'}`} onClick={() => updateField('leadModel', 'monthly-elite')}>
+                  <div className="flex items-center justify-between mb-2">
+                    <div className="flex items-center gap-3">
+                      <RadioGroupItem value="monthly-elite" id="monthly-elite" />
+                      <Label htmlFor="monthly-elite" className="font-bold cursor-pointer text-lg">Pro Elite Monthly</Label>
+                    </div>
+                    <Badge className="bg-green-500 text-black font-black uppercase tracking-tighter">BEST FOR SCALE</Badge>
                   </div>
-                  <div className="space-y-2">
-                    <p className="text-xs text-muted-foreground leading-relaxed">Buy credits in advance via Stripe at a discount.</p>
-                    <div className="flex items-center gap-2 text-[10px] font-bold text-primary">
-                      <ScanEye className="w-3 h-3" />
-                      UNLIMITED AI DIAGNOSTIC SCANS
+                  <div className="space-y-3">
+                    <p className="text-xs text-muted-foreground leading-relaxed"><strong>$499/mo Flat-Rate.</strong> Unlimited leads, unlimited scans, and the <strong>Google Calendar Sync Plugin.</strong></p>
+                    <div className="flex items-center gap-2 text-[10px] font-bold text-green-500">
+                      <CalendarDays className="w-3 h-3" />
+                      CALENDAR PLUGIN UNLOCKED
                     </div>
                   </div>
                 </div>
-                <div className={`p-4 border rounded-xl cursor-pointer transition-all ${formData.leadModel === 'pay-as-you-go' ? 'border-primary bg-primary/5' : 'hover:border-muted-foreground/30'}`} onClick={() => updateField('leadModel', 'pay-as-you-go')}>
-                  <div className="flex items-center gap-3 mb-2">
-                    <RadioGroupItem value="pay-as-you-go" id="pay-as-you-go" />
-                    <Label htmlFor="pay-as-you-go" className="font-bold cursor-pointer">Pay As You Go</Label>
+
+                {/* Other Models */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className={`p-4 border rounded-xl cursor-pointer transition-all ${formData.leadModel === 'pre-paid' ? 'border-primary bg-primary/5' : 'hover:border-muted-foreground/30'}`} onClick={() => updateField('leadModel', 'pre-paid')}>
+                    <div className="flex items-center gap-3 mb-2">
+                      <RadioGroupItem value="pre-paid" id="pre-paid" />
+                      <Label htmlFor="pre-paid" className="font-bold cursor-pointer">Pre-paid Leads</Label>
+                    </div>
+                    <div className="space-y-2">
+                      <p className="text-xs text-muted-foreground leading-relaxed">$22/lead. No monthly fee. (Calendar Plugin Locked)</p>
+                    </div>
                   </div>
-                  <div className="space-y-2">
-                    <p className="text-xs text-muted-foreground leading-relaxed">Stripe charges only when you accept a lead.</p>
-                    <div className="flex items-center gap-2 text-[10px] font-bold text-muted-foreground">
-                      <ScanEye className="w-3 h-3" />
-                      100 AI DIAGNOSTIC SCANS / MO
+                  <div className={`p-4 border rounded-xl cursor-pointer transition-all ${formData.leadModel === 'pay-as-you-go' ? 'border-primary bg-primary/5' : 'hover:border-muted-foreground/30'}`} onClick={() => updateField('leadModel', 'pay-as-you-go')}>
+                    <div className="flex items-center gap-3 mb-2">
+                      <RadioGroupItem value="pay-as-you-go" id="pay-as-you-go" />
+                      <Label htmlFor="pay-as-you-go" className="font-bold cursor-pointer">Pay As You Go</Label>
+                    </div>
+                    <div className="space-y-2">
+                      <p className="text-xs text-muted-foreground leading-relaxed">$35/lead. No monthly fee. (Calendar Plugin Locked)</p>
                     </div>
                   </div>
                 </div>
@@ -392,10 +391,6 @@ export default function JoinNetworkPage() {
                   </div>
                 </div>
               </div>
-              <div className="p-3 bg-primary/5 rounded-lg border border-primary/20 flex gap-3 text-[10px] text-muted-foreground">
-                <ShieldCheck className="w-4 h-4 text-primary shrink-0" />
-                <p>Your card will be stored securely on Stripe for lead billing. No charges will occur until you choose a package or accept a Pay As You Go lead.</p>
-              </div>
             </div>
           </CardContent>
           <CardFooter className="flex gap-4">
@@ -426,20 +421,16 @@ export default function JoinNetworkPage() {
             <div className="p-6 bg-primary/5 rounded-2xl border border-primary/20 max-w-md">
               <h4 className="font-bold flex items-center justify-center gap-2 mb-2">
                 <Zap className="w-4 h-4 text-primary" />
-                What's Next?
+                Access Level: {formData.leadModel.replace(/-/g, ' ').toUpperCase()}
               </h4>
               <p className="text-sm text-muted-foreground leading-relaxed">
-                Our verification team will review your **Contractor License ({formData.contractorLicense})**. Your **Stripe Customer Profile** has been created for the **{formData.leadModel.replace(/-/g, ' ')}** lead model.
+                {formData.leadModel === 'monthly-elite' 
+                  ? "Unlimited leads enabled. Your Google Calendar Sync plugin is ready for activation in your profile."
+                  : "Lead access enabled. Upgrade to Elite Monthly anytime to unlock the Google Calendar plugin."}
               </p>
-              <div className="mt-4 pt-4 border-t border-primary/10">
-                <p className="text-xs font-bold text-primary flex items-center justify-center gap-2">
-                  <ScanEye className="w-4 h-4" />
-                  {formData.leadModel === 'pre-paid' ? 'UNLIMITED' : '100'} AI SCANS ACTIVATED
-                </p>
-              </div>
             </div>
-            <Link href="/marketplace">
-              <Button variant="outline" className="font-bold border-primary text-primary">Return to Marketplace</Button>
+            <Link href="/profile">
+              <Button variant="outline" className="font-bold border-primary text-primary">Go to Dashboard</Button>
             </Link>
           </CardContent>
         </Card>

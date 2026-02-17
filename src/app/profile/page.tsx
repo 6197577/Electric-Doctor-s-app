@@ -1,6 +1,7 @@
+
 "use client"
 
-import { User, Settings, CreditCard, History, Shield, LogOut, Zap, Bell, Crown, Calculator, Briefcase, Calendar as CalendarIcon, RefreshCw, BarChart3, TrendingUp, DollarSign } from "lucide-react"
+import { User, Settings, CreditCard, History, Shield, LogOut, Zap, Bell, Crown, Calculator, Briefcase, Calendar as CalendarIcon, RefreshCw, BarChart3, TrendingUp, DollarSign, Lock, ArrowUpRight } from "lucide-react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
@@ -14,9 +15,12 @@ import { Progress } from "@/components/ui/progress"
 
 export default function ProfilePage() {
   const [isSyncing, setIsSyncing] = useState(false)
+  const [userPlan, setUserPlan] = useState<"pay-as-you-go" | "monthly-elite">("pay-as-you-go") // Simulated state
   const { toast } = useToast()
 
   const handleCalendarSync = () => {
+    if (userPlan !== "monthly-elite") return;
+    
     setIsSyncing(true)
     setTimeout(() => {
       setIsSyncing(false)
@@ -91,15 +95,20 @@ export default function ProfilePage() {
                <div className="space-y-1">
                   <div className="flex justify-between text-[10px] font-black uppercase">
                     <span>AI Diagnostic Scans</span>
-                    <span className="text-primary text-xs italic">UNLIMITED</span>
+                    <span className="text-primary text-xs italic">{userPlan === 'monthly-elite' ? 'UNLIMITED' : '100 / MO'}</span>
                   </div>
-                  <Progress value={100} className="h-1.5" />
+                  <Progress value={userPlan === 'monthly-elite' ? 100 : 45} className="h-1.5" />
                </div>
                <p className="text-[10px] text-muted-foreground leading-relaxed">
-                 You are currently on the <b>Pre-paid (50)</b> lead model. Your cost per lead is locked at <b>$22.00</b>.
+                 You are currently on the <b>{userPlan === 'monthly-elite' ? 'Monthly Elite ($499/mo)' : 'Pay As You Go'}</b> lead model.
                </p>
-               <Button size="sm" variant="outline" className="w-full text-[10px] font-black uppercase tracking-widest h-8 border-primary/20 text-primary">
-                 Manage Billing Pack
+               <Button 
+                size="sm" 
+                variant="outline" 
+                className="w-full text-[10px] font-black uppercase tracking-widest h-8 border-primary/20 text-primary"
+                onClick={() => setUserPlan(userPlan === 'monthly-elite' ? 'pay-as-you-go' : 'monthly-elite')}
+               >
+                 {userPlan === 'monthly-elite' ? 'Downgrade Plan' : 'Upgrade to Elite'}
                </Button>
              </CardContent>
           </Card>
@@ -113,7 +122,7 @@ export default function ProfilePage() {
                 <Badge className="bg-green-500 text-black font-bold uppercase tracking-tighter">Verified Pro</Badge>
              </div>
              <CardHeader>
-               <CardTitle className="text-2xl font-black italic italic tracking-tighter">Business Dashboard</CardTitle>
+               <CardTitle className="text-2xl font-black italic tracking-tighter">Business Dashboard</CardTitle>
                <CardDescription>Real-time earnings and lead overhead tracking.</CardDescription>
              </CardHeader>
              <CardContent className="space-y-6">
@@ -131,7 +140,7 @@ export default function ProfilePage() {
                   <div className="flex flex-col p-4 rounded-2xl bg-background border border-white/5 relative group overflow-hidden">
                     <Zap className="absolute -right-2 -bottom-2 w-12 h-12 text-amber-500 opacity-5 group-hover:scale-110 transition-transform" />
                     <span className="text-[10px] text-muted-foreground uppercase font-black tracking-widest mb-1">Lead Costs</span>
-                    <span className="text-3xl font-black text-amber-500">$924</span>
+                    <span className="text-3xl font-black text-amber-500">{userPlan === 'monthly-elite' ? '$499' : '$924'}</span>
                   </div>
                 </div>
                 
@@ -142,7 +151,7 @@ export default function ProfilePage() {
                       </div>
                       <div>
                          <p className="text-sm font-bold">ROI Efficiency</p>
-                         <p className="text-[10px] text-muted-foreground uppercase font-black">13.4x return on lead spend</p>
+                         <p className="text-[10px] text-muted-foreground uppercase font-black">{userPlan === 'monthly-elite' ? '24.8x' : '13.4x'} return on lead spend</p>
                       </div>
                    </div>
                    <Link href="/pro/estimate">
@@ -152,8 +161,8 @@ export default function ProfilePage() {
              </CardContent>
            </Card>
 
-           {/* Calendar Sync */}
-           <Card>
+           {/* Calendar Sync - Plan Restricted */}
+           <Card className={userPlan === 'monthly-elite' ? 'border-primary/20' : 'bg-muted/10 opacity-80'}>
              <CardHeader>
                <div className="flex items-center justify-between">
                  <div>
@@ -161,13 +170,33 @@ export default function ProfilePage() {
                      <CalendarIcon className="w-5 h-5 text-primary" />
                      Google Calendar Sync
                    </CardTitle>
-                   <CardDescription>Connect your external calendar to manage availability.</CardDescription>
+                   <CardDescription>
+                     {userPlan === 'monthly-elite' 
+                       ? "Connect your external calendar to manage availability."
+                       : "Unlock real-time sync with your Pro Elite Monthly plan."}
+                   </CardDescription>
                  </div>
-                 <Badge variant="outline" className="border-primary text-primary">OPTIONAL</Badge>
+                 <Badge variant={userPlan === 'monthly-elite' ? 'outline' : 'destructive'} className={userPlan === 'monthly-elite' ? 'border-primary text-primary' : ''}>
+                   {userPlan === 'monthly-elite' ? 'ELITE FEATURE' : 'LOCKED'}
+                 </Badge>
                </div>
              </CardHeader>
              <CardContent>
-                <div className="p-4 rounded-xl border border-dashed bg-muted/20 flex flex-col items-center gap-4 text-center">
+                <div className="p-4 rounded-xl border border-dashed bg-muted/20 flex flex-col items-center gap-4 text-center relative">
+                   {userPlan !== 'monthly-elite' && (
+                     <div className="absolute inset-0 z-10 bg-background/40 backdrop-blur-[2px] flex flex-col items-center justify-center rounded-xl p-4">
+                        <Lock className="w-8 h-8 text-primary mb-2" />
+                        <p className="font-black text-sm uppercase tracking-widest mb-1">Premium Integration</p>
+                        <p className="text-[10px] text-muted-foreground mb-4">Elite Monthly subscribers only.</p>
+                        <Button 
+                          className="font-black h-10 px-6 bg-primary text-black hover:bg-primary/90 rounded-lg flex gap-2"
+                          onClick={() => setUserPlan('monthly-elite')}
+                        >
+                          Upgrade to Unlock
+                          <ArrowUpRight className="w-4 h-4" />
+                        </Button>
+                     </div>
+                   )}
                    <div className="w-12 h-12 rounded-full bg-white/10 flex items-center justify-center">
                       <CalendarIcon className="w-6 h-6 text-muted-foreground" />
                    </div>
@@ -179,7 +208,7 @@ export default function ProfilePage() {
                     variant="outline" 
                     className="font-bold border-primary text-primary hover:bg-primary/10"
                     onClick={handleCalendarSync}
-                    disabled={isSyncing}
+                    disabled={isSyncing || userPlan !== 'monthly-elite'}
                    >
                       {isSyncing ? <RefreshCw className="w-4 h-4 mr-2 animate-spin" /> : "Connect Google Calendar"}
                    </Button>
