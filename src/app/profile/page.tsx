@@ -1,13 +1,13 @@
-
 "use client"
 
-import { User, Settings, CreditCard, History, Shield, LogOut, Zap, Bell, Crown, Calculator, Briefcase, Calendar as CalendarIcon, RefreshCw, BarChart3, TrendingUp, DollarSign, Lock, ArrowUpRight } from "lucide-react"
+import { User, Settings, CreditCard, History, Shield, LogOut, Zap, Bell, Crown, Calculator, Briefcase, Calendar as CalendarIcon, RefreshCw, BarChart3, TrendingUp, DollarSign, Lock, ArrowUpRight, Globe, Video, Star, ExternalLink, ShieldCheck } from "lucide-react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Badge } from "@/components/ui/badge"
 import { Switch } from "@/components/ui/switch"
 import { Label } from "@/components/ui/label"
+import { Input } from "@/components/ui/input"
 import Link from "next/link"
 import { useState } from "react"
 import { useToast } from "@/hooks/use-toast"
@@ -17,6 +17,8 @@ export default function ProfilePage() {
   const [isSyncing, setIsSyncing] = useState(false)
   const [userPlan, setUserPlan] = useState<"pay-as-you-go" | "monthly-elite">("pay-as-you-go") 
   const [hasCalendarAddon, setHasCalendarAddon] = useState(false)
+  const [gmbLink, setGmbLink] = useState("")
+  const [isOnCall, setIsOnCall] = useState(true)
   const { toast } = useToast()
 
   const canUseCalendar = userPlan === "monthly-elite" || hasCalendarAddon
@@ -41,6 +43,13 @@ export default function ProfilePage() {
     })
     // Simulate activation for demo purposes
     setTimeout(() => setHasCalendarAddon(true), 2000)
+  }
+
+  const handleSaveGMB = () => {
+    toast({
+      title: "GMB Link Verified",
+      description: "Your Google My Business ratings are now legitimizing your profile.",
+    })
   }
 
   return (
@@ -133,48 +142,93 @@ export default function ProfilePage() {
 
         {/* Main Content Area */}
         <div className="md:col-span-2 flex flex-col gap-6">
-           {/* Performance Stats */}
-           <Card className="border-primary/20 bg-card/50 overflow-hidden relative">
-             <div className="absolute right-0 top-0 p-4">
-                <Badge className="bg-green-500 text-black font-bold uppercase tracking-tighter">Verified Pro</Badge>
+           {/* Video Consult Dashboard */}
+           <Card className="border-primary/40 orange-glow bg-card/50 overflow-hidden">
+             <div className="bg-primary/10 px-6 py-3 border-b border-primary/20 flex items-center justify-between">
+                <span className="text-[10px] font-black uppercase tracking-widest text-primary flex items-center gap-2">
+                  <Video className="w-3 h-3" />
+                  Video Consultant Dashboard
+                </span>
+                <Badge variant={isOnCall ? 'default' : 'secondary'} className="text-[10px] uppercase font-black">
+                  {isOnCall ? 'Live & On-Call' : 'Off Duty'}
+                </Badge>
              </div>
-             <CardHeader>
-               <CardTitle className="text-2xl font-black italic tracking-tighter">Business Dashboard</CardTitle>
-               <CardDescription>Real-time earnings and lead overhead tracking.</CardDescription>
-             </CardHeader>
-             <CardContent className="space-y-6">
-                <div className="grid grid-cols-3 gap-4">
-                  <div className="flex flex-col p-4 rounded-2xl bg-background border border-white/5 relative group overflow-hidden">
-                    <TrendingUp className="absolute -right-2 -bottom-2 w-12 h-12 text-green-500 opacity-5 group-hover:scale-110 transition-transform" />
-                    <span className="text-[10px] text-muted-foreground uppercase font-black tracking-widest mb-1">Leads Won</span>
-                    <span className="text-3xl font-black">42</span>
-                  </div>
-                  <div className="flex flex-col p-4 rounded-2xl bg-background border border-white/5 relative group overflow-hidden">
-                    <DollarSign className="absolute -right-2 -bottom-2 w-12 h-12 text-primary opacity-5 group-hover:scale-110 transition-transform" />
-                    <span className="text-[10px] text-muted-foreground uppercase font-black tracking-widest mb-1">Gross Rev</span>
-                    <span className="text-3xl font-black text-primary">$12.4k</span>
-                  </div>
-                  <div className="flex flex-col p-4 rounded-2xl bg-background border border-white/5 relative group overflow-hidden">
-                    <Zap className="absolute -right-2 -bottom-2 w-12 h-12 text-amber-500 opacity-5 group-hover:scale-110 transition-transform" />
-                    <span className="text-[10px] text-muted-foreground uppercase font-black tracking-widest mb-1">Lead Costs</span>
-                    <span className="text-3xl font-black text-amber-500">{userPlan === 'monthly-elite' ? '$499' : '$924'}</span>
-                  </div>
+             <CardContent className="pt-6 space-y-6">
+                <div className="flex items-center justify-between">
+                   <div className="space-y-1">
+                      <p className="font-black text-lg italic tracking-tight">Accept Emergency Calls</p>
+                      <p className="text-xs text-muted-foreground">Toggle availability for instant $97 video consultations.</p>
+                   </div>
+                   <Switch checked={isOnCall} onCheckedChange={setIsOnCall} />
                 </div>
                 
-                <div className="p-4 bg-primary/5 rounded-xl border border-primary/10 flex items-center justify-between">
-                   <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold">
-                         <BarChart3 className="w-5 h-5" />
-                      </div>
-                      <div>
-                         <p className="text-sm font-bold">ROI Efficiency</p>
-                         <p className="text-[10px] text-muted-foreground uppercase font-black">{userPlan === 'monthly-elite' ? '24.8x' : '13.4x'} return on lead spend</p>
-                      </div>
+                <div className="grid grid-cols-2 gap-4">
+                   <div className="p-4 rounded-2xl bg-background border border-white/5 space-y-1">
+                      <p className="text-[9px] font-black uppercase text-muted-foreground">Consults Completed</p>
+                      <p className="text-2xl font-black">12</p>
                    </div>
-                   <Link href="/pro/estimate">
-                     <Button className="font-black h-10 px-6 bg-primary text-black hover:bg-primary/90 rounded-lg">New AI Estimate</Button>
-                   </Link>
+                   <div className="p-4 rounded-2xl bg-background border border-white/5 space-y-1">
+                      <p className="text-[9px] font-black uppercase text-muted-foreground">Consult Revenue</p>
+                      <p className="text-2xl font-black text-primary">$1,164</p>
+                   </div>
                 </div>
+
+                {!canUseCalendar && (
+                  <div className="p-3 rounded-lg bg-amber-500/10 border border-amber-500/20 flex gap-3">
+                    <Lock className="w-4 h-4 text-amber-500 shrink-0" />
+                    <p className="text-[10px] text-muted-foreground leading-tight">
+                      Calendar Sync required for <b>Automatic Scheduling</b> of follow-up visits. Upgrade to Monthly Elite to unlock full automation.
+                    </p>
+                  </div>
+                )}
+             </CardContent>
+           </Card>
+
+           {/* Business Legitimacy Card (GMB Integration) */}
+           <Card className="border-border bg-card/50">
+             <CardHeader>
+               <CardTitle className="flex items-center gap-2 text-xl font-black italic tracking-tighter">
+                 <Globe className="w-5 h-5 text-primary" />
+                 Business Legitimacy
+               </CardTitle>
+               <CardDescription>Link your Google My Business page to display verified external ratings.</CardDescription>
+             </CardHeader>
+             <CardContent className="space-y-6">
+                <div className="space-y-2">
+                   <Label htmlFor="gmb" className="text-xs font-bold uppercase tracking-widest">GMB Profile Link</Label>
+                   <div className="flex gap-2">
+                      <Input 
+                        id="gmb" 
+                        placeholder="https://g.page/your-business-name" 
+                        value={gmbLink}
+                        onChange={(e) => setGmbLink(e.target.value)}
+                        className="bg-background border-primary/20"
+                      />
+                      <Button onClick={handleSaveGMB} className="font-bold">Verify</Button>
+                   </div>
+                </div>
+
+                {gmbLink && (
+                  <div className="p-4 rounded-xl border border-dashed bg-muted/20 flex items-center justify-between">
+                     <div className="flex items-center gap-4">
+                        <div className="w-12 h-12 rounded-xl bg-white/5 flex items-center justify-center">
+                           <Globe className="w-6 h-6 text-primary" />
+                        </div>
+                        <div>
+                           <p className="text-sm font-bold">Google My Business Connected</p>
+                           <div className="flex items-center gap-1 mt-0.5">
+                              <Star className="w-3 h-3 fill-primary text-primary" />
+                              <Star className="w-3 h-3 fill-primary text-primary" />
+                              <Star className="w-3 h-3 fill-primary text-primary" />
+                              <Star className="w-3 h-3 fill-primary text-primary" />
+                              <Star className="w-3 h-3 fill-primary text-primary" />
+                              <span className="text-[10px] font-bold ml-1">4.9/5 (124 Google Reviews)</span>
+                           </div>
+                        </div>
+                     </div>
+                     <Badge variant="outline" className="text-[9px] border-primary text-primary">LEGITIMIZED</Badge>
+                  </div>
+                )}
              </CardContent>
            </Card>
 
@@ -239,30 +293,6 @@ export default function ProfilePage() {
                    >
                       {isSyncing ? <RefreshCw className="w-4 h-4 mr-2 animate-spin" /> : "Connect Google Calendar"}
                    </Button>
-                </div>
-             </CardContent>
-           </Card>
-
-           {/* Notifications */}
-           <Card>
-             <CardHeader>
-               <CardTitle>Pro Notifications</CardTitle>
-               <CardDescription>Manage your high-priority lead alerts.</CardDescription>
-             </CardHeader>
-             <CardContent className="flex flex-col gap-6">
-                <div className="flex items-center justify-between">
-                   <div className="flex flex-col gap-1">
-                      <Label className="font-bold">Urgent Lead Alerts</Label>
-                      <p className="text-xs text-muted-foreground">Get notified within seconds of emergency video consult requests.</p>
-                   </div>
-                   <Switch defaultChecked />
-                </div>
-                <div className="flex items-center justify-between">
-                   <div className="flex flex-col gap-1">
-                      <Label className="font-bold">Estimator AI Updates</Label>
-                      <p className="text-xs text-muted-foreground">Receive updates when local material pricing indices change.</p>
-                   </div>
-                   <Switch defaultChecked />
                 </div>
              </CardContent>
            </Card>

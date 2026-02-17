@@ -1,4 +1,3 @@
-
 "use client"
 
 import { useState } from "react"
@@ -18,7 +17,9 @@ import {
   Lock,
   BarChart3,
   ScanEye,
-  CalendarDays
+  CalendarDays,
+  Globe,
+  Video
 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
@@ -73,6 +74,7 @@ export default function JoinNetworkPage() {
     licensingState: "",
     insuranceProvider: "",
     insurancePolicy: "",
+    gmbLink: "",
     leadModel: "pay-as-you-go",
     cardNumber: "",
     expiry: "",
@@ -159,6 +161,19 @@ export default function JoinNetworkPage() {
                   value={formData.phone} 
                   onChange={e => updateField('phone', e.target.value)}
                 />
+              </div>
+              <div className="md:col-span-2 space-y-2">
+                <Label htmlFor="gmb" className="flex items-center gap-2">
+                  <Globe className="w-4 h-4 text-primary" />
+                  Google My Business Link
+                </Label>
+                <Input 
+                  id="gmb" 
+                  placeholder="https://g.page/your-business-name (Required for Verified status)" 
+                  value={formData.gmbLink} 
+                  onChange={e => updateField('gmbLink', e.target.value)}
+                />
+                <p className="text-[10px] text-muted-foreground italic">Linking your GMB page allows us to display your real-world ratings, building instant trust with customers.</p>
               </div>
             </div>
           </CardContent>
@@ -421,16 +436,23 @@ export default function JoinNetworkPage() {
                 Your profile & Stripe billing are being verified.
               </CardDescription>
             </div>
-            <div className="p-6 bg-primary/5 rounded-2xl border border-primary/20 max-w-md">
-              <h4 className="font-bold flex items-center justify-center gap-2 mb-2">
-                <Zap className="w-4 h-4 text-primary" />
-                Access Level: {formData.leadModel.replace(/-/g, ' ').toUpperCase()}
-              </h4>
-              <p className="text-sm text-muted-foreground leading-relaxed">
-                {formData.leadModel === 'monthly-elite' 
-                  ? "Unlimited leads enabled. Your Google Calendar Sync plugin is ready for activation in your profile."
-                  : "Lead access enabled. You can add the Google Calendar plugin ($49/mo) anytime in your profile."}
-              </p>
+            <div className="p-6 bg-primary/5 rounded-2xl border border-primary/20 max-w-md w-full">
+              <div className="space-y-4 text-left">
+                 <h4 className="font-bold flex items-center gap-2 mb-2">
+                   <ShieldCheck className="w-4 h-4 text-primary" />
+                   Verified Master Access
+                 </h4>
+                 <div className="space-y-3">
+                    <div className="flex items-start gap-2 text-xs">
+                       <Globe className="w-4 h-4 text-primary shrink-0" />
+                       <p>GMB Integration: <b>Connected</b>. Your ratings will appear in the marketplace once verified.</p>
+                    </div>
+                    <div className="flex items-start gap-2 text-xs">
+                       <Video className="w-4 h-4 text-primary shrink-0" />
+                       <p>Emergency Video Suite: <b>Enabled</b>. You can now accept $97 consults in your dashboard.</p>
+                    </div>
+                 </div>
+              </div>
             </div>
             <Link href="/profile">
               <Button variant="outline" className="font-bold border-primary text-primary">Go to Dashboard</Button>

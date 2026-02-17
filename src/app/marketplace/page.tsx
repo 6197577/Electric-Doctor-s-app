@@ -1,8 +1,7 @@
-
 "use client"
 
 import { useState, useMemo } from "react"
-import { Search, Star, MapPin, ShieldCheck, Zap, Info, Calendar, AlertCircle } from "lucide-react"
+import { Search, Star, MapPin, ShieldCheck, Zap, Info, Calendar, AlertCircle, Globe, ExternalLink } from "lucide-react"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -25,7 +24,7 @@ export const BASE_ELECTRICIANS = [
     availability: "Immediate",
     baseHourlyRate: 145,
     image: "https://picsum.photos/seed/elec_p1/100/100",
-    tags: ["Verified", "Emergency", "24/7"]
+    tags: ["Verified", "Emergency", "24/7", "GMB Legacy"]
   },
   {
     id: 2,
@@ -37,7 +36,7 @@ export const BASE_ELECTRICIANS = [
     availability: "In 2 hours",
     baseHourlyRate: 160,
     image: "https://picsum.photos/seed/elec_p2/100/100",
-    tags: ["Verified", "Green Tech"]
+    tags: ["Verified", "Green Tech", "GMB Legacy"]
   },
   {
     id: 3,
@@ -117,6 +116,7 @@ export default function MarketplacePage() {
         {filteredElectricians.map((pro) => {
           const dynamicRate = calculateDynamicRate(pro.baseHourlyRate, selectedCity, demandFactor);
           const bookingFee = dynamicRate * 4; // Booking hold is a 4-hour minimum
+          const hasGMB = pro.tags.includes("GMB Legacy");
 
           return (
             <Card key={pro.id} className="group hover:border-primary/40 transition-all flex flex-col h-full overflow-hidden">
@@ -134,7 +134,10 @@ export default function MarketplacePage() {
                     <span className="text-[10px] text-muted-foreground uppercase">{pro.reviews} reviews</span>
                   </div>
                 </div>
-                <CardTitle className="mt-4">{pro.name}</CardTitle>
+                <CardTitle className="mt-4 flex items-center gap-2">
+                  {pro.name}
+                  {hasGMB && <Badge variant="outline" className="h-4 px-1.5 border-blue-500 text-blue-500 text-[8px] uppercase font-black"><Globe className="w-2 h-2 mr-1" /> GMB Verified</Badge>}
+                </CardTitle>
                 <CardDescription>{pro.specialty}</CardDescription>
               </CardHeader>
               <CardContent className="flex flex-col gap-4 flex-1">
@@ -158,6 +161,18 @@ export default function MarketplacePage() {
                   ))}
                 </div>
 
+                {hasGMB && (
+                  <div className="bg-blue-500/5 border border-blue-500/20 rounded-lg p-2 flex items-center justify-between group/gmb">
+                    <div className="flex items-center gap-2">
+                      <div className="w-6 h-6 rounded bg-blue-500/10 flex items-center justify-center">
+                        <Globe className="w-3 h-3 text-blue-500" />
+                      </div>
+                      <span className="text-[9px] font-bold text-blue-600">Verified Google Reviews</span>
+                    </div>
+                    <ExternalLink className="w-3 h-3 text-blue-400 opacity-0 group-hover/gmb:opacity-100 transition-opacity cursor-pointer" />
+                  </div>
+                )}
+
                 <div className="mt-auto pt-4 flex flex-col gap-1 border-t border-border/50">
                   <div className="flex justify-between items-baseline">
                     <span className="text-xs text-muted-foreground">Dynamic Hourly Rate</span>
@@ -168,12 +183,6 @@ export default function MarketplacePage() {
                   <div className="flex justify-between items-end">
                     <span className="text-[10px] text-muted-foreground">Booking Hold Fee (4h min)</span>
                     <span className="text-sm font-semibold opacity-70">{formatCurrency(bookingFee)}</span>
-                  </div>
-                  <div className="p-2 bg-muted/20 rounded-md border border-border/50 mt-2">
-                    <p className="text-[9px] text-muted-foreground flex items-center gap-1 leading-tight">
-                      <AlertCircle className="w-3 h-3 text-primary shrink-0" />
-                      Hold fee fully refundable if canceled 72h prior. Includes priority AI diagnosis review.
-                    </p>
                   </div>
                 </div>
               </CardContent>
