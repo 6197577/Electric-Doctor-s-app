@@ -1,41 +1,44 @@
 
-# Emergency Electric Repair - Production Launchpad
+# Electric Doctor's - Production Launch Roadmap
 
-This application is ready for deployment to your production domain. Follow this rigorous checklist to ensure a stable and profitable launch.
+Follow this sequence to transition from prototype to a live, revenue-generating business.
 
-## 1. Domain Acquisition & Connection
-A custom domain is required for Stripe verification and SEO.
-- **Acquire Domain**: Purchase your domain (e.g., via Google Domains or Namecheap).
-- **Connect to App Hosting**: In the Firebase Console, go to **App Hosting > Settings > Domains** and follow instructions to update DNS.
-- **SSL**: Automatically provisioned by Firebase once verified.
+## Phase 1: Source Control (GitHub)
+1. Create a new repository on [GitHub](https://github.com).
+2. Push this code:
+   ```bash
+   git init
+   git add .
+   git commit -m "Initial production-ready build"
+   git remote add origin <your-repo-url>
+   git push -u origin main
+   ```
 
-## 2. Mandatory API Key Inventory (Procurement Guide)
-You must obtain and configure these keys in your environment variables:
+## Phase 2: Backend Infrastructure (Firebase)
+1. **Firebase Console**: Create a project at [console.firebase.google.com](https://console.firebase.google.com).
+2. **Authentication**: Enable the **Google** sign-in provider.
+3. **Firestore Database**: 
+   - Create a database in "Production Mode".
+   - Set location to your closest region.
+   - Refer to `docs/backend.json` for the required data structures.
 
-| Service | Key Name | Purpose | Source |
-|---------|----------|---------|--------|
-| **Google AI** | `GOOGLE_GENAI_API_KEY` | Diagnostics & Sales Agents | [Google AI Studio](https://aistudio.google.com/) |
-| **Stripe** | `NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY` | Client-side Checkout | [Stripe Dashboard](https://dashboard.stripe.com/) |
-| **Stripe** | `STRIPE_SECRET_KEY` | Server-side Payments | [Stripe Dashboard](https://dashboard.stripe.com/) |
-| **Google Maps** | `NEXT_PUBLIC_GOOGLE_MAPS_API_KEY` | Live Dispatch Tracking | [Google Cloud Console](https://console.cloud.google.com/) |
+## Phase 3: App Hosting (The "Vercel" Alternative)
+We use **Firebase App Hosting** for seamless NextJS 15 support and GitHub integration.
+1. In Firebase Console, go to **App Hosting**.
+2. Connect your GitHub repository.
+3. Firebase will automatically build and deploy your app on every push to `main`.
 
-## 3. Communication Services (Scaling Ops)
-To fulfill the "Urgent Lead Alert" and "Report Delivery" features promised in the UI:
-- **Twilio**: For SMS dispatch alerts to professionals.
-- **Resend**: For sending professional diagnostic reports to homeowners.
+## Phase 4: Production API Keys
+Configure these in the **App Hosting > Settings > Environment Variables** section:
+- `GOOGLE_GENAI_API_KEY`: From Google AI Studio.
+- `STRIPE_SECRET_KEY`: From Stripe Dashboard.
+- `NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY`: From Stripe Dashboard.
+- `NEXT_PUBLIC_FIREBASE_CONFIG`: (API Key, Project ID, etc. from Firebase Settings).
 
-## 4. Stripe Production Setup
-1.  **Switch to Live Mode** in the Stripe Dashboard.
-2.  **Map Products**: Ensure your Stripe Product IDs match the prices used in the app:
-    - $97.00 Emergency Consult
-    - $29.99 EV Readiness Report
-    - $47.00 / $97.00 / $197.00 Audit Tiers
-3.  **Webhook**: Configure a webhook pointing to `/api/webhooks/stripe` to handle post-payment logic.
-
-## 5. PWA Deployment
-The app is configured as a **Progressive Web App (PWA)** via `manifest.json`.
-- Users can "Add to Home Screen" on iOS/Android for a native app experience.
-- Ensure your custom domain is connected to allow the PWA manifest to trigger.
+## Phase 5: Domain & Payments
+1. **Custom Domain**: Connect your domain in Firebase App Hosting settings.
+2. **Stripe Live**: Swap keys to live mode once your domain is verified and SSL is active.
+3. **PWA**: Verify the manifest triggers the "Add to Home Screen" prompt on mobile.
 
 ---
-*For technical infrastructure support, consult the internal Genkit documentation.*
+**Support Contact**: 304-410-9208 | support@emergencyelectricrepair.com
