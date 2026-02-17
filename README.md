@@ -1,11 +1,11 @@
 
-# Electric Doctor's - Production Launch Roadmap
+# Electric Doctor's - Firebase Launch Roadmap
 
-Follow this sequence to transition from prototype to a live, revenue-generating business.
+Follow this sequence to launch your app using the unified Firebase + GitHub stack. This is the most efficient workflow for a 2-person team.
 
 ## Phase 1: Source Control (GitHub)
-1. Create a new repository on [GitHub](https://github.com).
-2. Push this code:
+1. Create a new **Private** repository on [GitHub](https://github.com).
+2. Initialize your local project and push the code:
    ```bash
    git init
    git add .
@@ -14,31 +14,34 @@ Follow this sequence to transition from prototype to a live, revenue-generating 
    git push -u origin main
    ```
 
-## Phase 2: Backend Infrastructure (Firebase)
-1. **Firebase Console**: Create a project at [console.firebase.google.com](https://console.firebase.google.com).
-2. **Authentication**: Enable the **Google** sign-in provider.
+## Phase 2: Firebase Backend Setup
+1. **Firebase Console**: Go to [console.firebase.google.com](https://console.firebase.google.com) and create a new project.
+2. **Authentication**: Enable the **Google** sign-in provider in the "Authentication" tab.
 3. **Firestore Database**: 
    - Create a database in "Production Mode".
-   - Set location to your closest region.
-   - Refer to `docs/backend.json` for the required data structures.
+   - Choose a location closest to your primary market (e.g., `us-east1` for New York).
+   - Refer to `docs/backend.json` for the data structures you will populate.
 
-## Phase 3: App Hosting (The "Vercel" Alternative)
-We use **Firebase App Hosting** for seamless NextJS 15 support and GitHub integration.
-1. In Firebase Console, go to **App Hosting**.
-2. Connect your GitHub repository.
-3. Firebase will automatically build and deploy your app on every push to `main`.
+## Phase 3: Firebase App Hosting (The "Vercel" Alternative)
+This service connects GitHub directly to Firebase.
+1. In the Firebase Sidebar, go to **App Hosting**.
+2. Click **Get Started** and connect your GitHub account.
+3. Select your repository and the `main` branch.
+4. Firebase will automatically detect your Next.js project and begin the first build.
 
-## Phase 4: Production API Keys
-Configure these in the **App Hosting > Settings > Environment Variables** section:
-- `GOOGLE_GENAI_API_KEY`: From Google AI Studio.
-- `STRIPE_SECRET_KEY`: From Stripe Dashboard.
-- `NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY`: From Stripe Dashboard.
-- `NEXT_PUBLIC_FIREBASE_CONFIG`: (API Key, Project ID, etc. from Firebase Settings).
+## Phase 4: Production Environment Variables
+Once the App Hosting backend is created, go to its **Settings > Environment Variables** and add:
+- `GOOGLE_GENAI_API_KEY`: (From Google AI Studio)
+- `STRIPE_SECRET_KEY`: (From Stripe Dashboard)
+- `NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY`: (From Stripe Dashboard)
+- `NEXT_PUBLIC_FIREBASE_CONFIG`: (The JSON config object from your Firebase Project Settings)
 
-## Phase 5: Domain & Payments
-1. **Custom Domain**: Connect your domain in Firebase App Hosting settings.
-2. **Stripe Live**: Swap keys to live mode once your domain is verified and SSL is active.
-3. **PWA**: Verify the manifest triggers the "Add to Home Screen" prompt on mobile.
+## Phase 5: Custom Domain
+1. In **App Hosting**, click "Connect Domain".
+2. Add your custom domain (e.g., `emergencyelectricrepair.com`).
+3. Follow the DNS instructions provided by Firebase. SSL (HTTPS) will be provisioned automatically.
 
 ---
+**Team Sync**: Whenever either of you pushes to the GitHub `main` branch, Firebase will deploy the update to your domain within minutes.
+
 **Support Contact**: 304-410-9208 | support@emergencyelectricrepair.com
