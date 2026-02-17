@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useMemo } from "react"
-import { Search, Star, MapPin, ShieldCheck, Zap, Info, Calendar, AlertCircle, Globe, ExternalLink } from "lucide-react"
+import { Search, Star, MapPin, ShieldCheck, Zap, Info, Calendar, AlertCircle, Globe, ExternalLink, Quote } from "lucide-react"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -24,7 +24,9 @@ export const BASE_ELECTRICIANS = [
     availability: "Immediate",
     baseHourlyRate: 145,
     image: "https://picsum.photos/seed/elec_p1/100/100",
-    tags: ["Verified", "Emergency", "24/7", "GMB Legacy"]
+    tags: ["Verified", "Emergency", "24/7", "GMB Legacy"],
+    gmbRating: 4.9,
+    gmbReviews: 124
   },
   {
     id: 2,
@@ -36,7 +38,9 @@ export const BASE_ELECTRICIANS = [
     availability: "In 2 hours",
     baseHourlyRate: 160,
     image: "https://picsum.photos/seed/elec_p2/100/100",
-    tags: ["Verified", "Green Tech", "GMB Legacy"]
+    tags: ["Verified", "Green Tech", "GMB Legacy"],
+    gmbRating: 4.8,
+    gmbReviews: 89
   },
   {
     id: 3,
@@ -48,14 +52,16 @@ export const BASE_ELECTRICIANS = [
     availability: "Tomorrow",
     baseHourlyRate: 125,
     image: "https://picsum.photos/seed/elec_p3/100/100",
-    tags: ["Verified", "Low Price"]
+    tags: ["Verified", "Low Price"],
+    gmbRating: null,
+    gmbReviews: 0
   }
 ]
 
 export default function MarketplacePage() {
   const [search, setSearch] = useState("")
   const [selectedCity, setSelectedCity] = useState("New York")
-  const [demandFactor, setDemandFactor] = useState(1.15) // Simulating high demand
+  const [demandFactor, setDemandFactor] = useState(1.15)
 
   const filteredElectricians = useMemo(() => {
     return BASE_ELECTRICIANS.filter(pro => 
@@ -115,11 +121,11 @@ export default function MarketplacePage() {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {filteredElectricians.map((pro) => {
           const dynamicRate = calculateDynamicRate(pro.baseHourlyRate, selectedCity, demandFactor);
-          const bookingFee = dynamicRate * 4; // Booking hold is a 4-hour minimum
+          const bookingFee = dynamicRate * 4;
           const hasGMB = pro.tags.includes("GMB Legacy");
 
           return (
-            <Card key={pro.id} className="group hover:border-primary/40 transition-all flex flex-col h-full overflow-hidden">
+            <Card key={pro.id} className="group hover:border-primary/40 transition-all flex flex-col h-full overflow-hidden bg-card/50">
               <CardHeader className="pb-4">
                 <div className="flex items-start justify-between">
                   <Avatar className="w-16 h-16 border-2 border-primary/10">
@@ -131,12 +137,12 @@ export default function MarketplacePage() {
                       <Star className="w-4 h-4 fill-primary mr-1" />
                       {pro.rating}
                     </div>
-                    <span className="text-[10px] text-muted-foreground uppercase">{pro.reviews} reviews</span>
+                    <span className="text-[10px] text-muted-foreground uppercase">{pro.reviews} internal reviews</span>
                   </div>
                 </div>
                 <CardTitle className="mt-4 flex items-center gap-2">
                   {pro.name}
-                  {hasGMB && <Badge variant="outline" className="h-4 px-1.5 border-blue-500 text-blue-500 text-[8px] uppercase font-black"><Globe className="w-2 h-2 mr-1" /> GMB Verified</Badge>}
+                  {hasGMB && <Badge variant="outline" className="h-4 px-1.5 border-blue-500/50 text-blue-500 text-[8px] uppercase font-black"><Globe className="w-2 h-2 mr-1" /> GMB Verified</Badge>}
                 </CardTitle>
                 <CardDescription>{pro.specialty}</CardDescription>
               </CardHeader>
@@ -161,15 +167,23 @@ export default function MarketplacePage() {
                   ))}
                 </div>
 
-                {hasGMB && (
-                  <div className="bg-blue-500/5 border border-blue-500/20 rounded-lg p-2 flex items-center justify-between group/gmb">
-                    <div className="flex items-center gap-2">
-                      <div className="w-6 h-6 rounded bg-blue-500/10 flex items-center justify-center">
-                        <Globe className="w-3 h-3 text-blue-500" />
+                {hasGMB && pro.gmbRating && (
+                  <div className="bg-blue-500/5 border border-blue-500/20 rounded-xl p-3 flex flex-col gap-2 group/gmb relative overflow-hidden">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        <Globe className="w-3.5 h-3.5 text-blue-500" />
+                        <span className="text-[10px] font-black uppercase tracking-widest text-blue-600">Google My Business</span>
                       </div>
-                      <span className="text-[9px] font-bold text-blue-600">Verified Google Reviews</span>
+                      <ExternalLink className="w-3 h-3 text-blue-400 opacity-0 group-hover/gmb:opacity-100 transition-opacity" />
                     </div>
-                    <ExternalLink className="w-3 h-3 text-blue-400 opacity-0 group-hover/gmb:opacity-100 transition-opacity cursor-pointer" />
+                    <div className="flex items-center gap-2">
+                       <div className="flex items-center">
+                          {[...Array(5)].map((_, i) => (
+                            <Star key={i} className={`w-3 h-3 ${i < Math.floor(pro.gmbRating) ? 'fill-blue-500 text-blue-500' : 'text-blue-200'}`} />
+                          ))}
+                       </div>
+                       <span className="text-xs font-bold text-blue-700">{pro.gmbRating}/5 ({pro.gmbReviews} reviews)</span>
+                    </div>
                   </div>
                 )}
 
