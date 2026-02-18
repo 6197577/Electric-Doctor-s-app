@@ -2,8 +2,18 @@
 
 Follow this sequence to launch your app using the unified Firebase + GitHub stack. This is the most efficient workflow for your team.
 
+## Project Structure (Root Directory)
+Your app's root is the folder containing these key files:
+- `/src/app`: All website pages (Marketplace, Audit, Profile).
+- `/src/firebase`: Database and Auth connection logic.
+- `/src/ai`: Genkit AI diagnostic engines.
+- `/docs/backend.json`: Your database blueprint.
+- `package.json`: Project configuration and dependencies.
+
+---
+
 ## Phase 1: Source Control (GitHub)
-Run these commands in your local terminal to push your code to your repository:
+Run these commands in your local terminal **from the root directory**:
 
 1. **Initialize and push code**:
    ```bash
@@ -53,6 +63,6 @@ To see your users' audits, AI diagnoses, and generator logs:
 1. Open [Firebase Console](https://console.firebase.google.com).
 2. Select your project.
 3. Click **Firestore Database** in the left menu.
-4. You will see a `users` collection. Inside each user, you'll find their `audits`, `diagnoses`, and `generatorLogs`.
+4. Data is organized as: `users` > `properties` > `audits/diagnoses`.
 
 **Support**: 304-410-9208 | support@emergencyelectricrepair.com
