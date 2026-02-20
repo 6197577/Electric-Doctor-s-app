@@ -1,3 +1,4 @@
+
 # Electric Doctor's - Firebase Launch Roadmap
 
 Follow this sequence to launch your app using the unified Firebase + GitHub stack. This is the most efficient workflow for your team.
@@ -13,7 +14,7 @@ Your app's root is the folder containing these key files:
 ---
 
 ## Phase 1: Source Control (GitHub)
-Run these commands in your local terminal **from the root directory**:
+**RUN THESE COMMANDS FIRST.** Open your terminal in the root directory and run:
 
 1. **Initialize and push code**:
    ```bash
