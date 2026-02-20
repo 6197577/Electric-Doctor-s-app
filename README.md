@@ -21,7 +21,7 @@ Your app's root is the folder containing these key files:
    git init
    git remote add origin https://github.com/6197577/Electric-Doctor-s-app.git
    git add .
-   git commit -m "Initial production-ready build"
+   git commit -m "Initial production-ready build with property tracking"
    git branch -M main
    git push -u origin main
    ```
@@ -64,6 +64,10 @@ To see your users' audits, AI diagnoses, and generator logs:
 1. Open [Firebase Console](https://console.firebase.google.com).
 2. Select your project.
 3. Click **Firestore Database** in the left menu.
-4. Data is organized as: `users` > `properties` > `audits/diagnoses`.
+4. Data is organized as: `users` > `userId` > `properties` > `propertyId` > `audits/diagnoses`.
+
+## Troubleshooting
+- **Port 9002 already in use (EADDRINUSE)**: This happens if a previous server didn't close. The server usually restarts automatically. If not, stop the process and run `npm run dev` again.
+- **Missing Firebase Config**: If the app shows a "Configuration Required" screen, ensure you've completed **Phase 4** above.
 
 **Support**: 304-410-9208 | support@emergencyelectricrepair.com

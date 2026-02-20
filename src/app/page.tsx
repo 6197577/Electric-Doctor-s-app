@@ -1,10 +1,8 @@
-
 import Link from "next/link"
-import { Zap, ShieldAlert, ShoppingBag, ArrowRight, Activity, MapPin, Sun, ClipboardList, ShieldCheck, Globe, BatteryCharging, Video, Stethoscope, BarChart3, TrendingUp, Calculator, Shield, Cpu, Building2, Factory } from "lucide-react"
+import { Zap, ShieldCheck, BatteryCharging, Video, Stethoscope, BarChart3, ArrowRight, Cpu, Building2, Factory, Plus } from "lucide-react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
-import { TOP_50_CITIES_PRICING } from "@/lib/pricing-data"
 import Image from "next/image"
 
 export default function Home() {
@@ -21,7 +19,7 @@ export default function Home() {
             <span className="text-primary italic">Talk to a Doctor.</span>
           </h1>
           <p className="text-muted-foreground text-xl md:text-2xl max-w-xl leading-relaxed font-medium">
-            Instant AI diagnostics, $97 Master Electrician video consults, and predictive maintenance to prevent electrical fires.
+            Instant AI diagnostics, $97 Master Electrician video consults, and multi-property asset tracking for homeowners and pros.
           </p>
           <div className="flex flex-wrap gap-4 mt-4">
             <Link href="/video-consult">
@@ -31,10 +29,11 @@ export default function Home() {
                 <ArrowRight className="ml-3 w-6 h-6 group-hover:translate-x-1 transition-transform" />
               </Button>
             </Link>
-            <Link href="/predictive-maintenance">
+            <Link href="/properties">
               <Button size="lg" variant="outline" className="font-black h-16 px-10 border-primary/40 text-primary hover:bg-primary/10 text-lg rounded-2xl">
-                Predictive Risk Scan
-                <BarChart3 className="ml-3 w-6 h-6" />
+                <Building2 className="mr-3 w-6 h-6" />
+                Manage My Assets
+                <Plus className="ml-3 w-4 h-4" />
               </Button>
             </Link>
           </div>
@@ -43,6 +42,36 @@ export default function Home() {
           <Stethoscope className="w-[800px] h-[800px] text-primary" />
         </div>
       </section>
+
+      {/* Grid of services */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        {[
+          { icon: Video, title: "Video Doctor", desc: "Instant Master Access", href: "/video-consult", label: "Start Call", badge: "$97.00" },
+          { icon: Factory, title: "Commercial Audit", desc: "Enterprise Compliance", href: "/commercial-audit", label: "Book Audit", badge: "from $47" },
+          { icon: BatteryCharging, title: "EV Readiness", desc: "Capacity Calculation", href: "/ev-readiness", label: "Get report", badge: "$29.99" },
+          { icon: ShieldCheck, title: "Safety Audit", desc: "Residential NEC Check", href: "/audit", label: "Book Audit", badge: "from $47" }
+        ].map((service, i) => (
+          <Card key={i} className="group hover:border-primary/50 transition-all cursor-pointer relative overflow-hidden bg-card/30 backdrop-blur-sm">
+            {service.badge && (
+              <Badge className="absolute top-3 right-3 bg-primary text-black font-black text-[10px] px-3">{service.badge}</Badge>
+            )}
+            <CardHeader className="pt-10">
+              <div className="w-14 h-14 rounded-2xl bg-primary/10 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                <service.icon className="w-8 h-8 text-primary" />
+              </div>
+              <CardTitle className="text-2xl font-black tracking-tight">{service.title}</CardTitle>
+              <CardDescription className="font-medium">{service.desc}</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <Link href={service.href}>
+                <Button variant="link" className="p-0 text-primary h-auto font-black text-sm uppercase tracking-widest">
+                  {service.label} <ArrowRight className="ml-2 w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                </Button>
+              </Link>
+            </CardContent>
+          </Card>
+        ))}
+      </div>
 
       {/* Smart Panel Sales Section */}
       <section className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
@@ -77,36 +106,6 @@ export default function Home() {
             </Link>
          </div>
       </section>
-
-      {/* Grid of services */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        {[
-          { icon: Video, title: "Video Doctor", desc: "Instant Master Access", href: "/video-consult", label: "Start Call", badge: "$97.00" },
-          { icon: Factory, title: "Commercial Audit", desc: "Enterprise Compliance", href: "/commercial-audit", label: "Book Audit", badge: "from $47" },
-          { icon: BatteryCharging, title: "EV Readiness", desc: "Capacity Calculation", href: "/ev-readiness", label: "Get report", badge: "$29.99" },
-          { icon: ShieldCheck, title: "Safety Audit", desc: "Residential NEC Check", href: "/audit", label: "Book Audit", badge: "from $47" }
-        ].map((service, i) => (
-          <Card key={i} className="group hover:border-primary/50 transition-all cursor-pointer relative overflow-hidden bg-card/30 backdrop-blur-sm">
-            {service.badge && (
-              <Badge className="absolute top-3 right-3 bg-primary text-black font-black text-[10px] px-3">{service.badge}</Badge>
-            )}
-            <CardHeader className="pt-10">
-              <div className="w-14 h-14 rounded-2xl bg-primary/10 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
-                <service.icon className="w-8 h-8 text-primary" />
-              </div>
-              <CardTitle className="text-2xl font-black tracking-tight">{service.title}</CardTitle>
-              <CardDescription className="font-medium">{service.desc}</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <Link href={service.href}>
-                <Button variant="link" className="p-0 text-primary h-auto font-black text-sm uppercase tracking-widest">
-                  {service.label} <ArrowRight className="ml-2 w-4 h-4 group-hover:translate-x-1 transition-transform" />
-                </Button>
-              </Link>
-            </CardContent>
-          </Card>
-        ))}
-      </div>
     </div>
   )
 }
