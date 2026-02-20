@@ -2,7 +2,7 @@
 "use client"
 
 import { useState } from "react"
-import { Camera, Upload, AlertTriangle, CheckCircle, Zap, Loader2, ArrowRight, DollarSign, TrendingDown } from "lucide-react"
+import { Camera, Upload, AlertTriangle, CheckCircle, Zap, Loader2, ArrowRight, DollarSign, TrendingDown, Building2 } from "lucide-react"
 import { aiDiagnosticAssistant, AiDiagnosticAssistantOutput } from "@/ai/flows/ai-diagnostic-assistant"
 import { runSalesCloser, SalesCloserOutput } from "@/ai/flows/ai-sales-closer"
 import { Button } from "@/components/ui/button"
@@ -12,10 +12,11 @@ import { Badge } from "@/components/ui/badge"
 import { useToast } from "@/hooks/use-toast"
 import Image from "next/image"
 import Link from "next/link"
-import { collection, addDoc, serverTimestamp } from "firebase/firestore"
-import { useFirestore, useUser } from "@/firebase"
+import { collection, addDoc, serverTimestamp, query } from "firebase/firestore"
+import { useFirestore, useUser, useCollection } from "@/firebase"
 import { errorEmitter } from '@/firebase/error-emitter'
 import { FirestorePermissionError } from '@/firebase/errors'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 
 export default function DiagnosePage() {
   const { user } = useUser()
@@ -25,7 +26,12 @@ export default function DiagnosePage() {
   const [isAnalyzing, setIsAnalyzing] = useState(false)
   const [results, setResults] = useState<AiDiagnosticAssistantOutput | null>(null)
   const [salesPitch, setSalesPitch] = useState<SalesCloserOutput | null>(null)
+  const [selectedPropertyId, setSelectedPropertyId] = useState<string | null>(null)
   const { toast } = useToast()
+
+  // Fetch properties to tie diagnosis to
+  const propsQuery = user && db ? query(collection(db, 'users', user.uid, 'properties')) : null
+  const { data: properties, loading: propsLoading } = useCollection(propsQuery)
 
   const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
@@ -58,8 +64,8 @@ export default function DiagnosePage() {
       })
       setSalesPitch(sales)
 
-      // Persistent Save to Database
-      if (user && db) {
+      // Persistent Save to Database tied to property
+      if (user && db && selectedPropertyId) {
         const diagData = {
           diagnosis: diagnosis.overallDiagnosis,
           urgency: diagnosis.urgencyLevel,
@@ -68,7 +74,7 @@ export default function DiagnosePage() {
           recommendations: diagnosis.safetyRecommendations,
           createdAt: serverTimestamp()
         }
-        const colRef = collection(db, 'users', user.uid, 'diagnoses')
+        const colRef = collection(db, 'users', user.uid, 'properties', selectedPropertyId, 'diagnoses')
         addDoc(colRef, diagData).catch(async () => {
           errorEmitter.emit('permission-error', new FirestorePermissionError({
             path: colRef.path,
@@ -93,37 +99,64 @@ export default function DiagnosePage() {
 
       {!results ? (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-          <Card className="border-dashed border-2 bg-muted/20 flex flex-col items-center justify-center p-8 min-h-[300px] text-center">
-            {file ? (
-              <div className="relative w-full aspect-video rounded-lg overflow-hidden border border-primary/20">
-                <Image src={file} alt="Preview" fill className="object-cover" />
-                <Button 
-                  variant="destructive" 
-                  size="sm" 
-                  className="absolute top-2 right-2"
-                  onClick={() => setFile(null)}
-                >
-                  Remove
-                </Button>
-              </div>
-            ) : (
-              <div className="flex flex-col items-center gap-4">
-                <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center">
-                  <Camera className="w-8 h-8 text-primary" />
-                </div>
-                <div>
-                  <p className="font-semibold">Take a photo or upload</p>
-                  <p className="text-sm text-muted-foreground">Supports JPG, PNG, and MP4</p>
-                </div>
-                <div className="flex gap-2">
-                  <Button variant="outline" onClick={() => document.getElementById('fileInput')?.click()}>
-                    <Upload className="w-4 h-4 mr-2" /> Upload
+          <div className="flex flex-col gap-6">
+            <Card className="border-dashed border-2 bg-muted/20 flex flex-col items-center justify-center p-8 min-h-[300px] text-center relative">
+              {file ? (
+                <div className="relative w-full aspect-video rounded-lg overflow-hidden border border-primary/20">
+                  <Image src={file} alt="Preview" fill className="object-cover" />
+                  <Button 
+                    variant="destructive" 
+                    size="sm" 
+                    className="absolute top-2 right-2"
+                    onClick={() => setFile(null)}
+                  >
+                    Remove
                   </Button>
-                  <input id="fileInput" type="file" className="hidden" accept="image/*,video/*" onChange={handleFileUpload} />
                 </div>
-              </div>
-            )}
-          </Card>
+              ) : (
+                <div className="flex flex-col items-center gap-4">
+                  <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center">
+                    <Camera className="w-8 h-8 text-primary" />
+                  </div>
+                  <div>
+                    <p className="font-semibold">Take a photo or upload</p>
+                    <p className="text-sm text-muted-foreground">Supports JPG, PNG, and MP4</p>
+                  </div>
+                  <div className="flex gap-2">
+                    <Button variant="outline" onClick={() => document.getElementById('fileInput')?.click()}>
+                      <Upload className="w-4 h-4 mr-2" /> Upload
+                    </Button>
+                    <input id="fileInput" type="file" className="hidden" accept="image/*,video/*" onChange={handleFileUpload} />
+                  </div>
+                </div>
+              )}
+            </Card>
+
+            <Card className="bg-primary/5 border-primary/20">
+              <CardHeader className="pb-2">
+                <CardTitle className="text-xs uppercase tracking-widest text-primary font-black">Target Asset</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <Select value={selectedPropertyId || ""} onValueChange={setSelectedPropertyId}>
+                  <SelectTrigger className="bg-background border-primary/20">
+                    <SelectValue placeholder={propsLoading ? "Loading properties..." : "Tie to a property..."} />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {properties && properties.length > 0 ? (
+                      properties.map((p: any) => (
+                        <SelectItem key={p.id} value={p.id}>{p.nickname}</SelectItem>
+                      ))
+                    ) : (
+                      <div className="p-4 text-center text-xs italic">
+                        No properties found. <Link href="/properties" className="text-primary underline">Add one.</Link>
+                      </div>
+                    )}
+                  </SelectContent>
+                </Select>
+                {!selectedPropertyId && <p className="text-[10px] text-muted-foreground mt-2 italic">Selecting a property allows you to track this diagnosis in your asset history.</p>}
+              </CardContent>
+            </Card>
+          </div>
 
           <div className="flex flex-col gap-4">
             <Card>

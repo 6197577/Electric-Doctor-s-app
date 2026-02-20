@@ -13,11 +13,13 @@ import { Label } from "@/components/ui/label"
 import { useToast } from "@/hooks/use-toast"
 import { Area, AreaChart, CartesianGrid, XAxis, YAxis } from "recharts"
 import { ChartContainer, ChartTooltip, ChartTooltipContent, type ChartConfig } from "@/components/ui/chart"
-import { collection, addDoc, serverTimestamp } from "firebase/firestore"
-import { useFirestore, useUser } from "@/firebase"
+import { collection, addDoc, serverTimestamp, query } from "firebase/firestore"
+import { useFirestore, useUser, useCollection } from "@/firebase"
 import { errorEmitter } from '@/firebase/error-emitter'
 import { FirestorePermissionError } from '@/firebase/errors'
 import { format } from "date-fns"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import Link from "next/link"
 
 const DOWNTIME_DATA = [
   { month: "M1", loss: 5000, plan: 1500 },
@@ -103,11 +105,15 @@ export default function CommercialAuditPage() {
   const [selectedTier, setSelectedTier] = useState(PRICING_TIERS[1])
   const [checkedItems, setCheckedItems] = useState<Record<string, boolean>>({})
   const [isProcessing, setIsProcessing] = useState(false)
+  const [selectedPropertyId, setSelectedPropertyId] = useState<string | null>(null)
   
   const [hourlyRevenue, setHourlyRevenue] = useState(2500)
   const [systemAge, setSystemAge] = useState(20)
   
   const { toast } = useToast()
+
+  const propsQuery = user && db ? query(collection(db, 'users', user.uid, 'properties')) : null
+  const { data: properties, loading: propsLoading } = useCollection(propsQuery)
 
   const toggleItem = (category: string, index: number) => {
     const key = `${category}-${index}`
@@ -121,6 +127,10 @@ export default function CommercialAuditPage() {
   }
 
   const processPayment = async () => {
+    if (!selectedPropertyId) {
+      toast({ title: "Property Required", description: "Select a facility to audit.", variant: "destructive" })
+      return
+    }
     setIsProcessing(true)
     await new Promise(resolve => setTimeout(resolve, 1500))
     setIsProcessing(false)
@@ -132,8 +142,8 @@ export default function CommercialAuditPage() {
     const score = calculateScore()
     const status = score > 90 ? "NFPA COMPLIANT" : score > 70 ? "NEEDS REMEDIATION" : "HIGH RISK"
 
-    // Persist to Firestore
-    if (user && db) {
+    // Persist to Firestore nested under specific property
+    if (user && db && selectedPropertyId) {
       const auditData = {
         date: format(new Date(), 'yyyy-MM-dd'),
         type: 'commercial',
@@ -142,7 +152,7 @@ export default function CommercialAuditPage() {
         checkedItems: checkedItems,
         createdAt: serverTimestamp()
       }
-      const colRef = collection(db, 'users', user.uid, 'audits')
+      const colRef = collection(db, 'users', user.uid, 'properties', selectedPropertyId, 'audits')
       addDoc(colRef, auditData).catch(async () => {
         errorEmitter.emit('permission-error', new FirestorePermissionError({
           path: colRef.path,
@@ -308,6 +318,26 @@ export default function CommercialAuditPage() {
 
       {activeStep === "intro" && (
         <div className="flex flex-col gap-8 animate-in slide-in-from-right-4 duration-500">
+          <div className="space-y-2">
+            <label className="text-xs font-black uppercase tracking-widest text-muted-foreground">1. Select Target Facility</label>
+            <Select value={selectedPropertyId || ""} onValueChange={setSelectedPropertyId}>
+              <SelectTrigger className="h-14 border-primary/30 bg-card">
+                <SelectValue placeholder={propsLoading ? "Loading properties..." : "Pick a facility to audit"} />
+              </SelectTrigger>
+              <SelectContent>
+                {properties && properties.length > 0 ? (
+                  properties.filter((p:any) => p.propertyType !== 'Residential').map((p: any) => (
+                    <SelectItem key={p.id} value={p.id}>{p.nickname} ({p.address})</SelectItem>
+                  ))
+                ) : (
+                  <div className="p-4 text-center text-xs italic">
+                    No commercial facilities found. <Link href="/properties" className="text-primary underline">Add one first.</Link>
+                  </div>
+                )}
+              </SelectContent>
+            </Select>
+          </div>
+
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {PRICING_TIERS.map((tier) => (
               <Card 
@@ -364,7 +394,7 @@ export default function CommercialAuditPage() {
             </CardContent>
             <CardFooter className="flex gap-4">
               <Button variant="ghost" className="font-bold" onClick={() => setActiveStep("discovery")}>Back to Simulator</Button>
-              <Button className="flex-1 h-16 text-xl font-black bg-primary text-black hover:bg-primary/90 rounded-2xl shadow-xl" onClick={() => setActiveStep("payment")}>
+              <Button className="flex-1 h-16 text-xl font-black bg-primary text-black hover:bg-primary/90 rounded-2xl shadow-xl" onClick={() => setActiveStep("payment")} disabled={!selectedPropertyId}>
                 Unlock {selectedTier.name}
                 <ArrowRight className="ml-2 w-6 h-6" />
               </Button>

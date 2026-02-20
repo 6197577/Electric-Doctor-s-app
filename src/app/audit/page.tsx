@@ -2,18 +2,20 @@
 "use client"
 
 import { useState } from "react"
-import { ShieldCheck, ClipboardCheck, AlertTriangle, FileText, ChevronDown, CheckCircle2, Info, ArrowRight, Zap, Download, CreditCard, Lock } from "lucide-react"
+import { ShieldCheck, ClipboardCheck, AlertTriangle, FileText, ChevronDown, CheckCircle2, Info, ArrowRight, Zap, Download, CreditCard, Lock, Building2 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card"
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
 import { Badge } from "@/components/ui/badge"
 import { Progress } from "@/components/ui/progress"
 import { useToast } from "@/hooks/use-toast"
-import { collection, addDoc, serverTimestamp } from "firebase/firestore"
-import { useFirestore, useUser } from "@/firebase"
+import { collection, addDoc, serverTimestamp, query } from "firebase/firestore"
+import { useFirestore, useUser, useCollection } from "@/firebase"
 import { errorEmitter } from '@/firebase/error-emitter'
 import { FirestorePermissionError } from '@/firebase/errors'
 import { format } from "date-fns"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import Link from "next/link"
 
 const AUDIT_CATEGORIES = [
   {
@@ -89,7 +91,11 @@ export default function AuditPage() {
   const [selectedTier, setSelectedTier] = useState(PRICING_TIERS[1])
   const [checkedItems, setCheckedItems] = useState<Record<string, boolean>>({})
   const [isProcessing, setIsProcessing] = useState(false)
+  const [selectedPropertyId, setSelectedPropertyId] = useState<string | null>(null)
   const { toast } = useToast()
+
+  const propsQuery = user && db ? query(collection(db, 'users', user.uid, 'properties')) : null
+  const { data: properties, loading: propsLoading } = useCollection(propsQuery)
 
   const toggleItem = (category: string, index: number) => {
     const key = `${category}-${index}`
@@ -103,6 +109,10 @@ export default function AuditPage() {
   }
 
   const processPayment = async () => {
+    if (!selectedPropertyId) {
+      toast({ title: "Property Required", description: "Please select an asset to audit.", variant: "destructive" })
+      return
+    }
     setIsProcessing(true)
     await new Promise(resolve => setTimeout(resolve, 1500))
     setIsProcessing(false)
@@ -114,8 +124,8 @@ export default function AuditPage() {
     const score = calculateScore()
     const status = score > 85 ? "Safe" : score > 60 ? "Caution" : "Hazardous"
 
-    // Persist to Firestore
-    if (user && db) {
+    // Persist to Firestore nested under property
+    if (user && db && selectedPropertyId) {
       const auditData = {
         date: format(new Date(), 'yyyy-MM-dd'),
         type: 'residential',
@@ -124,7 +134,7 @@ export default function AuditPage() {
         checkedItems: checkedItems,
         createdAt: serverTimestamp()
       }
-      const colRef = collection(db, 'users', user.uid, 'audits')
+      const colRef = collection(db, 'users', user.uid, 'properties', selectedPropertyId, 'audits')
       addDoc(colRef, auditData).catch(async () => {
         errorEmitter.emit('permission-error', new FirestorePermissionError({
           path: colRef.path,
@@ -150,6 +160,26 @@ export default function AuditPage() {
 
       {activeStep === "intro" && (
         <div className="flex flex-col gap-8">
+          <div className="space-y-2">
+            <label className="text-xs font-black uppercase tracking-widest text-muted-foreground">1. Select Target Asset</label>
+            <Select value={selectedPropertyId || ""} onValueChange={setSelectedPropertyId}>
+              <SelectTrigger className="h-14 border-primary/30 bg-card">
+                <SelectValue placeholder={propsLoading ? "Loading properties..." : "Pick a property to audit"} />
+              </SelectTrigger>
+              <SelectContent>
+                {properties && properties.length > 0 ? (
+                  properties.filter((p:any) => p.propertyType === 'Residential').map((p: any) => (
+                    <SelectItem key={p.id} value={p.id}>{p.nickname} ({p.address})</SelectItem>
+                  ))
+                ) : (
+                  <div className="p-4 text-center text-xs italic">
+                    No residential properties found. <Link href="/properties" className="text-primary underline">Add one first.</Link>
+                  </div>
+                )}
+              </SelectContent>
+            </Select>
+          </div>
+
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {PRICING_TIERS.map((tier) => (
               <Card 
@@ -198,7 +228,7 @@ export default function AuditPage() {
               </div>
             </CardContent>
             <CardFooter>
-              <Button className="w-full font-bold" size="lg" onClick={() => setActiveStep("payment")}>
+              <Button className="w-full font-bold" size="lg" onClick={() => setActiveStep("payment")} disabled={!selectedPropertyId}>
                 Unlock {selectedTier.name}
                 <ArrowRight className="ml-2 w-4 h-4" />
               </Button>
