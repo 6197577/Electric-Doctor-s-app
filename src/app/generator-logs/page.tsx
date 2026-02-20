@@ -1,7 +1,6 @@
-
 'use client';
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { ClipboardList, Plus, History, Settings, Zap, Trash2, Calendar, Clock, Loader2, Building2 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card"
@@ -26,13 +25,22 @@ export default function GeneratorLogsPage() {
   
   const [isAdding, setIsAdding] = useState(false)
   const [selectedPropertyId, setSelectedPropertyId] = useState<string | null>(null)
+  const [mounted, setMounted] = useState(false)
   const [formData, setFormData] = useState({
-    date: format(new Date(), 'yyyy-MM-dd'),
+    date: "",
     serviceType: "General Inspection",
     hoursRun: "",
     performedBy: "",
     notes: ""
   })
+
+  useEffect(() => {
+    setMounted(true)
+    setFormData(prev => ({
+      ...prev,
+      date: format(new Date(), 'yyyy-MM-dd')
+    }))
+  }, [])
 
   const propsQuery = useMemoFirebase(() => {
     if (!user || !db) return null
@@ -86,6 +94,8 @@ export default function GeneratorLogsPage() {
         }));
       })
   }
+
+  if (!mounted) return null
 
   return (
     <div className="max-w-4xl mx-auto flex flex-col gap-8 pb-12">

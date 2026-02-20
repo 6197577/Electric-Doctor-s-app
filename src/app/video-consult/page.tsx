@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect, useRef } from "react"
 import { Video, ShieldCheck, Zap, ArrowRight, Lock, CreditCard, MessageSquare, AlertCircle, Clock, Star, PhoneCall } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
@@ -8,11 +8,37 @@ import { Badge } from "@/components/ui/badge"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { useToast } from "@/hooks/use-toast"
 import { Progress } from "@/components/ui/progress"
+import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert"
 
 export default function VideoConsultPage() {
   const [step, setStep] = useState<"intro" | "payment" | "waiting" | "call">("intro")
   const [isProcessing, setIsProcessing] = useState(false)
+  const [hasCameraPermission, setHasCameraPermission] = useState<boolean | null>(null)
+  const videoRef = useRef<HTMLVideoElement>(null)
   const { toast } = useToast()
+
+  useEffect(() => {
+    if (step === "call") {
+      const getCameraPermission = async () => {
+        try {
+          const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+          setHasCameraPermission(true);
+          if (videoRef.current) {
+            videoRef.current.srcObject = stream;
+          }
+        } catch (error) {
+          console.error('Error accessing camera:', error);
+          setHasCameraPermission(false);
+          toast({
+            variant: 'destructive',
+            title: 'Camera Access Denied',
+            description: 'Please enable camera permissions in your browser settings to use this app.',
+          });
+        }
+      };
+      getCameraPermission();
+    }
+  }, [step, toast]);
 
   const startPayment = async () => {
     setIsProcessing(true)
@@ -21,7 +47,6 @@ export default function VideoConsultPage() {
     toast({ title: "Payment Secure", description: "Connecting to the next available Master Electrician." })
     setStep("waiting")
     
-    // Auto-advance to call after 3 seconds of "waiting"
     setTimeout(() => {
       setStep("call")
     }, 3000)
@@ -162,37 +187,42 @@ export default function VideoConsultPage() {
 
       {step === "call" && (
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 animate-in slide-in-from-bottom-8 duration-700">
-          <Card className="lg:col-span-2 aspect-video bg-black relative overflow-hidden border-primary/30 orange-glow">
-            {/* Main Video View - Placeholder */}
-            <div className="absolute inset-0 bg-[url('https://picsum.photos/seed/elec_p1/1200/800')] bg-cover bg-center opacity-80" />
-            
-            {/* Self View */}
-            <div className="absolute top-4 right-4 w-32 aspect-video bg-muted rounded-lg border border-white/20 overflow-hidden shadow-2xl">
-              <div className="absolute inset-0 bg-[url('https://picsum.photos/seed/user_p/400/300')] bg-cover bg-center" />
-            </div>
-
-            {/* HUD / Controls */}
-            <div className="absolute bottom-0 left-0 right-0 p-6 bg-gradient-to-t from-black/80 to-transparent flex items-center justify-between">
-              <div className="flex items-center gap-3">
-                <Avatar className="w-10 h-10 border-2 border-primary">
-                  <AvatarImage src="https://picsum.photos/seed/elec_p1/100/100" />
-                  <AvatarFallback>AR</AvatarFallback>
-                </Avatar>
-                <div>
-                  <p className="text-sm font-bold text-white">Marcus Chen (Master)</p>
-                  <p className="text-[10px] text-primary font-black uppercase">LIVE • 02:45</p>
+          <div className="lg:col-span-2 space-y-4">
+            <Card className="aspect-video bg-black relative overflow-hidden border-primary/30 orange-glow">
+              <video ref={videoRef} className="w-full aspect-video rounded-md" autoPlay muted />
+              
+              {/* HUD / Controls */}
+              <div className="absolute bottom-0 left-0 right-0 p-6 bg-gradient-to-t from-black/80 to-transparent flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <Avatar className="w-10 h-10 border-2 border-primary">
+                    <AvatarImage src="https://picsum.photos/seed/elec_p1/100/100" />
+                    <AvatarFallback>MC</AvatarFallback>
+                  </Avatar>
+                  <div>
+                    <p className="text-sm font-bold text-white">Marcus Chen (Master)</p>
+                    <p className="text-[10px] text-primary font-black uppercase">LIVE • 02:45</p>
+                  </div>
+                </div>
+                <div className="flex gap-2">
+                  <Button variant="destructive" size="icon" className="rounded-full h-12 w-12" onClick={() => setStep("intro")}>
+                    <PhoneCall className="w-6 h-6 rotate-[135deg]" />
+                  </Button>
+                  <Button variant="secondary" size="icon" className="rounded-full h-12 w-12">
+                    <MessageSquare className="w-6 h-6" />
+                  </Button>
                 </div>
               </div>
-              <div className="flex gap-2">
-                <Button variant="destructive" size="icon" className="rounded-full h-12 w-12" onClick={() => setStep("intro")}>
-                  <PhoneCall className="w-6 h-6 rotate-[135deg]" />
-                </Button>
-                <Button variant="secondary" size="icon" className="rounded-full h-12 w-12">
-                  <MessageSquare className="w-6 h-6" />
-                </Button>
-              </div>
-            </div>
-          </Card>
+            </Card>
+
+            {hasCameraPermission === false && (
+              <Alert variant="destructive">
+                <AlertTitle>Camera Access Required</AlertTitle>
+                <AlertDescription>
+                  Please allow camera access in your browser settings to continue the consultation.
+                </AlertDescription>
+              </Alert>
+            )}
+          </div>
 
           <div className="flex flex-col gap-6">
             <Card>

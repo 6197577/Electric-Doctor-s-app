@@ -53,10 +53,8 @@ export default function SchedulePage() {
   const { toast } = useToast()
   
   const [step, setStep] = useState<ScheduleStep>("date")
-  const [date, setDate] = useState<Date | undefined>(new Date())
-  const [selectedSlot, setSelectedSlot] = useState<string | null>(null)
+  const [date, setDate] = useState<Date | undefined>(undefined)
   
-  // Diagnosis State
   const [files, setFiles] = useState<string[]>([])
   const [isAnalyzing, setIsAnalyzing] = useState(false)
   const [diagnosisResults, setDiagnosisResults] = useState<AiDiagnosticAssistantOutput | null>(null)
@@ -66,6 +64,7 @@ export default function SchedulePage() {
 
   useEffect(() => {
     setMounted(true)
+    setDate(new Date())
   }, [])
 
   const proId = parseInt(params.id as string)
@@ -117,6 +116,8 @@ export default function SchedulePage() {
       setIsAnalyzing(false)
     }
   }
+
+  const [selectedSlot, setSelectedSlot] = useState<string | null>(null)
 
   const handleNext = () => {
     if (step === "date" && date) setStep("time")
@@ -193,7 +194,7 @@ export default function SchedulePage() {
                   selected={date}
                   onSelect={setDate}
                   className="rounded-md border-none"
-                  disabled={(date) => date < new Date() || date.getDay() === 0}
+                  disabled={(d) => d < new Date() || d.getDay() === 0}
                 />
               </CardContent>
               <CardFooter className="border-t bg-muted/20">
