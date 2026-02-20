@@ -10,7 +10,7 @@ import { Badge } from "@/components/ui/badge"
 import { Progress } from "@/components/ui/progress"
 import { useToast } from "@/hooks/use-toast"
 import { collection, addDoc, serverTimestamp, query } from "firebase/firestore"
-import { useFirestore, useUser, useCollection } from "@/firebase"
+import { useFirestore, useUser, useCollection, useMemoFirebase } from "@/firebase"
 import { errorEmitter } from '@/firebase/error-emitter'
 import { FirestorePermissionError } from '@/firebase/errors'
 import { format } from "date-fns"
@@ -94,7 +94,11 @@ export default function AuditPage() {
   const [selectedPropertyId, setSelectedPropertyId] = useState<string | null>(null)
   const { toast } = useToast()
 
-  const propsQuery = user && db ? query(collection(db, 'users', user.uid, 'properties')) : null
+  const propsQuery = useMemoFirebase(() => {
+    if (!user || !db) return null
+    return query(collection(db, 'users', user.uid, 'properties'))
+  }, [user, db])
+
   const { data: properties, loading: propsLoading } = useCollection(propsQuery)
 
   const toggleItem = (category: string, index: number) => {
@@ -124,7 +128,6 @@ export default function AuditPage() {
     const score = calculateScore()
     const status = score > 85 ? "Safe" : score > 60 ? "Caution" : "Hazardous"
 
-    // Persist to Firestore nested under property
     if (user && db && selectedPropertyId) {
       const auditData = {
         date: format(new Date(), 'yyyy-MM-dd'),

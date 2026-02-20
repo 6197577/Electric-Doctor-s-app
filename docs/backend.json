@@ -41,6 +41,7 @@
         "type": { "type": "string", "enum": ["residential", "commercial"] },
         "overallScore": { "type": "number" },
         "status": { "type": "string" },
+        "checkedItems": { "type": "object", "description": "Record of passed/failed checkpoints." },
         "createdAt": { "type": "string", "format": "date-time" }
       }
     },
@@ -52,6 +53,9 @@
         "id": { "type": "string" },
         "diagnosis": { "type": "string" },
         "urgency": { "type": "string" },
+        "description": { "type": "string" },
+        "findings": { "type": "array", "items": { "type": "object" } },
+        "recommendations": { "type": "array", "items": { "type": "string" } },
         "createdAt": { "type": "string", "format": "date-time" }
       }
     }

@@ -13,7 +13,7 @@ import { useToast } from "@/hooks/use-toast"
 import Image from "next/image"
 import Link from "next/link"
 import { collection, addDoc, serverTimestamp, query } from "firebase/firestore"
-import { useFirestore, useUser, useCollection } from "@/firebase"
+import { useFirestore, useUser, useCollection, useMemoFirebase } from "@/firebase"
 import { errorEmitter } from '@/firebase/error-emitter'
 import { FirestorePermissionError } from '@/firebase/errors'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
@@ -29,8 +29,11 @@ export default function DiagnosePage() {
   const [selectedPropertyId, setSelectedPropertyId] = useState<string | null>(null)
   const { toast } = useToast()
 
-  // Fetch properties to tie diagnosis to
-  const propsQuery = user && db ? query(collection(db, 'users', user.uid, 'properties')) : null
+  const propsQuery = useMemoFirebase(() => {
+    if (!user || !db) return null
+    return query(collection(db, 'users', user.uid, 'properties'))
+  }, [user, db])
+
   const { data: properties, loading: propsLoading } = useCollection(propsQuery)
 
   const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -64,7 +67,6 @@ export default function DiagnosePage() {
       })
       setSalesPitch(sales)
 
-      // Persistent Save to Database tied to property
       if (user && db && selectedPropertyId) {
         const diagData = {
           diagnosis: diagnosis.overallDiagnosis,

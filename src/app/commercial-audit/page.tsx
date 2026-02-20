@@ -14,7 +14,7 @@ import { useToast } from "@/hooks/use-toast"
 import { Area, AreaChart, CartesianGrid, XAxis, YAxis } from "recharts"
 import { ChartContainer, ChartTooltip, ChartTooltipContent, type ChartConfig } from "@/components/ui/chart"
 import { collection, addDoc, serverTimestamp, query } from "firebase/firestore"
-import { useFirestore, useUser, useCollection } from "@/firebase"
+import { useFirestore, useUser, useCollection, useMemoFirebase } from "@/firebase"
 import { errorEmitter } from '@/firebase/error-emitter'
 import { FirestorePermissionError } from '@/firebase/errors'
 import { format } from "date-fns"
@@ -112,7 +112,11 @@ export default function CommercialAuditPage() {
   
   const { toast } = useToast()
 
-  const propsQuery = user && db ? query(collection(db, 'users', user.uid, 'properties')) : null
+  const propsQuery = useMemoFirebase(() => {
+    if (!user || !db) return null
+    return query(collection(db, 'users', user.uid, 'properties'))
+  }, [user, db])
+
   const { data: properties, loading: propsLoading } = useCollection(propsQuery)
 
   const toggleItem = (category: string, index: number) => {
@@ -142,7 +146,6 @@ export default function CommercialAuditPage() {
     const score = calculateScore()
     const status = score > 90 ? "NFPA COMPLIANT" : score > 70 ? "NEEDS REMEDIATION" : "HIGH RISK"
 
-    // Persist to Firestore nested under specific property
     if (user && db && selectedPropertyId) {
       const auditData = {
         date: format(new Date(), 'yyyy-MM-dd'),

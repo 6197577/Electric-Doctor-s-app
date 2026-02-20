@@ -14,7 +14,7 @@ import { useToast } from "@/hooks/use-toast"
 import { format } from "date-fns"
 import Image from "next/image"
 import { collection, addDoc, deleteDoc, doc, serverTimestamp, query, orderBy } from "firebase/firestore"
-import { useFirestore, useUser, useCollection } from "@/firebase"
+import { useFirestore, useUser, useCollection, useMemoFirebase } from "@/firebase"
 import { errorEmitter } from '@/firebase/error-emitter'
 import { FirestorePermissionError } from '@/firebase/errors'
 import Link from "next/link"
@@ -34,15 +34,20 @@ export default function GeneratorLogsPage() {
     notes: ""
   })
 
-  // Fetch properties to allow selection
-  const propsQuery = user && db ? query(collection(db, 'users', user.uid, 'properties')) : null
+  const propsQuery = useMemoFirebase(() => {
+    if (!user || !db) return null
+    return query(collection(db, 'users', user.uid, 'properties'))
+  }, [user, db])
+
   const { data: properties, loading: propsLoading } = useCollection(propsQuery)
 
-  // Real-time Firestore Query for logs tied to selected property
-  const logsQuery = user && db && selectedPropertyId ? query(
-    collection(db, 'users', user.uid, 'properties', selectedPropertyId, 'generatorLogs'),
-    orderBy('date', 'desc')
-  ) : null;
+  const logsQuery = useMemoFirebase(() => {
+    if (!user || !db || !selectedPropertyId) return null
+    return query(
+      collection(db, 'users', user.uid, 'properties', selectedPropertyId, 'generatorLogs'),
+      orderBy('date', 'desc')
+    )
+  }, [user, db, selectedPropertyId])
 
   const { data: logs, loading } = useCollection(logsQuery);
 
