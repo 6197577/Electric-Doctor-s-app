@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { 
   Briefcase, 
   ShieldCheck, 
@@ -16,10 +16,10 @@ import {
   Target,
   Lock,
   BarChart3,
-  ScanEye,
   CalendarDays,
   Globe,
-  Video
+  Video,
+  ScanSearch
 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
@@ -60,9 +60,14 @@ const chartConfig = {
 } satisfies ChartConfig
 
 export default function JoinNetworkPage() {
+  const [mounted, setMounted] = useState(false)
   const [step, setStep] = useState<Step>(1)
   const [isSubmitting, setIsSubmitting] = useState(false)
   const { toast } = useToast()
+
+  useEffect(() => {
+    setMounted(true)
+  }, [])
 
   const [formData, setFormData] = useState({
     fullName: "",
@@ -90,7 +95,6 @@ export default function JoinNetworkPage() {
 
   const handleSubmit = async () => {
     setIsSubmitting(true)
-    // Simulate Stripe Onboarding & Payment Method Verification
     await new Promise(resolve => setTimeout(resolve, 2500))
     setIsSubmitting(false)
     setStep(5)
@@ -309,15 +313,21 @@ export default function JoinNetworkPage() {
                   </div>
                   <Badge variant="outline" className="text-[10px] uppercase border-primary text-primary">Calendar Plugin: $49/mo Add-on</Badge>
                 </div>
-                <ChartContainer config={chartConfig} className="h-[200px] w-full">
-                  <BarChart data={chartData}>
-                    <CartesianGrid vertical={false} strokeDasharray="3 3" opacity={0.1} />
-                    <XAxis dataKey="model" tickLine={false} tickMargin={10} axisLine={false} fontSize={10} />
-                    <YAxis tickLine={false} axisLine={false} tickFormatter={(value) => `$${value}`} fontSize={10} />
-                    <ChartTooltip content={<ChartTooltipContent />} />
-                    <Bar dataKey="cost" radius={[4, 4, 0, 0]} />
-                  </BarChart>
-                </ChartContainer>
+                <div className="h-[200px] w-full">
+                  {mounted ? (
+                    <ChartContainer config={chartConfig} className="h-full w-full">
+                      <BarChart data={chartData}>
+                        <CartesianGrid vertical={false} strokeDasharray="3 3" opacity={0.1} />
+                        <XAxis dataKey="model" tickLine={false} tickMargin={10} axisLine={false} fontSize={10} />
+                        <YAxis tickLine={false} axisLine={false} tickFormatter={(value) => `$${value}`} fontSize={10} />
+                        <ChartTooltip content={<ChartTooltipContent />} />
+                        <Bar dataKey="cost" radius={[4, 4, 0, 0]} />
+                      </BarChart>
+                    </ChartContainer>
+                  ) : (
+                    <div className="h-full w-full bg-muted/5 flex items-center justify-center text-xs italic">Loading Market Data...</div>
+                  )}
+                </div>
               </div>
 
               <RadioGroup 
@@ -325,7 +335,6 @@ export default function JoinNetworkPage() {
                 onValueChange={v => updateField('leadModel', v)}
                 className="grid grid-cols-1 gap-4"
               >
-                {/* Monthly Flat Rate */}
                 <div className={`p-4 border rounded-xl cursor-pointer transition-all ${formData.leadModel === 'monthly-elite' ? 'border-green-500 bg-green-500/5' : 'hover:border-muted-foreground/30'}`} onClick={() => updateField('leadModel', 'monthly-elite')}>
                   <div className="flex items-center justify-between mb-2">
                     <div className="flex items-center gap-3">
@@ -343,7 +352,6 @@ export default function JoinNetworkPage() {
                   </div>
                 </div>
 
-                {/* Other Models */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div className={`p-4 border rounded-xl cursor-pointer transition-all ${formData.leadModel === 'pre-paid' ? 'border-primary bg-primary/5' : 'hover:border-muted-foreground/30'}`} onClick={() => updateField('leadModel', 'pre-paid')}>
                     <div className="flex items-center gap-3 mb-2">

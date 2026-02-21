@@ -1,7 +1,6 @@
-
 "use client"
 
-import { User, Settings, CreditCard, History, Shield, LogOut, Zap, Bell, Crown, Calculator, Briefcase, Calendar as CalendarIcon, RefreshCw, BarChart3, TrendingUp, DollarSign, Lock, ArrowUpRight, Globe, Video, Star, ExternalLink, ShieldCheck, Building2, ChevronRight } from "lucide-react"
+import { User, Settings, CreditCard, History, Shield, LogOut, Zap, Bell, Crown, Calculator, Briefcase, Calendar as CalendarIcon, RefreshCw, BarChart3, TrendingUp, DollarSign, Lock, ArrowUpRight, Globe, Video, Star, ExternalLink, ShieldCheck, Building2, ChevronRight, Plus } from "lucide-react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
@@ -62,7 +61,6 @@ export default function ProfilePage() {
 
   return (
     <div className="max-w-5xl mx-auto flex flex-col gap-8 pb-12">
-      {/* Header Section */}
       <div className="flex items-center gap-4">
         <Avatar className="w-20 h-20 border-2 border-primary/20">
           <AvatarImage src={user?.photoURL || "https://picsum.photos/seed/user_p/200/200"} />
@@ -84,7 +82,6 @@ export default function ProfilePage() {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-        {/* Sidebar Nav */}
         <div className="md:col-span-1 flex flex-col gap-4">
           <Card className="p-2">
             <nav className="flex flex-col">
@@ -114,7 +111,6 @@ export default function ProfilePage() {
             </nav>
           </Card>
 
-          {/* Asset Utilization Card */}
           <Card className="bg-primary/5 border-primary/20">
              <CardHeader className="pb-2">
                <CardTitle className="text-sm flex items-center gap-2">
@@ -142,9 +138,7 @@ export default function ProfilePage() {
           </Card>
         </div>
 
-        {/* Main Content Area */}
         <div className="md:col-span-2 flex flex-col gap-6">
-           {/* Active Property Quick Access */}
            <Card className="border-border bg-card/50">
              <CardHeader className="flex flex-row items-center justify-between">
                <div>
@@ -176,7 +170,6 @@ export default function ProfilePage() {
              </CardContent>
            </Card>
 
-           {/* Video Consult Dashboard */}
            <Card className="border-primary/40 orange-glow bg-card/50 overflow-hidden">
              <div className="bg-primary/10 px-6 py-3 border-b border-primary/20 flex items-center justify-between">
                 <span className="text-[10px] font-black uppercase tracking-widest text-primary flex items-center gap-2">
@@ -193,7 +186,7 @@ export default function ProfilePage() {
                       <p className="font-black text-lg italic tracking-tight">Accept Emergency Calls</p>
                       <p className="text-xs text-muted-foreground">Toggle availability for instant $97 video consultations.</p>
                    </div>
-                   <Switch checked={isOnCall} onCallChange={setIsOnCall} />
+                   <Switch checked={isOnCall} onCheckedChange={setIsOnCall} />
                 </div>
                 
                 <div className="grid grid-cols-2 gap-4">
@@ -209,7 +202,6 @@ export default function ProfilePage() {
              </CardContent>
            </Card>
 
-           {/* GMB Integration Card */}
            <Card className="border-border bg-card/50 overflow-hidden">
              <div className="bg-muted/30 px-6 py-3 border-b border-border flex items-center justify-between">
                 <span className="text-[10px] font-black uppercase tracking-widest text-muted-foreground flex items-center gap-2">

@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { ShieldAlert, Zap, BarChart3, TrendingDown, ArrowRight, Loader2, CheckCircle2, Info, Calculator, Flame, AlertTriangle, TrendingUp, DollarSign } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card"
@@ -10,7 +10,7 @@ import { Slider } from "@/components/ui/slider"
 import { Label } from "@/components/ui/label"
 import { useToast } from "@/hooks/use-toast"
 import { predictMaintenanceNeeds, PredictiveMaintenanceOutput } from "@/ai/flows/predictive-maintenance-flow"
-import { Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis, CartesianGrid, Area, AreaChart } from "recharts"
+import { Area, AreaChart, CartesianGrid, XAxis, YAxis } from "recharts"
 import { ChartContainer, ChartTooltip, ChartTooltipContent, type ChartConfig } from "@/components/ui/chart"
 
 const costData = [
@@ -33,11 +33,16 @@ const chartConfig = {
 } satisfies ChartConfig
 
 export default function PredictiveMaintenancePage() {
+  const [mounted, setMounted] = useState(false)
   const [isAnalyzing, setIsAnalyzing] = useState(false)
   const [results, setResults] = useState<PredictiveMaintenanceOutput | null>(null)
   const [systemAge, setSystemAge] = useState(15)
   const [homeValue, setHomeValue] = useState(450000)
   const { toast } = useToast()
+
+  useEffect(() => {
+    setMounted(true)
+  }, [])
 
   const handlePredict = async () => {
     setIsAnalyzing(true)
@@ -74,7 +79,6 @@ export default function PredictiveMaintenancePage() {
       </section>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        {/* Cost Discovery Calculator */}
         <Card className="lg:col-span-2 border-primary/20 bg-card/50 backdrop-blur-xl orange-glow">
           <CardHeader className="flex flex-row items-center justify-between border-b border-white/5 pb-6">
             <div>
@@ -91,28 +95,34 @@ export default function PredictiveMaintenancePage() {
           </CardHeader>
           <CardContent className="pt-8 space-y-12">
              <div className="h-[350px] w-full">
-                <ChartContainer config={chartConfig} className="h-full w-full">
-                  <AreaChart data={costData}>
-                    <defs>
-                      <linearGradient id="colorReactive" x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="5%" stopColor="#ff4d4d" stopOpacity={0.3}/>
-                        <stop offset="95%" stopColor="#ff4d4d" stopOpacity={0}/>
-                      </linearGradient>
-                      <linearGradient id="colorPredictive" x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="5%" stopColor="hsl(var(--primary))" stopOpacity={0.3}/>
-                        <stop offset="95%" stopColor="hsl(var(--primary))" stopOpacity={0}/>
-                      </linearGradient>
-                    </defs>
-                    <CartesianGrid strokeDasharray="3 3" opacity={0.05} vertical={false} />
-                    <XAxis dataKey="year" stroke="#888888" fontSize={12} tickLine={false} axisLine={false} />
-                    <YAxis stroke="#888888" fontSize={12} tickLine={false} axisLine={false} tickFormatter={(value) => `$${value}`} />
-                    <ChartTooltip 
-                      content={<ChartTooltipContent />}
-                    />
-                    <Area type="monotone" dataKey="reactive" name="Emergency Cost" stroke="#ff4d4d" fillOpacity={1} fill="url(#colorReactive)" strokeWidth={3} />
-                    <Area type="monotone" dataKey="predictive" name="Predictive Plan" stroke="hsl(var(--primary))" fillOpacity={1} fill="url(#colorPredictive)" strokeWidth={3} />
-                  </AreaChart>
-                </ChartContainer>
+                {mounted ? (
+                  <ChartContainer config={chartConfig} className="h-full w-full">
+                    <AreaChart data={costData}>
+                      <defs>
+                        <linearGradient id="colorReactive" x1="0" y1="0" x2="0" y2="1">
+                          <stop offset="5%" stopColor="#ff4d4d" stopOpacity={0.3}/>
+                          <stop offset="95%" stopColor="#ff4d4d" stopOpacity={0}/>
+                        </linearGradient>
+                        <linearGradient id="colorPredictive" x1="0" y1="0" x2="0" y2="1">
+                          <stop offset="5%" stopColor="hsl(var(--primary))" stopOpacity={0.3}/>
+                          <stop offset="95%" stopColor="hsl(var(--primary))" stopOpacity={0}/>
+                        </linearGradient>
+                      </defs>
+                      <CartesianGrid strokeDasharray="3 3" opacity={0.05} vertical={false} />
+                      <XAxis dataKey="year" stroke="#888888" fontSize={12} tickLine={false} axisLine={false} />
+                      <YAxis stroke="#888888" fontSize={12} tickLine={false} axisLine={false} tickFormatter={(value) => `$${value}`} />
+                      <ChartTooltip 
+                        content={<ChartTooltipContent />}
+                      />
+                      <Area type="monotone" dataKey="reactive" name="Emergency Cost" stroke="#ff4d4d" fillOpacity={1} fill="url(#colorReactive)" strokeWidth={3} />
+                      <Area type="monotone" dataKey="predictive" name="Predictive Plan" stroke="hsl(var(--primary))" fillOpacity={1} fill="url(#colorPredictive)" strokeWidth={3} />
+                    </AreaChart>
+                  </ChartContainer>
+                ) : (
+                  <div className="h-full w-full bg-muted/10 rounded-lg flex items-center justify-center italic text-xs text-muted-foreground">
+                    Initializing Data Model...
+                  </div>
+                )}
              </div>
              
              <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
@@ -165,7 +175,6 @@ export default function PredictiveMaintenancePage() {
           </CardFooter>
         </Card>
 
-        {/* Discovery Action */}
         <div className="flex flex-col gap-6">
           <Card className="orange-glow border-primary bg-primary text-black">
             <CardHeader>
@@ -291,7 +300,6 @@ export default function PredictiveMaintenancePage() {
         </div>
       )}
 
-      {/* Trust & Sales Features */}
       <section className="grid grid-cols-2 md:grid-cols-4 gap-6 py-12 border-t border-white/5">
         <div className="flex flex-col items-center text-center gap-2">
             <span className="text-3xl font-black">12.4x</span>

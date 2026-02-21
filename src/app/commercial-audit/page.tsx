@@ -1,7 +1,6 @@
-
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { Building2, ShieldCheck, ClipboardCheck, AlertTriangle, FileText, ChevronDown, CheckCircle2, Info, ArrowRight, Zap, Download, CreditCard, Lock, Factory, HardHat, Calculator, TrendingUp, TrendingDown, DollarSign, BarChart3, Activity, Flame } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card"
@@ -101,6 +100,7 @@ const PRICING_TIERS = [
 export default function CommercialAuditPage() {
   const { user } = useUser()
   const db = useFirestore()
+  const [mounted, setMounted] = useState(false)
   const [activeStep, setActiveStep] = useState<"discovery" | "intro" | "payment" | "form" | "report">("discovery")
   const [selectedTier, setSelectedTier] = useState(PRICING_TIERS[1])
   const [checkedItems, setCheckedItems] = useState<Record<string, boolean>>({})
@@ -111,6 +111,10 @@ export default function CommercialAuditPage() {
   const [systemAge, setSystemAge] = useState(20)
   
   const { toast } = useToast()
+
+  useEffect(() => {
+    setMounted(true)
+  }, [])
 
   const propsQuery = useMemoFirebase(() => {
     if (!user || !db) return null
@@ -212,26 +216,30 @@ export default function CommercialAuditPage() {
               </CardHeader>
               <CardContent className="pt-8 space-y-12">
                 <div className="h-[300px] w-full">
-                  <ChartContainer config={chartConfig} className="h-full w-full">
-                    <AreaChart data={DOWNTIME_DATA}>
-                      <defs>
-                        <linearGradient id="colorLoss" x1="0" y1="0" x2="0" y2="1">
-                          <stop offset="5%" stopColor="#ff4d4d" stopOpacity={0.3}/>
-                          <stop offset="95%" stopColor="#ff4d4d" stopOpacity={0}/>
-                        </linearGradient>
-                        <linearGradient id="colorPlan" x1="0" y1="0" x2="0" y2="1">
-                          <stop offset="5%" stopColor="hsl(var(--primary))" stopOpacity={0.3}/>
-                          <stop offset="95%" stopColor="hsl(var(--primary))" stopOpacity={0}/>
-                        </linearGradient>
-                      </defs>
-                      <CartesianGrid strokeDasharray="3 3" opacity={0.05} vertical={false} />
-                      <XAxis dataKey="month" fontSize={10} axisLine={false} tickLine={false} />
-                      <YAxis fontSize={10} axisLine={false} tickLine={false} tickFormatter={(v) => `$${v/1000}k`} />
-                      <ChartTooltip content={<ChartTooltipContent />} />
-                      <Area type="monotone" dataKey="loss" stroke="#ff4d4d" fillOpacity={1} fill="url(#colorLoss)" strokeWidth={3} />
-                      <Area type="monotone" dataKey="plan" stroke="hsl(var(--primary))" fillOpacity={1} fill="url(#colorPlan)" strokeWidth={3} />
-                    </AreaChart>
-                  </ChartContainer>
+                  {mounted ? (
+                    <ChartContainer config={chartConfig} className="h-full w-full">
+                      <AreaChart data={DOWNTIME_DATA}>
+                        <defs>
+                          <linearGradient id="colorLoss" x1="0" y1="0" x2="0" y2="1">
+                            <stop offset="5%" stopColor="#ff4d4d" stopOpacity={0.3}/>
+                            <stop offset="95%" stopColor="#ff4d4d" stopOpacity={0}/>
+                          </linearGradient>
+                          <linearGradient id="colorPlan" x1="0" y1="0" x2="0" y2="1">
+                            <stop offset="5%" stopColor="hsl(var(--primary))" stopOpacity={0.3}/>
+                            <stop offset="95%" stopColor="hsl(var(--primary))" stopOpacity={0}/>
+                          </linearGradient>
+                        </defs>
+                        <CartesianGrid strokeDasharray="3 3" opacity={0.05} vertical={false} />
+                        <XAxis dataKey="month" fontSize={10} axisLine={false} tickLine={false} />
+                        <YAxis fontSize={10} axisLine={false} tickLine={false} tickFormatter={(v) => `$${v/1000}k`} />
+                        <ChartTooltip content={<ChartTooltipContent />} />
+                        <Area type="monotone" dataKey="loss" stroke="#ff4d4d" fillOpacity={1} fill="url(#colorLoss)" strokeWidth={3} />
+                        <Area type="monotone" dataKey="plan" stroke="hsl(var(--primary))" fillOpacity={1} fill="url(#colorPlan)" strokeWidth={3} />
+                      </AreaChart>
+                    </ChartContainer>
+                  ) : (
+                    <div className="h-full w-full flex items-center justify-center italic text-xs text-muted-foreground">Initializing Simulation...</div>
+                  )}
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
