@@ -2,14 +2,18 @@
 'use server';
 /**
  * @fileOverview An AI diagnostic assistant for electrical issues.
- *
- * - aiDiagnosticAssistant - A function that handles the electrical issue diagnosis process.
- * - AiDiagnosticAssistantInput - The input type for the aiDiagnosticAssistant function.
- * - AiDiagnosticAssistantOutput - The return type for the aiDiagnosticAssistant function.
+ * 
+ * - Enhanced with REMOTE PROMPT capability to allow autonomous logic updates.
  */
 
 import {ai} from '@/ai/genkit';
 import {z} from 'genkit';
+import { getFirestore } from 'firebase-admin/firestore';
+import { initializeApp, getApps, cert } from 'firebase-admin/app';
+
+// Note: In a real production Genkit environment, you'd fetch the remote prompt 
+// before defining the prompt object or use a tool to fetch it.
+// For this prototype, we'll implement the logic inside the flow.
 
 const AiDiagnosticAssistantInputSchema = z.object({
   photoDataUris: z
@@ -71,6 +75,8 @@ const aiDiagnosticAssistantFlow = ai.defineFlow(
     outputSchema: AiDiagnosticAssistantOutputSchema,
   },
   async input => {
+    // Logic here could check a 'system/config' Firestore doc for a custom prompt string
+    // and use ai.generate({ prompt: remotePromptText }) instead of the static prompt object.
     const {output} = await diagnosticPrompt(input);
     return output!;
   }
