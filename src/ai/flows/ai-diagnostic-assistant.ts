@@ -1,3 +1,4 @@
+
 'use server';
 /**
  * @fileOverview An AI diagnostic assistant for electrical issues.
@@ -19,7 +20,7 @@ const AiDiagnosticAssistantInputSchema = z.object({
   description: z
     .string()
     .optional()
-    .describe('An optional detailed description of the observed electrical issue, including sounds, smells, or symptoms.'),
+    .describe('An optional detailed description of the observed electrical issue, including sounds (buzzing, arcing, popping), smells, or symptoms.'),
 });
 export type AiDiagnosticAssistantInput = z.infer<typeof AiDiagnosticAssistantInputSchema>;
 
@@ -44,13 +45,15 @@ const diagnosticPrompt = ai.definePrompt({
   name: 'electricalDiagnosticPrompt',
   input: {schema: AiDiagnosticAssistantInputSchema},
   output: {schema: AiDiagnosticAssistantOutputSchema},
-  prompt: `You are an expert electrical diagnostic assistant. Your task is to analyze an electrical issue based on multiple images and an optional description provided by a homeowner. Your response must be in JSON format, strictly adhering to the provided schema.
+  prompt: `You are an expert electrical diagnostic assistant. Your task is to analyze an electrical issue based on multiple images and a description of audio-visual symptoms provided by a homeowner. 
+
+**CRITICAL INSTRUCTION**: Pay close attention to descriptions of sounds such as "buzzing", "crackling", "popping", or "hissing". These are often signs of active arcing or high-resistance connections which lead to immediate fire hazards.
 
 Perform the following steps:
-1.  **Diagnose the problem**: Provide an overall diagnosis based on all provided images.
-2.  **Identify damaged parts**: List any damaged, worn, or missing electrical parts visible across the images.
-3.  **Explain the nature of the problem**: Provide a detailed explanation of what is happening.
-4.  **Assess urgency**: Determine the urgency level (low, medium, high, critical).
+1.  **Diagnose the problem**: Provide an overall diagnosis based on all provided images and reported sounds.
+2.  **Identify damaged parts**: List any damaged, worn, or missing electrical parts visible.
+3.  **Explain the nature of the problem**: Provide a detailed explanation, mentioning if the reported sounds correlate with visual evidence of overheating or arcing.
+4.  **Assess urgency**: Determine the urgency level (low, medium, high, critical). Audible arcing is always HIGH or CRITICAL.
 5.  **Provide safety recommendations**: Offer immediate safety advice.
 
 Use the following as the primary sources of information:
