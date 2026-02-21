@@ -3,15 +3,13 @@
 Follow this sequence to launch your app using the unified Firebase + GitHub stack. This is the most efficient workflow for your team.
 
 ## Status: App Ready for Push
-Your application has been hardened against hydration mismatches and verified for server health. You are now cleared for Phase 1.
+Your application has been hardened against hydration mismatches, database infinite loops, and hardware permission errors.
 
-## Project Structure (Root Directory)
-Your app's root is the folder containing these key files:
-- `/src/app`: All website pages (Marketplace, Audit, Profile).
-- `/src/firebase`: Database and Auth connection logic.
-- `/src/ai`: Genkit AI diagnostic engines.
-- `/docs/backend.json`: Your database blueprint.
-- `package.json`: Project configuration and dependencies.
+## Project Structure
+- `/src/app`: Frontend pages (Marketplace, Audit, Live Diagnostics, Video Consult).
+- `/src/firebase`: Stabilized Firestore and Auth connection logic.
+- `/src/ai`: Genkit AI diagnostic engines (Gemini 2.5 Flash).
+- `/docs/backend.json`: Database blueprint for property-centric tracking.
 
 ---
 
@@ -35,42 +33,43 @@ Your app's root is the folder containing these key files:
    - Click "Create Database".
    - Choose **"Production Mode"**.
    - Choose a location (e.g., `us-east1`).
-   - This is where you can see your data under the "Data" tab.
 
 ## Phase 3: Firebase App Hosting (The "Connect" Step)
-This links your GitHub repo to your live URL:
 1. In the Firebase Sidebar, navigate to **Build > App Hosting**.
 2. Click **Get Started** and connect your GitHub account.
 3. Select the repository: `6197577/Electric-Doctor-s-app`.
-4. Select the `main` branch and keep root as `/`.
-5. Click **Finish and Deploy**.
+4. Keep root as `/` and click **Finish and Deploy**.
 
-## Phase 4: Production Keys
-Once the App Hosting backend is created, go to **Settings > Environment Variables** in the App Hosting dashboard and add these from your Firebase Web App Config:
-- `NEXT_PUBLIC_FIREBASE_API_KEY`: ...
-- `NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN`: ...
-- `NEXT_PUBLIC_FIREBASE_PROJECT_ID`: ...
-- `NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET`: ...
+## Phase 4: Production Keys (CRITICAL)
+Once the App Hosting backend is created, go to **Settings > Environment Variables** in the App Hosting dashboard and add these:
+
+### Firebase Client Config (Frontend)
+- `NEXT_PUBLIC_FIREBASE_API_KEY`: [Your Key]
+- `NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN`: [Your Project].firebaseapp.com
+- `NEXT_PUBLIC_FIREBASE_PROJECT_ID`: [Your Project ID]
+- `NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET`: [Your Project].appspot.com
 - `NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID`: ...
 - `NEXT_PUBLIC_FIREBASE_APP_ID`: ...
-- `GOOGLE_GENAI_API_KEY`: (Your Gemini API Key)
+
+### AI & External Services (Server)
+- `GOOGLE_GENAI_API_KEY`: Get from [Google AI Studio](https://aistudio.google.com/)
+- `STRIPE_SECRET_KEY`: Get from [Stripe Dashboard](https://dashboard.stripe.com/)
+- `NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY`: For frontend checkout UI.
+- `NEXT_PUBLIC_GOOGLE_MAPS_API_KEY`: Get from [Google Cloud Console](https://console.cloud.google.com/) (Required for live dispatch maps).
 
 ## Phase 5: Custom Domain
-1. In the App Hosting dashboard, click "Connect Domain".
-2. Add `emergencyelectricrepair.com`.
-3. Follow the DNS instructions provided by Firebase.
+1. In App Hosting dashboard, click "Connect Domain".
+2. Add `emergencyelectricrepair.com` and follow the DNS steps.
 
 ---
 ## Managing Your Data
 To see your users' audits, AI diagnoses, and generator logs:
 1. Open [Firebase Console](https://console.firebase.google.com).
-2. Select your project.
-3. Click **Firestore Database** in the left menu.
-4. Data is organized as: `users` > `userId` > `properties` > `propertyId` > `audits/diagnoses`.
+2. Click **Firestore Database**.
+3. Path: `users` > `userId` > `properties` > `propertyId` > `audits/diagnoses/logs`.
 
-## Troubleshooting
-- **Server Initialization**: If the logs show "○ Compiling / ...", the server is healthy and waiting for its first request.
-- **Port 9002 already in use**: This happens if a previous server didn't close. The server usually restarts automatically.
-- **Missing Firebase Config**: If the app shows a "Configuration Required" screen, ensure you've completed **Phase 4** above.
+## Troubleshooting Hardware
+- **Camera/Mic Denied**: The app will show a red Alert if the browser blocks access. Instruct users to click the "Lock" icon in their URL bar to reset permissions.
+- **Port 9002**: If the server fails to start, it's usually a dangling process. It should restart automatically within 10 seconds.
 
 **Support**: 304-410-9208 | support@emergencyelectricrepair.com
