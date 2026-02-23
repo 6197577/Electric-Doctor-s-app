@@ -9,6 +9,7 @@ Your application has been hardened against hydration mismatches, database infini
 - `/src/app`: Frontend pages (Marketplace, Audit, Live Diagnostics, Video Consult).
 - `/src/firebase`: Stabilized Firestore and Auth connection logic.
 - `/src/ai`: Genkit AI diagnostic engines (Gemini 2.5 Flash).
+- `/src/__tests__`: Comprehensive test suite (Unit & E2E).
 - `/docs/backend.json`: Database blueprint for property-centric tracking.
 
 ---
@@ -26,7 +27,19 @@ Your application has been hardened against hydration mismatches, database infini
    git push -u origin main
    ```
 
-## Phase 2: Firebase Backend Setup
+## Phase 2: Testing & Verification
+Ensure your app logic is sound before cloud deployment.
+
+1. **Run Unit Tests (Logic/Pricing)**:
+   ```bash
+   npm run test
+   ```
+2. **Run E2E Tests (Browser Automation)**:
+   ```bash
+   npm run test:e2e
+   ```
+
+## Phase 3: Firebase Backend Setup
 1. **Firebase Console**: Go to [console.firebase.google.com](https://console.firebase.google.com).
 2. **Authentication**: Enable the **Google** sign-in provider in the "Authentication" tab.
 3. **Firestore Database**: 
@@ -34,13 +47,13 @@ Your application has been hardened against hydration mismatches, database infini
    - Choose **"Production Mode"**.
    - Choose a location (e.g., `us-east1`).
 
-## Phase 3: Firebase App Hosting (The "Connect" Step)
+## Phase 4: Firebase App Hosting (The "Connect" Step)
 1. In the Firebase Sidebar, navigate to **Build > App Hosting**.
 2. Click **Get Started** and connect your GitHub account.
 3. Select the repository: `6197577/Electric-Doctor-s-app`.
 4. Keep root as `/` and click **Finish and Deploy**.
 
-## Phase 4: Production Keys (CRITICAL)
+## Phase 5: Production Keys (CRITICAL)
 Once the App Hosting backend is created, go to **Settings > Environment Variables** in the App Hosting dashboard and add these:
 
 ### Firebase Client Config (Frontend)
@@ -57,10 +70,6 @@ Once the App Hosting backend is created, go to **Settings > Environment Variable
 - `NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY`: For frontend checkout UI.
 - `NEXT_PUBLIC_GOOGLE_MAPS_API_KEY`: Get from [Google Cloud Console](https://console.cloud.google.com/) (Required for live dispatch maps).
 
-## Phase 5: Custom Domain
-1. In App Hosting dashboard, click "Connect Domain".
-2. Add `emergencyelectricrepair.com` and follow the DNS steps.
-
 ---
 ## Managing Your Data
 To see your users' audits, AI diagnoses, and generator logs:
@@ -70,6 +79,6 @@ To see your users' audits, AI diagnoses, and generator logs:
 
 ## Troubleshooting Hardware
 - **Camera/Mic Denied**: The app will show a red Alert if the browser blocks access. Instruct users to click the "Lock" icon in their URL bar to reset permissions.
-- **Port 9002**: If the server fails to start, it's usually a dangling process. It should restart automatically within 10 seconds.
+- **EADDRINUSE (Port 9002)**: If you see this error, another process is using the port. Kill the process or wait 10 seconds for the server to auto-restart.
 
 **Support**: 304-410-9208 | support@emergencyelectricrepair.com
