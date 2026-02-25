@@ -6,17 +6,8 @@ Follow this sequence to launch your app using the unified Firebase + GitHub stac
 ## Status: App Ready for Push
 Your application has been hardened against hydration mismatches, database infinite loops, and hardware permission errors.
 
-## Project Structure
-- `/src/app`: Frontend pages (Marketplace, Audit, Live Diagnostics, Video Consult).
-- `/src/firebase`: Stabilized Firestore and Auth connection logic.
-- `/src/ai`: Genkit AI diagnostic engines (Gemini 2.5 Flash).
-- `/src/__tests__`: Comprehensive test suite (Unit & E2E).
-- `/docs/backend.json`: Database blueprint for property-centric tracking.
-
----
-
-## Phase 1: Source Control (GitHub)
-**RUN THESE COMMANDS FIRST.** Open your terminal in the root directory and run:
+## Phase 1: Source Control (GitHub) - STEP 1
+**RUN THESE COMMANDS FIRST.** Open your terminal in the root directory of your project and run:
 
 1. **Initialize and push code**:
    ```bash
@@ -69,17 +60,7 @@ Once the App Hosting backend is created, go to **Settings > Environment Variable
 - `GOOGLE_GENAI_API_KEY`: Get from [Google AI Studio](https://aistudio.google.com/)
 - `STRIPE_SECRET_KEY`: Get from [Stripe Dashboard](https://dashboard.stripe.com/)
 - `NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY`: For frontend checkout UI.
-- `NEXT_PUBLIC_GOOGLE_MAPS_API_KEY`: Get from [Google Cloud Console](https://console.cloud.google.com/) (Required for live dispatch maps).
+- `NEXT_PUBLIC_GOOGLE_MAPS_API_KEY`: Get from [Google Cloud Console](https://console.cloud.google.com/)
 
 ---
-## Managing Your Data
-To see your users' audits, AI diagnoses, and generator logs:
-1. Open [Firebase Console](https://console.firebase.google.com).
-2. Click **Firestore Database**.
-3. Path: `users` > `userId` > `properties` > `propertyId` > `audits/diagnoses/logs`.
-
-## Troubleshooting Hardware
-- **Camera/Mic Denied**: The app will show a red Alert if the browser blocks access. Instruct users to click the "Lock" icon in their URL bar to reset permissions.
-- **EADDRINUSE (Port 9002)**: If you see this error, another process is using the port. Kill the process or wait 10 seconds for the server to auto-restart.
-
 **Support**: 304-410-9208 | support@emergencyelectricrepair.com
