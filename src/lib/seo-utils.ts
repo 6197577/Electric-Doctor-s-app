@@ -1,3 +1,4 @@
+
 /**
  * @fileOverview SEO utilities for dynamic content generation.
  */
@@ -15,7 +16,7 @@ export const SERVICES = [
 ];
 
 export function generateServiceCityTitle(serviceName: string, city: string, state: string) {
-  return `${serviceName} in ${city}, ${state} | Emergency Electric Repair`;
+  return `${serviceName} in ${city}, ${state} | Electric Doctor's`;
 }
 
 export function generateServiceCityDescription(serviceName: string, city: string, state: string) {

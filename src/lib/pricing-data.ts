@@ -1,3 +1,4 @@
+
 /**
  * @fileOverview Regional pricing data for electrical services.
  * Multipliers are based on cost of labor, living, and local market demand indices.

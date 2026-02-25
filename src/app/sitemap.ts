@@ -1,3 +1,4 @@
+
 import { MetadataRoute } from 'next';
 import { TOP_50_CITIES_PRICING } from '@/lib/pricing-data';
 import { SERVICES } from '@/lib/seo-utils';

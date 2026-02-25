@@ -1,3 +1,4 @@
+
 import { TOP_50_CITIES_PRICING } from './pricing-data';
 
 /**
