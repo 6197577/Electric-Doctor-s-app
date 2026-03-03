@@ -16,14 +16,13 @@ Your application has been hardened against hydration mismatches, database infini
    git add .
    git commit -m "Initial production-ready build with property tracking"
    git branch -M main
-   git push -u origin main
+   
+   # IF YOU GET AN ERROR about "remote contains work":
+   git push -u origin main --force
+   
+   # OTHERWISE, use the standard push:
+   # git push -u origin main
    ```
-
-### ⚠️ Troubleshooting: "Updates were rejected"
-If you get an error saying "updates were rejected because the remote contains work that you do not have locally", run this command to force the sync:
-```bash
-git push -u origin main --force
-```
 
 ## Phase 2: Testing & Verification
 Ensure your app logic is sound before cloud deployment.
