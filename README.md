@@ -19,6 +19,12 @@ Your application has been hardened against hydration mismatches, database infini
    git push -u origin main
    ```
 
+### ⚠️ Troubleshooting: "Updates were rejected"
+If you get an error saying "updates were rejected because the remote contains work that you do not have locally", run this command to force the sync:
+```bash
+git push -u origin main --force
+```
+
 ## Phase 2: Testing & Verification
 Ensure your app logic is sound before cloud deployment.
 
