@@ -1,3 +1,4 @@
+
 import Link from "next/link"
 import { Zap } from "lucide-react"
 
@@ -10,13 +11,13 @@ export function Header() {
           <span>ELECTRIC <span className="text-primary">DOCTOR&apos;S</span></span>
         </Link>
         <div className="ml-auto hidden md:flex items-center space-x-6 text-sm font-medium">
+          <Link href="/about" className="hover:text-primary transition-colors">About</Link>
           <Link href="/diagnose" className="hover:text-primary transition-colors">AI Diagnostic</Link>
           <Link href="/products/smart-panels" className="hover:text-primary transition-colors font-bold text-primary">Smart Panels</Link>
-          <Link href="/predictive-maintenance" className="hover:text-primary transition-colors">Predictive</Link>
-          <Link href="/pro/estimate" className="hover:text-primary transition-colors">Pro Estimator</Link>
-          <Link href="/subscriptions" className="hover:text-primary transition-colors">Plans</Link>
           <Link href="/marketplace" className="hover:text-primary transition-colors">Marketplace</Link>
-          <Link href="/profile" className="hover:text-primary transition-colors">Account</Link>
+          <Link href="/subscriptions" className="hover:text-primary transition-colors">Plans</Link>
+          <Link href="/contact" className="hover:text-primary transition-colors">Contact</Link>
+          <Link href="/profile" className="hover:text-primary transition-colors bg-white/5 px-4 py-1.5 rounded-full border border-white/10">Account</Link>
         </div>
       </div>
     </header>
