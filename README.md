@@ -1,28 +1,9 @@
 
 # Electric Doctor's - Firebase Launch Roadmap
 
-Follow this sequence to launch your app using the unified Firebase + GitHub stack. This is the most efficient workflow for your team.
-
-## Status: App Ready for Push
-Your application has been hardened against hydration mismatches, database infinite loops, and hardware permission errors.
 
 ## Phase 1: Source Control (GitHub) - STEP 1
 **RUN THESE COMMANDS FIRST.** Open your terminal in the root directory of your project and run:
-
-1. **Initialize and push code**:
-   ```bash
-   git init
-   git remote add origin https://github.com/6197577/Electric-Doctor-s-app.git
-   git add .
-   git commit -m "Initial production-ready build with property tracking"
-   git branch -M main
-   
-   # IF YOU GET AN ERROR about "remote contains work":
-   git push -u origin main --force
-   
-   # OTHERWISE, use the standard push:
-   # git push -u origin main
-   ```
 
 ## Phase 2: Testing & Verification
 Ensure your app logic is sound before cloud deployment.
